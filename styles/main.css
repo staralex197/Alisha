@@ -474,7 +474,6 @@ h1 {
     transform: translateY(-2px);
 }
 
-
 .hearts-container {
     position: fixed;
     top: 0;
@@ -505,7 +504,35 @@ h1 {
     animation: floatSlow 8s ease-in-out infinite;
 }
 
-/* Увеличиваем количество сердец */
+.loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #666;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 @keyframes float {
     0% {
         transform: translateY(100px) rotate(0deg) scale(0.8);
@@ -617,50 +644,6 @@ h1 {
         opacity: 0;
     }
 }
-
-.loading {
-    text-align: center;
-    padding: 20px;
-    font-size: 1.2em;
-    color: #666;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(100px) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
 
 /* Динамическая инверсия цветов для плеера */
 .music-player.dark-text {
