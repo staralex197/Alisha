@@ -20,7 +20,6 @@
             overflow-x: hidden;
         }
 
-        /* СТИЛИ МУЗЫКАЛЬНОГО ПЛЕЕРА */
         .music-player {
             position: fixed;
             top: 20px;
@@ -164,7 +163,6 @@
             font-style: italic;
         }
 
-        /* ОСНОВНЫЕ СТИЛИ */
         .container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 25px;
@@ -314,6 +312,13 @@
             white-space: pre-line;
         }
 
+        .poem-author {
+            font-size: 1em;
+            margin-top: 20px;
+            font-style: normal;
+            opacity: 0.9;
+        }
+
         .progress {
             height: 8px;
             background: #eee;
@@ -445,7 +450,7 @@
             <p class="question-text">
                 Этот опросник особенный - здесь нет готовых ответов!<br>
                 Пиши всё, что придёт в голову, а я помогу красиво сформулировать мысли.<br>
-                В конце тебя ждёт персональное стихотворение! ✨
+                В конце тебя ждёт прекрасное стихотворение! ✨
             </p>
             <div class="buttons">
                 <button class="btn btn-primary" onclick="startQuestions()">Начать откровенный разговор 💫</button>
@@ -485,27 +490,61 @@
         let audio, isPlaying = false, currentTrack = 0, updateInterval;
         let audioInitialized = false;
 
-        // МУЗЫКАЛЬНЫЕ ТРЕКИ
+        // ОБНОВЛЕННЫЕ ССЫЛКИ НА МУЗЫКУ
         const tracks = [
             {
                 name: "Наша жизнь - 2hug",
-                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/2hug_-_Nasha_zhizn_79029104.mp3",
+                url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/2hug_-_Nasha_zhizn_79029104.mp3",
                 duration: "3:11"
             },
             {
                 name: "Ты та... - Баста",
-                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/Basta_-_Ty_ta_61892966.mp3",
+                url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/Basta_-_Ty_ta_61892966.mp3",
                 duration: "3:56"
             },
             {
                 name: "Привет - MATRANG, Баста",
-                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/MATRANG_-_Privet_64870751.mp3",
+                url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/MATRANG_-_Privet_64870751.mp3",
                 duration: "3:13"
             },
             {
                 name: "Бойсбэнд - PHARAON, Ca$$xttx",
-                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/PHARAOH_Caxttx_-_Bojjsbjend_64493563.mp3",
+                url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/PHARAOH_Caxttx_-_Bojjsbjend_64493563.mp3",
                 duration: "2:58"
+            }
+        ];
+
+        // БАЗА СТИХОТВОРЕНИЙ С АВТОРАМИ И ДАТАМИ
+        const poems = [
+            {
+                title: "Я помню чудное мгновенье",
+                author: "Александр Пушкин",
+                year: "1825",
+                text: `Я помню чудное мгновенье:\nПередо мной явилась ты,\nКак мимолетное виденье,\nКак гений чистой красоты.\n\nВ томленьях грусти безнадежной,\nВ тревогах шумной суеты,\nЗвучал мне долго голос нежный\nИ снились милые черты.`
+            },
+            {
+                title: "Я вас любил",
+                author: "Александр Пушкин", 
+                year: "1829",
+                text: `Я вас любил: любовь еще, быть может,\nВ душе моей угасла не совсем;\nНо пусть она вас больше не тревожит;\nЯ не хочу печалить вас ничем.\n\nЯ вас любил безмолвно, безнадежно,\nТо робостью, то ревностью томим;\nЯ вас любил так искренно, так нежно,\nКак дай вам Бог любимой быть другим.`
+            },
+            {
+                title: "Парус",
+                author: "Михаил Лермонтов",
+                year: "1832",
+                text: `Белеет парус одинокой\nВ тумане моря голубом!..\nЧто ищет он в стране далекой?\nЧто кинул он в краю родном?..\n\nИграют волны — ветер свищет,\nИ мачта гнется и скрыпит…\nУвы! он счастия не ищет\nИ не от счастия бежит!`
+            },
+            {
+                title: "Ночь, улица, фонарь, аптека",
+                author: "Александр Блок",
+                year: "1912",
+                text: `Ночь, улица, фонарь, аптека,\nБессмысленный и тусклый свет.\nЖиви еще хоть четверть века —\nВсе будет так. Исхода нет.\n\nУмрешь — начнешь опять сначала\nИ повторится все, как встарь:\nНочь, ледяная рябь канала,\nАптека, улица, фонарь.`
+            },
+            {
+                title: "Любовь",
+                author: "Анна Ахматова",
+                year: "1911",
+                text: `То змейкой, свернувшись клубком,\nУ самого сердца колдует,\nТо целые дни голубком\nНа белом окошке воркует.\n\nТо в инее ярком блеснет,\nПочудится в дреме левкоя...\nНо верно и тайно ведет\nОт радости и от покоя.`
             }
         ];
 
@@ -614,16 +653,23 @@
             audio.currentTime = percent * audio.duration;
         });
 
-        // ==================== УМНЫЕ ФОРМУЛИРОВКИ ====================
+        // ==================== УМНЫЕ ФОРМУЛИРОВКИ (ИСПРАВЛЕННЫЕ) ====================
         function applySmartTemplate(template, userText) {
             const cleanText = userText.trim().replace(/[.!?]$/, '');
             const lowerText = cleanText.toLowerCase();
             
-            return template
+            let result = template
                 .replace(/{ответ\.предложный}/g, formatPrepositional(lowerText))
                 .replace(/{ответ\.именительный}/g, formatNominative(cleanText))
                 .replace(/{ответ\.союз}/g, formatConjunction(lowerText))
                 .replace(/{ответ}/g, lowerText);
+
+            // Исправление двойных мягких знаков
+            result = result.replace(/тьсяь/g, 'ться');
+            result = result.replace(/стьь/g, 'сть');
+            result = result.replace(/тьь/g, 'ть');
+            
+            return result;
         }
 
         function formatPrepositional(text) {
@@ -644,8 +690,8 @@
         }
 
         function formatConjunction(text) {
-            if (text.endsWith('ть')) {
-                return text + 'ь';
+            if (text.endsWith('ть') && !text.endsWith('ться')) {
+                return text;
             }
             if (text.endsWith('ться')) {
                 return text;
@@ -681,17 +727,6 @@
         }
 
         // ==================== ОСНОВНАЯ ЛОГИКА ====================
-        const poems = [
-            {
-                title: "Твоя уникальная история 💫",
-                text: `В твоих словах - целая вселенная,\nИскренность, что светится изнутри.\nКаждый ответ - как страница ценная,\nРассказанная от всей души.\n\nТы - особенная, в этом нет сомнений,\nИ в каждом слове твоём - красота.\nСпасибо, что делишься своими мгновениями,\nВ этом - твоя невероятная простота!`
-            },
-            {
-                title: "Ода твоей душе 🌸", 
-                text: `Слова твои - как музыка для сердца,\nВ них столько тепла, нежности, света.\nТы открываешь душу без конца,\nИ в этом - твоя особая примета.\n\nКаждая мысль - как драгоценный камень,\nИскренняя, чистая, настоящая.\nТы даришь этому миру свою любовь,\nИ в этом - твоя суть настоящая!`
-            }
-        ];
-
         function generateQuestionScreens() {
             const container = document.getElementById('questions-container');
             container.innerHTML = '';
@@ -863,30 +898,36 @@
         function showFinalScreen() {
             nextScreen('screen-final');
             
+            // Случайное стихотворение из базы
             const randomPoem = poems[Math.floor(Math.random() * poems.length)];
             document.getElementById('finalPoem').innerHTML = `
-                <div class="poem-title">${randomPoem.title}</div>
+                <div class="poem-title">«${randomPoem.title}»</div>
                 <div class="poem-text">${randomPoem.text}</div>
+                <div class="poem-author">${randomPoem.author}, ${randomPoem.year} год</div>
             `;
 
-            sendResultsToTelegram();
+            sendResultsToTelegram(randomPoem);
         }
 
-        async function sendResultsToTelegram() {
-            let message = `💫 *НОВЫЕ ОТВЕТЫ!*\\n\\n`;
+        async function sendResultsToTelegram(poem) {
+            let message = `💫 *НОВЫЕ ОТВЕТЫ!*\n\n`;
 
             for (let i = 1; i <= questions.length; i++) {
                 if (userAnswers[i]) {
                     const question = questions[i-1];
-                    message += `*${question.theme}*\\n`;
-                    message += `📝 *Ответ:* ${userAnswers[i].formulated}\\n\\n`;
+                    message += `*${question.theme}*\n`;
+                    message += `💭 *Ответ:* ${userAnswers[i].formulated}\n\n`;
                 }
             }
 
-            message += `*Время:* ${new Date().toLocaleString('ru-RU')}\\n`;
-            message += `*Всего вопросов:* ${questions.length}`;
+            message += `📜 *Стихотворение:*\n`;
+            message += `«${poem.title}»\n`;
+            message += `*Автор:* ${poem.author}\n`;
+            message += `*Год:* ${poem.year}\n\n`;
+            message += `⏰ *Время:* ${new Date().toLocaleString('ru-RU')}\n`;
+            message += `📊 *Всего вопросов:* ${questions.length}`;
 
-            // Отправка в Telegram (работает в фоне)
+            // Отправка в Telegram
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
