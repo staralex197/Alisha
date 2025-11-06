@@ -15,20 +15,176 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: 'Arial', sans-serif;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* СТИЛИ МУЗЫКАЛЬНОГО ПЛЕЕРА */
+        .music-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            width: 320px;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .music-player:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .player-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .player-title {
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9em;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .now-playing {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 0.9em;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.9);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            transition: all 0.3s ease;
         }
 
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-bar-music {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(102, 126, 234, 0.8));
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-display {
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+        }
+
+        .track-info {
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-top: 5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .music-notice {
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* ОСНОВНЫЕ СТИЛИ */
         .container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 25px;
             padding: 40px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
-            text-align: center;
+            position: relative;
+            min-height: 600px;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .active {
+            display: block;
         }
 
         h1 {
@@ -39,13 +195,20 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-align: center;
         }
 
         .question-text {
-            font-size: 1.3em;
+            font-size: 1.4em;
             color: #555;
             margin-bottom: 30px;
             line-height: 1.6;
+            min-height: 80px;
+            text-align: center;
+        }
+
+        .input-section {
+            margin: 30px 0;
         }
 
         .user-input {
@@ -89,13 +252,13 @@
             color: white;
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
         }
 
-        .btn-secondary {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
             color: white;
         }
 
@@ -108,7 +271,8 @@
             text-align: right;
             color: #666;
             font-size: 0.9em;
-            margin-bottom: 10px;
+            margin-top: -15px;
+            margin-bottom: 15px;
         }
 
         .formulation-section {
@@ -119,6 +283,7 @@
             margin: 25px 0;
             text-align: left;
             display: none;
+            animation: slideIn 0.5s ease;
         }
 
         .formulation-text {
@@ -188,61 +353,110 @@
             transform: translateY(-2px);
         }
 
-        .admin-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 15px;
-            text-align: left;
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .admin-section h3 {
-            color: #667eea;
-            margin-bottom: 15px;
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: float 6s ease-in infinite;
         }
 
-        .admin-info {
-            font-size: 0.9em;
-            color: #666;
-            line-height: 1.5;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
+    <div class="music-player" id="musicPlayer">
+        <div class="player-header">
+            <div class="player-title">🎵 Наша музыка</div>
+        </div>
+        <div class="now-playing" id="nowPlaying">Нажми ▶ для воспроизведения</div>
+        <div class="player-controls">
+            <button class="control-btn" onclick="previousTrack()">⏮</button>
+            <button class="control-btn play-btn" onclick="togglePlay()" id="playBtn">▶</button>
+            <button class="control-btn" onclick="nextTrack()">⏭</button>
+        </div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar-music" id="musicProgress"></div>
+        </div>
+        <div class="time-display">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+        <div class="volume-container">
+            <span style="color: rgba(255,255,255,0.8);">🔊</span>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+        </div>
+        <div class="track-info" id="trackInfo">1/4</div>
+        <div class="music-notice">Музыка для твоего настроения 💖</div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР -->
     <div class="container">
-        <div id="screen-welcome">
+        <!-- ЭКРАН ПРИВЕТСТВИЯ -->
+        <div class="screen active" id="screen-welcome">
             <h1>💖 Расскажи мне о себе</h1>
             <p class="question-text">
                 Этот опросник особенный - здесь нет готовых ответов!<br>
                 Пиши всё, что придёт в голову, а я помогу красиво сформулировать мысли.<br>
-                В конце тебя ждёт прекрасное стихотворение! ✨
+                В конце тебя ждёт персональное стихотворение! ✨
             </p>
             <div class="buttons">
                 <button class="btn btn-primary" onclick="startQuestions()">Начать откровенный разговор 💫</button>
             </div>
-
-            <div class="admin-section">
-                <h3>🤖 Управление вопросами через Telegram</h3>
-                <div class="admin-info">
-                    <strong>Добавь бота:</strong> @AlishaQuestionBot<br>
-                    <strong>Команды:</strong><br>
-                    • /start - показать команды<br>
-                    • /questions - список вопросов<br>
-                    • /add_bulk - массовое добавление вопросов<br>
-                    • /edit - изменить вопрос<br>
-                    • /delete - удалить вопрос<br>
-                    • /refresh - обновить вопросы<br><br>
-                    
-                    <strong>Умный формат для /add_bulk:</strong><br>
-                    <code>💒 Свадьба|Вопрос?|подсказки|Я мечтаю о {ответ.предложный};Для меня важно {ответ.именительный};Хочу чтобы {ответ.союз}</code><br>
-                    Поддерживаются: {ответ}, {ответ.именительный}, {ответ.предложный}, {ответ.союз}
-                </div>
-            </div>
         </div>
 
+        <!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
         <div id="questions-container"></div>
 
-        <div id="screen-final" style="display: none;">
+        <!-- ФИНАЛЬНЫЙ ЭКРАН -->
+        <div class="screen" id="screen-final">
             <h1>Спасибо за откровенность! 💖</h1>
             <div class="poem-container" id="finalPoem">
                 <!-- Сюда вставится финальное стихотворение -->
@@ -252,6 +466,8 @@
                 <button class="btn btn-success" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
             </div>
         </div>
+
+        <div class="hearts-container" id="heartsContainer"></div>
     </div>
 
     <script>
@@ -266,13 +482,143 @@
         let currentQuestion = 0;
         let questions = [];
         let lastUpdateId = 0;
+        let audio, isPlaying = false, currentTrack = 0, updateInterval;
+        let audioInitialized = false;
+
+        // МУЗЫКАЛЬНЫЕ ТРЕКИ
+        const tracks = [
+            {
+                name: "Наша жизнь - 2hug",
+                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/2hug_-_Nasha_zhizn_79029104.mp3",
+                duration: "3:11"
+            },
+            {
+                name: "Ты та... - Баста",
+                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/Basta_-_Ty_ta_61892966.mp3",
+                duration: "3:56"
+            },
+            {
+                name: "Привет - MATRANG, Баста",
+                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/MATRANG_-_Privet_64870751.mp3",
+                duration: "3:13"
+            },
+            {
+                name: "Бойсбэнд - PHARAON, Ca$$xttx",
+                url: "https://github.com/staralex197/romantic-questionnaire/raw/refs/heads/main/Music/PHARAOH_Caxttx_-_Bojjsbjend_64493563.mp3",
+                duration: "2:58"
+            }
+        ];
+
+        // ==================== МУЗЫКАЛЬНЫЕ ФУНКЦИИ ====================
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function initializeAudio() {
+            if (!audioInitialized) {
+                audioInitialized = true;
+                audio = new Audio();
+                audio.volume = 0.5;
+                audio.src = tracks[0].url;
+                audio.load();
+                document.getElementById('nowPlaying').textContent = tracks[0].name;
+                document.getElementById('trackInfo').textContent = `1/${tracks.length}`;
+                
+                audio.addEventListener('ended', function() {
+                    nextTrack();
+                });
+            }
+        }
+
+        function togglePlay() {
+            if (!audioInitialized) {
+                initializeAudio();
+            }
+
+            if (isPlaying) {
+                audio.pause();
+                document.getElementById('playBtn').textContent = '▶';
+                isPlaying = false;
+                stopProgressUpdate();
+            } else {
+                audio.play().then(() => {
+                    document.getElementById('playBtn').textContent = '⏸';
+                    isPlaying = true;
+                    startProgressUpdate();
+                }).catch(error => {
+                    console.log('Ошибка воспроизведения:', error);
+                });
+            }
+        }
+
+        function startProgressUpdate() {
+            updateInterval = setInterval(() => {
+                if (audio.duration) {
+                    const progress = (audio.currentTime / audio.duration) * 100;
+                    document.getElementById('musicProgress').style.width = progress + '%';
+                    document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+                }
+            }, 1000);
+        }
+
+        function stopProgressUpdate() {
+            clearInterval(updateInterval);
+        }
+
+        function setVolume(volume) {
+            if (audio) {
+                audio.volume = volume / 100;
+            }
+        }
+
+        function nextTrack() {
+            currentTrack = (currentTrack + 1) % tracks.length;
+            loadTrack(currentTrack);
+        }
+
+        function previousTrack() {
+            currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+            loadTrack(currentTrack);
+        }
+
+        function loadTrack(index) {
+            if (!audioInitialized) {
+                initializeAudio();
+            }
+
+            currentTrack = index;
+            audio.src = tracks[index].url;
+            document.getElementById('musicProgress').style.width = '0%';
+            document.getElementById('currentTime').textContent = '0:00';
+            
+            audio.play().then(() => {
+                isPlaying = true;
+                document.getElementById('playBtn').textContent = '⏸';
+                document.getElementById('nowPlaying').textContent = tracks[index].name;
+                document.getElementById('trackInfo').textContent = `${currentTrack + 1}/${tracks.length}`;
+                document.getElementById('duration').textContent = tracks[index].duration;
+                startProgressUpdate();
+            }).catch(error => {
+                console.log('Ошибка воспроизведения:', error);
+            });
+        }
+
+        // Прогресс бар по клику
+        document.getElementById('progressContainer').addEventListener('click', function(e) {
+            if (!audio || !audio.duration) return;
+            const rect = this.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = percent * audio.duration;
+        });
 
         // ==================== УМНЫЕ ФОРМУЛИРОВКИ ====================
         function applySmartTemplate(template, userText) {
             const cleanText = userText.trim().replace(/[.!?]$/, '');
             const lowerText = cleanText.toLowerCase();
             
-            // Разные паттерны подстановки с умными окончаниями
             return template
                 .replace(/{ответ\.предложный}/g, formatPrepositional(lowerText))
                 .replace(/{ответ\.именительный}/g, formatNominative(cleanText))
@@ -281,34 +627,31 @@
         }
 
         function formatPrepositional(text) {
-            // Предложный падеж (о чём? о ком?) - "о любви", "о счастье"
             if (text.endsWith('а') || text.endsWith('я')) {
-                return text.slice(0, -1) + 'е'; // любовь -> о любви, мечта -> о мечте
+                return text.slice(0, -1) + 'е';
             }
             if (text.endsWith('ость') || text.endsWith('асть')) {
-                return text.slice(0, -2) + 'ости'; // радость -> о радости
+                return text.slice(0, -2) + 'ости';
             }
             if (text.endsWith('ие')) {
-                return text.slice(0, -1) + 'и'; // внимание -> о внимании
+                return text.slice(0, -1) + 'и';
             }
             return text;
         }
 
         function formatNominative(text) {
-            // Именительный падеж (что? кто?) - оставляем как есть, но с большой буквы
             return text.charAt(0).toUpperCase() + text.slice(1);
         }
 
         function formatConjunction(text) {
-            // Для союза "чтобы" - добавляем правильное окончание
             if (text.endsWith('ть')) {
-                return text + 'ь'; // мечтать -> чтобы мечтать
+                return text + 'ь';
             }
             if (text.endsWith('ться')) {
-                return text; // заниматься -> чтобы заниматься
+                return text;
             }
             if (text.endsWith('а') || text.endsWith('я')) {
-                return text.slice(0, -1) + 'ла'; // мечта -> чтобы мечтала
+                return text.slice(0, -1) + 'ла';
             }
             return text;
         }
@@ -325,9 +668,7 @@
         }
 
         function generateFallbackFormulation(questionNum, userText) {
-            const question = questions[questionNum - 1];
             const cleanText = userText.toLowerCase().replace(/[.!?]$/, '');
-            
             const formulations = [
                 `Я думаю, что ${cleanText}`,
                 `Для меня это означает, что ${cleanText}`,
@@ -339,376 +680,15 @@
             return formulations[Math.floor(Math.random() * formulations.length)];
         }
 
-        // ==================== JSONBIN ФУНКЦИИ ====================
-        async function loadQuestions() {
-            try {
-                console.log('🔄 Загрузка вопросов из JSONBin...');
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`, {
-                    headers: {
-                        'X-Master-Key': JSONBIN_API_KEY,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('✅ Вопросы загружены:', data.record.questions);
-                return data.record.questions || getDefaultQuestions();
-            } catch (error) {
-                console.error('❌ Ошибка загрузки вопросов:', error);
-                return getDefaultQuestions();
-            }
-        }
-
-        async function saveQuestions(newQuestions) {
-            try {
-                console.log('💾 Сохранение вопросов в JSONBin...');
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY,
-                        'X-Bin-Versioning': 'false'
-                    },
-                    body: JSON.stringify({
-                        questions: newQuestions,
-                        last_updated: new Date().toISOString()
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('✅ Вопросы сохранены:', data);
-                return true;
-            } catch (error) {
-                console.error('❌ Ошибка сохранения вопросов:', error);
-                return false;
-            }
-        }
-
-        function getDefaultQuestions() {
-            return [
-                {
-                    id: 1,
-                    text: "Опиши, в чём твоя самая сильная сторона? Что делает тебя особенным?",
-                    theme: "🌟 Уникальность",
-                    suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность"],
-                    templates: [
-                        "Моя сила проявляется в том, что {ответ}",
-                        "Я особенно ценю в себе: {ответ.именительный}",
-                        "Что делает меня особенным: {ответ}",
-                        "Моя уникальная черта - {ответ}",
-                        "Я горжусь своей способностью {ответ.союз}"
-                    ]
-                }
-            ];
-        }
-
-        // ==================== TELEGRAM БОТ ФУНКЦИИ ====================
-        async function sendTelegramMessage(chatId, text, parse_mode = 'Markdown') {
-            try {
-                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: text,
-                        parse_mode: parse_mode
-                    })
-                });
-
-                const result = await response.json();
-                if (!result.ok) {
-                    console.error('Ошибка отправки в Telegram:', result);
-                }
-                return result;
-            } catch (error) {
-                console.error('❌ Ошибка отправки в Telegram:', error);
-                return { ok: false, error: error.message };
-            }
-        }
-
-        async function checkBotMessages() {
-            try {
-                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`);
-                const data = await response.json();
-                
-                if (data.ok && data.result.length > 0) {
-                    for (const update of data.result) {
-                        if (update.update_id <= lastUpdateId) continue;
-                        await processBotUpdate(update);
-                        lastUpdateId = update.update_id;
-                    }
-                }
-            } catch (error) {
-                console.log('Ошибка проверки сообщений:', error);
-            }
-        }
-
-        async function processBotUpdate(update) {
-            const message = update.message;
-            if (!message || !message.text) return;
-
-            const chatId = message.chat.id;
-            const text = message.text.trim();
-
-            if (chatId == CHAT_ID) {
-                await handleAdminCommand(text, chatId);
-            }
-        }
-
-        async function handleAdminCommand(command, chatId) {
-            console.log('🔧 Обработка команды:', command);
-            const parts = command.split(' ');
-            const mainCommand = parts[0];
-
-            switch(mainCommand) {
-                case '/start':
-                    await sendAdminWelcome(chatId);
-                    break;
-                case '/questions':
-                    await showQuestionsList(chatId);
-                    break;
-                case '/add_bulk':
-                    await addBulkQuestions(chatId, command.substring(9)); // Берем всё после /add_bulk
-                    break;
-                case '/edit':
-                    await editQuestion(chatId, parts[1], parts.slice(2).join(' '));
-                    break;
-                case '/delete':
-                    await deleteQuestion(chatId, parts[1]);
-                    break;
-                case '/refresh':
-                    await refreshQuestions(chatId);
-                    break;
-                case '/help':
-                    await showHelp(chatId);
-                    break;
-                default:
-                    await sendTelegramMessage(chatId, '❌ Неизвестная команда. Используйте /help для списка команд.');
-            }
-        }
-
-        async function sendAdminWelcome(chatId) {
-            const message = `🤖 *Панель управления вопросами*
-
-*Доступные команды:*
-/questions - список вопросов
-/add_bulk - массовое добавление вопросов
-/edit - изменить вопрос  
-/delete - удалить вопрос
-/refresh - обновить вопросы
-/help - справка
-
-*Умный формат для /add_bulk:*
-\`\`\`
-💒 Свадьба|Как ты представляешь свадьбу?|Место,Гости|Я мечтаю о {ответ.предложный};Для меня важно {ответ.именительный};Хочу чтобы {ответ.союз}
-🌴 Путешествия|Куда хочешь поехать?|Пляж,Горы|Мечтаю о {ответ.предложный};Хочу чтобы {ответ.союз};Для меня важно {ответ.именительный}
-\`\`\`
-*Поддерживаемые плейсхолдеры:*
-• {ответ} - простой текст
-• {ответ.именительный} - с большой буквы
-• {ответ.предложный} - в предложном падеже (о чём)
-• {ответ.союз} - для союза "чтобы"`;
-
-            await sendTelegramMessage(chatId, message);
-        }
-
-        async function showHelp(chatId) {
-            const message = `📖 *Справка по командам*
-
-*/questions* - показать все вопросы
-*/add_bulk* - массовое добавление вопросов
-*/edit номер тема|вопрос|подсказки|формулировки* - изменить вопрос  
-*/delete номер* - удалить вопрос
-*/refresh* - принудительно обновить вопросы
-
-*Умные плейсхолдеры для формулировок:*
-• {ответ} - простой текст
-• {ответ.именительный} - текст с большой буквы
-• {ответ.предложный} - в предложном падеже
-• {ответ.союз} - для союза "чтобы"`;
-
-            await sendTelegramMessage(chatId, message);
-        }
-
-        async function showQuestionsList(chatId) {
-            if (!questions || questions.length === 0) {
-                await sendTelegramMessage(chatId, '📝 Список вопросов пуст');
-                return;
-            }
-
-            let message = '📝 *Список вопросов:*\\n\\n';
-            questions.forEach((q, index) => {
-                message += `*${q.id}. ${q.theme}*\\n`;
-                message += `Вопрос: ${q.text}\\n`;
-                if (q.suggestions && q.suggestions.length > 0) {
-                    message += `Подсказки: ${q.suggestions.join(', ')}\\n`;
-                }
-                if (q.templates && q.templates.length > 0) {
-                    message += `Формулировки: ${q.templates.length} умных вариантов\\n`;
-                }
-                message += `\\n`;
-            });
-
-            message += `Всего вопросов: ${questions.length}\\n`;
-            message += 'Добавить вопросы: /add_bulk';
-
-            await sendTelegramMessage(chatId, message);
-        }
-
-        async function addBulkQuestions(chatId, text) {
-            if (!text || !text.trim()) {
-                await sendTelegramMessage(chatId, 
-                    '❌ Используйте: /add_bulk\\n' +
-                    '💒 Свадьба|Вопрос?|подсказки|формулировки\\n' +
-                    '🌴 Путешествия|Вопрос?|подсказки|формулировки\\n\\n' +
-                    'Каждая строка - отдельный вопрос'
-                );
-                return;
-            }
-
-            const lines = text.split('\n').filter(line => line.trim());
-            let addedCount = 0;
-            let errors = [];
-
-            for (const line of lines) {
-                const parts = line.split('|');
-                if (parts.length < 3) {
-                    errors.push(`❌ Неверный формат: ${line}`);
-                    continue;
-                }
-
-                const newQuestion = {
-                    id: questions.length > 0 ? Math.max(...questions.map(q => q.id)) + 1 : 1,
-                    theme: parts[0].trim(),
-                    text: parts[1].trim() + (parts[1].trim().endsWith('?') ? '' : '?'),
-                    suggestions: parts[2] ? parts[2].split(',').map(s => s.trim()) : [],
-                    templates: parts[3] ? parts[3].split(';').map(t => t.trim()) : [
-                        "Я думаю, что {ответ}",
-                        "Для меня это означает, что {ответ}",
-                        "Я чувствую, что {ответ}",
-                        "Мой опыт показывает, что {ответ}",
-                        "Я считаю, что {ответ}"
-                    ]
-                };
-
-                questions.push(newQuestion);
-                addedCount++;
-            }
-
-            const success = await saveQuestions(questions);
-
-            if (success) {
-                let response = `✅ *Добавлено ${addedCount} вопросов!*\\n\\n`;
-                questions.slice(-addedCount).forEach(q => {
-                    response += `*${q.theme}*\\n`;
-                    response += `${q.text}\\n`;
-                    response += `Подсказки: ${q.suggestions.join(', ') || 'нет'}\\n`;
-                    response += `Умные формулировки: ${q.templates.length} вариантов\\n\\n`;
-                });
-                
-                if (errors.length > 0) {
-                    response += `*Ошибки:*\\n${errors.join('\\n')}`;
-                }
-
-                await sendTelegramMessage(chatId, response);
-                generateQuestionScreens();
-            } else {
-                await sendTelegramMessage(chatId, '❌ Ошибка сохранения вопросов');
-                questions.splice(-addedCount); // Откатываем изменения
-            }
-        }
-
-        async function editQuestion(chatId, questionId, text) {
-            if (!questionId || !text) {
-                await sendTelegramMessage(chatId, '❌ Используйте: /edit номер_вопроса тема|вопрос|подсказки|формулировки');
-                return;
-            }
-
-            const id = parseInt(questionId);
-            const questionIndex = questions.findIndex(q => q.id === id);
-
-            if (questionIndex === -1) {
-                await sendTelegramMessage(chatId, `❌ Вопрос с ID ${id} не найден`);
-                return;
-            }
-
-            const parts = text.split('|');
-            const oldQuestion = {...questions[questionIndex]};
-
-            questions[questionIndex].theme = parts[0].trim();
-            questions[questionIndex].text = parts[1].trim() + (parts[1].trim().endsWith('?') ? '' : '?');
-            
-            if (parts[2]) {
-                questions[questionIndex].suggestions = parts[2].split(',').map(s => s.trim());
-            }
-            
-            if (parts[3]) {
-                questions[questionIndex].templates = parts[3].split(';').map(t => t.trim());
-            }
-
-            const success = await saveQuestions(questions);
-
-            if (success) {
-                await sendTelegramMessage(chatId, `✅ *Вопрос обновлен!*\\n\\n*${questions[questionIndex].theme}*\\n${questions[questionIndex].text}`);
-                generateQuestionScreens();
-            } else {
-                await sendTelegramMessage(chatId, '❌ Ошибка сохранения вопроса');
-                questions[questionIndex] = oldQuestion;
-            }
-        }
-
-        async function deleteQuestion(chatId, questionId) {
-            if (!questionId) {
-                await sendTelegramMessage(chatId, '❌ Используйте: /delete номер_вопроса');
-                return;
-            }
-
-            const id = parseInt(questionId);
-            const questionIndex = questions.findIndex(q => q.id === id);
-
-            if (questionIndex === -1) {
-                await sendTelegramMessage(chatId, `❌ Вопрос с ID ${id} не найден`);
-                return;
-            }
-
-            const deletedQuestion = questions.splice(questionIndex, 1)[0];
-            const success = await saveQuestions(questions);
-
-            if (success) {
-                await sendTelegramMessage(chatId, `✅ *Вопрос удален!*\\n\\n*${deletedQuestion.theme}*\\n${deletedQuestion.text}`);
-                generateQuestionScreens();
-            } else {
-                await sendTelegramMessage(chatId, '❌ Ошибка удаления вопроса');
-                questions.splice(questionIndex, 0, deletedQuestion);
-            }
-        }
-
-        async function refreshQuestions(chatId) {
-            const newQuestions = await loadQuestions();
-            questions = newQuestions;
-            generateQuestionScreens();
-            await sendTelegramMessage(chatId, `✅ Вопросы обновлены! Всего: ${questions.length}`);
-        }
-
-        // ==================== ОСНОВНАЯ ЛОГИКА ОПРОСНИКА ====================
+        // ==================== ОСНОВНАЯ ЛОГИКА ====================
         const poems = [
             {
-                title: "Любовь - это вечность",
-                text: `Любовь — это вечность, что в сердце живёт,\nЛюбовь — это то, что нас к счастью ведёт.\nОна, как роса на рассветных полях,\nОна — вдохновенье в твоих и моих мечтах.\n\nЛюбовь — это вера, надежда, тепло,\nЧто душу согреет и к небу возьмёт.\nВ ней радость и грусть, в ней печаль и восторг,\nОна — бесконечный, божественный взлёт.`
+                title: "Твоя уникальная история 💫",
+                text: `В твоих словах - целая вселенная,\nИскренность, что светится изнутри.\nКаждый ответ - как страница ценная,\nРассказанная от всей души.\n\nТы - особенная, в этом нет сомнений,\nИ в каждом слове твоём - красота.\nСпасибо, что делишься своими мгновениями,\nВ этом - твоя невероятная простота!`
             },
             {
-                title: "Ты - моё вдохновение", 
-                text: `Ты — моё вдохновенье, ты — свет моих глаз,\nТы — утренний ветер, ты — ласковый час.\nВ твоих объятьях теряю я счёт временам,\nТы — лучшая сказка, что я прочитал.\n\nТы — музыка сердца, ты — ритм и покой,\nТы — ангел-хранитель, всегда за спиной.\nС тобою любое ненастье — не беда,\nВедь ты — моя гордость, мечта и звезда.`
+                title: "Ода твоей душе 🌸", 
+                text: `Слова твои - как музыка для сердца,\nВ них столько тепла, нежности, света.\nТы открываешь душу без конца,\nИ в этом - твоя особая примета.\n\nКаждая мысль - как драгоценный камень,\nИскренняя, чистая, настоящая.\nТы даришь этому миру свою любовь,\nИ в этом - твоя суть настоящая!`
             }
         ];
 
@@ -721,7 +701,7 @@
                 const progressWidth = (questionNumber / questions.length) * 100;
 
                 const screenHTML = `
-                    <div id="screen${questionNumber}" style="display: none;">
+                    <div class="screen" id="screen${questionNumber}">
                         <h1>${question.theme}</h1>
                         <p class="question-text">${question.text}</p>
                         
@@ -733,22 +713,24 @@
                         </div>
                         ` : ''}
 
-                        <div class="character-count" id="count${questionNumber}">0/500 символов</div>
-                        <textarea class="user-input" id="input${questionNumber}" 
-                                  placeholder="Напиши здесь всё, что считаешь важным... 💭" 
-                                  maxlength="500" 
-                                  oninput="updateCharacterCount(${questionNumber})"></textarea>
-                        
-                        <div class="buttons">
-                            <button class="btn btn-primary" onclick="saveAnswer(${questionNumber})">💖 Сохранить ответ</button>
-                            <button class="btn btn-success" onclick="showFormulation(${questionNumber})">✨ Красиво оформить</button>
+                        <div class="input-section">
+                            <div class="character-count" id="count${questionNumber}">0/500 символов</div>
+                            <textarea class="user-input" id="input${questionNumber}" 
+                                      placeholder="Напиши здесь всё, что считаешь важным... 💭" 
+                                      maxlength="500" 
+                                      oninput="updateCharacterCount(${questionNumber})"></textarea>
+                            
+                            <div class="buttons">
+                                <button class="btn btn-primary" onclick="saveAnswer(${questionNumber})">💖 Записать мой ответ</button>
+                                <button class="btn btn-secondary" onclick="showFormulation(${questionNumber})">✨ Красиво оформить</button>
+                            </div>
                         </div>
 
                         <div class="formulation-section" id="formulation${questionNumber}">
                             <div class="formulation-text" id="formulationText${questionNumber}"></div>
                             <div class="buttons">
-                                <button class="btn btn-success" onclick="acceptFormulation(${questionNumber})">✅ Использовать</button>
-                                <button class="btn btn-primary" onclick="reformulate(${questionNumber})">🔄 Другой вариант</button>
+                                <button class="btn btn-success" onclick="acceptFormulation(${questionNumber})">✅ Нравится</button>
+                                <button class="btn btn-secondary" onclick="reformulate(${questionNumber})">🔄 Переформулировать</button>
                             </div>
                         </div>
 
@@ -762,19 +744,22 @@
         }
 
         function startQuestions() {
-            document.getElementById('screen-welcome').style.display = 'none';
-            showScreen(1);
+            if (questions.length === 0) {
+                alert('Вопросы загружаются... Пожалуйста, подожди немного');
+                return;
+            }
+            nextScreen('screen1');
+            createHearts();
         }
 
-        function showScreen(screenNumber) {
-            document.querySelectorAll('#questions-container > div').forEach(screen => {
-                screen.style.display = 'none';
+        function nextScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
             });
-            const targetScreen = document.getElementById(`screen${screenNumber}`);
+            const targetScreen = document.getElementById(screenId);
             if (targetScreen) {
-                targetScreen.style.display = 'block';
+                targetScreen.classList.add('active');
             }
-            currentQuestion = screenNumber;
         }
 
         function updateCharacterCount(questionNum) {
@@ -816,11 +801,7 @@
                 formulated: userText
             };
 
-            if (questionNum < questions.length) {
-                showScreen(questionNum + 1);
-            } else {
-                showFinalScreen();
-            }
+            moveToNextQuestion(questionNum);
         }
 
         function showFormulation(questionNum) {
@@ -853,12 +834,7 @@
             if (formulationDiv) {
                 formulationDiv.style.display = 'none';
             }
-
-            if (questionNum < questions.length) {
-                showScreen(questionNum + 1);
-            } else {
-                showFinalScreen();
-            }
+            moveToNextQuestion(questionNum);
         }
 
         function reformulate(questionNum) {
@@ -875,9 +851,17 @@
             }
         }
 
+        function moveToNextQuestion(currentQ) {
+            if (currentQ < questions.length) {
+                nextScreen('screen' + (currentQ + 1));
+                createHearts();
+            } else {
+                showFinalScreen();
+            }
+        }
+
         function showFinalScreen() {
-            document.getElementById('questions-container').style.display = 'none';
-            document.getElementById('screen-final').style.display = 'block';
+            nextScreen('screen-final');
             
             const randomPoem = poems[Math.floor(Math.random() * poems.length)];
             document.getElementById('finalPoem').innerHTML = `
@@ -885,7 +869,6 @@
                 <div class="poem-text">${randomPoem.text}</div>
             `;
 
-            // Отправляем результаты в Telegram
             sendResultsToTelegram();
         }
 
@@ -903,7 +886,39 @@
             message += `*Время:* ${new Date().toLocaleString('ru-RU')}\\n`;
             message += `*Всего вопросов:* ${questions.length}`;
 
-            await sendTelegramMessage(CHAT_ID, message);
+            // Отправка в Telegram (работает в фоне)
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch (error) {
+                console.log('Ошибка отправки в Telegram:', error);
+            }
+        }
+
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            if (container) {
+                container.innerHTML = '';
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.className = 'heart';
+                        heart.innerHTML = '💖';
+                        heart.style.left = Math.random() * 100 + '%';
+                        heart.style.animationDelay = Math.random() * 2 + 's';
+                        container.appendChild(heart);
+                    }, i * 400);
+                }
+            }
         }
 
         function restartQuiz() {
@@ -914,23 +929,72 @@
             document.querySelectorAll('.character-count').forEach(count => count.textContent = '0/500 символов');
             document.querySelectorAll('.formulation-section').forEach(form => form.style.display = 'none');
             
-            document.getElementById('screen-final').style.display = 'none';
-            document.getElementById('questions-container').style.display = 'block';
-            document.getElementById('screen-welcome').style.display = 'block';
+            nextScreen('screen-welcome');
+            createHearts();
         }
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         async function initializeApp() {
             console.log('🚀 Инициализация приложения...');
-            questions = await loadQuestions();
-            console.log('✅ Вопросы загружены:', questions);
             
+            // Загружаем вопросы
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_API_KEY,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    questions = data.record.questions || getDefaultQuestions();
+                } else {
+                    questions = getDefaultQuestions();
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки вопросов:', error);
+                questions = getDefaultQuestions();
+            }
+
+            console.log('✅ Вопросы загружены:', questions);
             generateQuestionScreens();
             
-            // Запускаем проверку сообщений каждые 3 секунды
-            setInterval(checkBotMessages, 3000);
+            // Инициализируем аудио
+            initializeAudio();
             
             console.log('✅ Приложение инициализировано');
+        }
+
+        function getDefaultQuestions() {
+            return [
+                {
+                    id: 1,
+                    text: "Опиши, в чём твоя самая сильная сторона? Что делает тебя особенным?",
+                    theme: "🌟 Твоя уникальность",
+                    suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность", "Сила воли"],
+                    templates: [
+                        "Моя сила проявляется в том, что {ответ}",
+                        "Я особенно ценю в себе: {ответ.именительный}",
+                        "Что делает меня особенным: {ответ}",
+                        "Моя уникальная черта - {ответ}",
+                        "Я горжусь своей способностью {ответ.союз}"
+                    ]
+                },
+                {
+                    id: 2,
+                    text: "Какая у тебя самая заветная мечта? О чём ты чаще всего фантазируешь?",
+                    theme: "🌈 Твои мечты",
+                    suggestions: ["Путешествия", "Семья", "Творчество", "Помощь другим", "Личностный рост"],
+                    templates: [
+                        "Я мечтаю о том, чтобы {ответ.союз}",
+                        "Мои самые сокровенные желания: {ответ.именительный}",
+                        "В своих фантазиях я вижу: {ответ}",
+                        "Я стремлюсь к: {ответ.именительный}",
+                        "Моя главная цель: {ответ}"
+                    ]
+                }
+            ];
         }
 
         window.onload = initializeApp;
