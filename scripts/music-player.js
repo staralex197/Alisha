@@ -33,7 +33,8 @@ const MusicPlayer = {
             duration: "2:58"
         }
     ],
-       // Новая функция для автоматической инверсии цветов
+
+    // Новая функция для автоматической инверсии цветов
     updateTextColors() {
         const player = document.getElementById('musicPlayer');
         // Для градиентного фона всегда используем светлый текст
@@ -62,19 +63,16 @@ const MusicPlayer = {
             this.audio.currentTime = percent * this.audio.duration;
         });
 
+        // Добавляем отслеживание прокрутки для обновления цветов
+        window.addEventListener('scroll', () => {
+            this.updateTextColors();
+        });
+        
+        // Первоначальное обновление цветов
+        this.updateTextColors();
+
         this.audioInitialized = true;
         console.log('✅ Музыкальный плеер инициализирован');
-
-          // Добавляем отслеживание прокрутки для обновления цветов
-    window.addEventListener('scroll', () => {
-        this.updateTextColors();
-    });
-    
-    // Первоначальное обновление цветов
-    this.updateTextColors();
-    
-    console.log('✅ Музыкальный плеер инициализирован');
-}
     },
 
     formatTime(seconds) {
