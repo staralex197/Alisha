@@ -300,22 +300,45 @@ const QuizApp = {
         }
     },
 
-    createHearts() {
-        const container = document.getElementById('heartsContainer');
-        if (container) {
-            container.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'heart';
-                    heart.innerHTML = '💖';
-                    heart.style.left = Math.random() * 100 + '%';
-                    heart.style.animationDelay = Math.random() * 2 + 's';
-                    container.appendChild(heart);
-                }, i * 400);
-            }
+
+createHearts() {
+    const container = document.getElementById('heartsContainer');
+    if (container) {
+        container.innerHTML = '';
+        
+        // Создаем больше сердечек - 8 вместо 3
+        for (let i = 0; i < 8; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                
+                // Случайная позиция
+                heart.style.left = Math.random() * 100 + '%';
+                
+                // Случайная задержка анимации
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                
+                // Случайный размер
+                const size = 20 + Math.random() * 20;
+                heart.style.fontSize = size + 'px';
+                
+                // Случайный тип анимации
+                const animations = ['spin-left', 'spin-right', 'spin-slow', ''];
+                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+                if (randomAnim) {
+                    heart.classList.add(randomAnim);
+                }
+                
+                // Случайная длительность анимации
+                const duration = 5 + Math.random() * 4;
+                heart.style.animationDuration = duration + 's';
+                
+                container.appendChild(heart);
+            }, i * 300); // Уменьшаем задержку между созданиями
         }
-    },
+    }
+},
 
     restartQuiz() {
         this.userAnswers = {};
