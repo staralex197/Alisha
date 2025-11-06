@@ -348,35 +348,75 @@ const QuizApp = {
         return result;
     },
 
-    formatPrepositional(text) {
-        if (text.endsWith('а') || text.endsWith('я')) {
-            return text.slice(0, -1) + 'е';
-        }
-        if (text.endsWith('ость') || text.endsWith('асть')) {
-            return text.slice(0, -2) + 'ости';
-        }
-        if (text.endsWith('ие')) {
-            return text.slice(0, -1) + 'и';
-        }
-        return text;
-    },
+    // === ЗАМЕНИТЬ эти функции в scripts/main.js ===
 
-    formatNominative(text) {
-        return text.charAt(0).toUpperCase() + text.slice(1);
-    },
+formatPrepositional(text) {
+    const words = text.split(' ');
+    const lastWord = words[words.length - 1].toLowerCase();
+    
+    // Склонение последнего слова
+    let declinedWord = lastWord;
+    
+    // Женский род (окончания -а, -я)
+    if (lastWord.endsWith('а') && !lastWord.endsWith('ка') && !lastWord.endsWith('га')) {
+        declinedWord = lastWord.slice(0, -1) + 'е';
+    }
+    else if (lastWord.endsWith('я') && !lastWord.endsWith('ния')) {
+        declinedWord = lastWord.slice(0, -1) + 'е';
+    }
+    // Мужской род (окончания -ь)
+    else if (lastWord.endsWith('ь')) {
+        declinedWord = lastWord.slice(0, -1) + 'и';
+    }
+    // Существительные на -ость, -асть
+    else if (lastWord.endsWith('ость') || lastWord.endsWith('асть')) {
+        declinedWord = lastWord.slice(0, -2) + 'ости';
+    }
+    // Существительные на -ие
+    else if (lastWord.endsWith('ие')) {
+        declinedWord = lastWord.slice(0, -2) + 'ии';
+    }
+    // Для несклоняемых слов оставляем как есть
+    else if (['забота', 'внимательность', 'творчество', 'путешествия', 'семья', 'сила воли', 'личный рост'].includes(lastWord)) {
+        declinedWord = lastWord;
+    }
+    
+    words[words.length - 1] = declinedWord;
+    return words.join(' ');
+},
 
-    formatConjunction(text) {
-        if (text.endsWith('ть') && !text.endsWith('ться')) {
-            return text;
+formatConjunction(text) {
+    const words = text.split(' ');
+    const lastWord = words[words.length - 1].toLowerCase();
+    
+    let conjugatedWord = lastWord;
+    
+    // Инфинитивы (окончания -ть, -ться)
+    if (lastWord.endsWith('ть') || lastWord.endsWith('ться')) {
+        conjugatedWord = lastWord;
+    }
+    // Существительные женского рода (преобразуем в глагол)
+    else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
+        if (lastWord === 'семья') {
+            conjugatedWord = 'создать семью';
+        } else if (lastWord === 'забота') {
+            conjugatedWord = 'заботиться';
+        } else if (lastWord === 'внимательность') {
+            conjugatedWord = 'быть внимательным';
+        } else if (lastWord === 'творчество') {
+            conjugatedWord = 'творить';
+        } else {
+            conjugatedWord = lastWord.slice(0, -1) + 'ить';
         }
-        if (text.endsWith('ться')) {
-            return text;
-        }
-        if (text.endsWith('а') || text.endsWith('я')) {
-            return text.slice(0, -1) + 'ла';
-        }
-        return text;
-    },
+    }
+    // Для других случаев оставляем как есть
+    else if (['путешествия', 'сила воли', 'личный рост', 'помощь другим'].includes(lastWord)) {
+        conjugatedWord = lastWord;
+    }
+    
+    words[words.length - 1] = conjugatedWord;
+    return words.join(' ');
+},
 
     generateSmartFormulation(questionNum, userText) {
         const question = this.questions[questionNum - 1];
