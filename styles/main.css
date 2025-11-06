@@ -534,5 +534,25 @@ h1 {
     100% {
         transform: translateY(-100px) rotate(360deg);
         opacity: 0;
+
+/* Динамическая инверсия цветов для плеера */
+.music-player.dark-text {
+    --player-text: rgba(0, 0, 0, 0.9) !important;
+    --player-secondary: rgba(0, 0, 0, 0.7) !important;
+    --player-accent: rgba(0, 0, 0, 0.8) !important;
+}
+
+.music-player.light-text {
+    --player-text: rgba(255, 255, 255, 0.9) !important;
+    --player-secondary: rgba(255, 255, 255, 0.7) !important;
+    --player-accent: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Автоматическая инверсия на светлых фонах */
+@media (prefers-color-scheme: light) {
+    .music-player {
+        --player-text: rgba(0, 0, 0, 0.9);
+        --player-secondary: rgba(0, 0, 0, 0.7);
+        --player-accent: rgba(0, 0, 0, 0.8);
     }
 }
