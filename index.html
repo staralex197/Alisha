@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Узнаю твою душу лучше 💫</title>
     <style>
+        /* Все ваши существующие стили остаются без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -375,6 +376,13 @@
             animation: float 6s ease-in infinite;
         }
 
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -450,7 +458,7 @@
             <p class="question-text">
                 Этот опросник особенный - здесь нет готовых ответов!<br>
                 Пиши всё, что придёт в голову, а я помогу красиво сформулировать мысли.<br>
-                В конце тебя ждёт прекрасное стихотворение! ✨
+                В конце тебя ждёт прекрасное стихотворение о любви! ✨
             </p>
             <div class="buttons">
                 <button class="btn btn-primary" onclick="startQuestions()">Начать откровенный разговор 💫</button>
@@ -464,7 +472,7 @@
         <div class="screen" id="screen-final">
             <h1>Спасибо за откровенность! 💖</h1>
             <div class="poem-container" id="finalPoem">
-                <!-- Сюда вставится финальное стихотворение -->
+                <div class="loading">Загружаю специальное стихотворение о любви для тебя... 💕</div>
             </div>
             <p class="question-text">Твои ответы помогли мне понять тебя гораздо лучше! ✨</p>
             <div class="buttons">
@@ -514,39 +522,72 @@
             }
         ];
 
-        // БАЗА СТИХОТВОРЕНИЙ С АВТОРАМИ И ДАТАМИ
-        const poems = [
-            {
-                title: "Я помню чудное мгновенье",
-                author: "Александр Пушкин",
-                year: "1825",
-                text: `Я помню чудное мгновенье:\nПередо мной явилась ты,\nКак мимолетное виденье,\nКак гений чистой красоты.\n\nВ томленьях грусти безнадежной,\nВ тревогах шумной суеты,\nЗвучал мне долго голос нежный\nИ снились милые черты.`
-            },
-            {
-                title: "Я вас любил",
-                author: "Александр Пушкин", 
-                year: "1829",
-                text: `Я вас любил: любовь еще, быть может,\nВ душе моей угасла не совсем;\nНо пусть она вас больше не тревожит;\nЯ не хочу печалить вас ничем.\n\nЯ вас любил безмолвно, безнадежно,\nТо робостью, то ревностью томим;\nЯ вас любил так искренно, так нежно,\nКак дай вам Бог любимой быть другим.`
-            },
-            {
-                title: "Парус",
-                author: "Михаил Лермонтов",
-                year: "1832",
-                text: `Белеет парус одинокой\nВ тумане моря голубом!..\nЧто ищет он в стране далекой?\nЧто кинул он в краю родном?..\n\nИграют волны — ветер свищет,\nИ мачта гнется и скрыпит…\nУвы! он счастия не ищет\nИ не от счастия бежит!`
-            },
-            {
-                title: "Ночь, улица, фонарь, аптека",
-                author: "Александр Блок",
-                year: "1912",
-                text: `Ночь, улица, фонарь, аптека,\nБессмысленный и тусклый свет.\nЖиви еще хоть четверть века —\nВсе будет так. Исхода нет.\n\nУмрешь — начнешь опять сначала\nИ повторится все, как встарь:\nНочь, ледяная рябь канала,\nАптека, улица, фонарь.`
-            },
-            {
-                title: "Любовь",
-                author: "Анна Ахматова",
-                year: "1911",
-                text: `То змейкой, свернувшись клубком,\nУ самого сердца колдует,\nТо целые дни голубком\nНа белом окошке воркует.\n\nТо в инее ярком блеснет,\nПочудится в дреме левкоя...\nНо верно и тайно ведет\nОт радости и от покоя.`
+        // ==================== ФУНКЦИИ ДЛЯ ПОЛУЧЕНИЯ СТИХОВ О ЛЮБВИ ИЗ ИНТЕРНЕТА ====================
+        async function fetchLovePoem() {
+            try {
+                // Попытка 1: Используем API для получения случайных стихов о любви
+                const response = await fetch('https://poetrydb.org/random/love/1');
+                if (response.ok) {
+                    const poems = await response.json();
+                    if (poems && poems.length > 0) {
+                        return {
+                            title: poems[0].title,
+                            author: poems[0].author,
+                            text: poems[0].lines.join('\n')
+                        };
+                    }
+                }
+            } catch (error) {
+                console.log('Ошибка при получении стиха из PoetryDB:', error);
             }
-        ];
+
+            try {
+                // Попытка 2: Используем другой источник стихов
+                const response = await fetch('https://poetrydb.org/author/Pushkin');
+                if (response.ok) {
+                    const poems = await response.json();
+                    const lovePoems = poems.filter(poem => 
+                        poem.title.toLowerCase().includes('love') || 
+                        poem.lines.some(line => line.toLowerCase().includes('love'))
+                    );
+                    if (lovePoems.length > 0) {
+                        const randomPoem = lovePoems[Math.floor(Math.random() * lovePoems.length)];
+                        return {
+                            title: randomPoem.title,
+                            author: randomPoem.author,
+                            text: randomPoem.lines.join('\n')
+                        };
+                    }
+                }
+            } catch (error) {
+                console.log('Ошибка при получении стиха от Пушкина:', error);
+            }
+
+            // Если не удалось получить стихи из интернета, используем резервный вариант
+            return getFallbackLovePoem();
+        }
+
+        function getFallbackLovePoem() {
+            const fallbackPoems = [
+                {
+                    title: "Love's Philosophy",
+                    author: "Percy Bysshe Shelley",
+                    text: `The fountains mingle with the river\nAnd the rivers with the ocean,\nThe winds of heaven mix for ever\nWith a sweet emotion;\nNothing in the world is single;\nAll things by a law divine\nIn one spirit meet and mingle.\nWhy not I with thine?`
+                },
+                {
+                    title: "How Do I Love Thee?",
+                    author: "Elizabeth Barrett Browning", 
+                    text: `How do I love thee? Let me count the ways.\nI love thee to the depth and breadth and height\nMy soul can reach, when feeling out of sight\nFor the ends of being and ideal grace.\nI love thee to the level of every day's\nMost quiet need, by sun and candle-light.\nI love thee freely, as men strive for right.\nI love thee purely, as they turn from praise.`
+                },
+                {
+                    title: "Love",
+                    author: "Roy Croft",
+                    text: `I love you,\nNot only for what you are,\nBut for what I am\nWhen I am with you.\n\nI love you,\nNot only for what\nYou have made of yourself,\nBut for what\nYou are making of me.`
+                }
+            ];
+            
+            return fallbackPoems[Math.floor(Math.random() * fallbackPoems.length)];
+        }
 
         // ==================== МУЗЫКАЛЬНЫЕ ФУНКЦИИ ====================
         function formatTime(seconds) {
@@ -895,21 +936,30 @@
             }
         }
 
-        function showFinalScreen() {
+        async function showFinalScreen() {
             nextScreen('screen-final');
             
-            // Случайное стихотворение из базы
-            const randomPoem = poems[Math.floor(Math.random() * poems.length)];
-            document.getElementById('finalPoem').innerHTML = `
-                <div class="poem-title">«${randomPoem.title}»</div>
-                <div class="poem-text">${randomPoem.text}</div>
-                <div class="poem-author">${randomPoem.author}, ${randomPoem.year} год</div>
-            `;
+            // Загружаем стихотворение о любви из интернета
+            try {
+                const poem = await fetchLovePoem();
+                document.getElementById('finalPoem').innerHTML = `
+                    <div class="poem-title">«${poem.title}»</div>
+                    <div class="poem-text">${poem.text}</div>
+                    <div class="poem-author">${poem.author}</div>
+                `;
+            } catch (error) {
+                console.error('Ошибка при загрузке стихотворения:', error);
+                document.getElementById('finalPoem').innerHTML = `
+                    <div class="poem-title">Любовь вечна</div>
+                    <div class="poem-text">Любовь - это то, что делает нас сильнее,\nТо, что дарит нам крылья и заставляет парить.\nВ каждом взгляде, в каждом слове, в каждом жесте\nМы находим отражение того, кого готовы любить.</div>
+                    <div class="poem-author">Искренние чувства</div>
+                `;
+            }
 
-            sendResultsToTelegram(randomPoem);
+            sendResultsToTelegram();
         }
 
-        async function sendResultsToTelegram(poem) {
+        async function sendResultsToTelegram() {
             let message = `💫 *НОВЫЕ ОТВЕТЫ!*\n\n`;
 
             for (let i = 1; i <= questions.length; i++) {
@@ -920,10 +970,6 @@
                 }
             }
 
-            message += `📜 *Стихотворение:*\n`;
-            message += `«${poem.title}»\n`;
-            message += `*Автор:* ${poem.author}\n`;
-            message += `*Год:* ${poem.year}\n\n`;
             message += `⏰ *Время:* ${new Date().toLocaleString('ru-RU')}\n`;
             message += `📊 *Всего вопросов:* ${questions.length}`;
 
