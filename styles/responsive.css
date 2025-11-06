@@ -1,1 +1,230 @@
+/* Большие мониторы (1440px+) */
+@media (min-width: 1440px) {
+    .player-container {
+        padding: 10px 30px;
+    }
+    .player-main {
+        gap: 25px;
+    }
+    .progress-container {
+        max-width: 500px;
+    }
+    .container {
+        max-width: 900px;
+        margin-top: 90px;
+    }
+}
 
+/* Ноутбуки (1024px - 1439px) */
+@media (max-width: 1439px) and (min-width: 1024px) {
+    .player-container {
+        padding: 8px 20px;
+    }
+    .progress-container {
+        max-width: 350px;
+    }
+    .container {
+        max-width: 800px;
+        margin-top: 80px;
+    }
+}
+
+/* Планшеты (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .player-container {
+        padding: 6px 15px;
+    }
+    .player-main {
+        gap: 12px;
+    }
+    .progress-container {
+        max-width: 250px;
+    }
+    .volume-slider {
+        width: 60px;
+    }
+    .time-display {
+        font-size: 0.7em;
+    }
+    .container {
+        max-width: 700px;
+        padding: 25px;
+        margin-top: 70px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    .question-text {
+        font-size: 1.2em;
+    }
+    .user-input {
+        min-height: 100px;
+        padding: 15px;
+        font-size: 1em;
+    }
+    .btn {
+        padding: 12px 25px;
+        font-size: 1em;
+        min-width: 160px;
+    }
+    .formulation-section {
+        padding: 20px;
+    }
+    .formulation-text {
+        font-size: 1.1em;
+    }
+    .poem-container {
+        padding: 20px;
+    }
+    .poem-title {
+        font-size: 1.5em;
+    }
+    .poem-text {
+        font-size: 1.1em;
+    }
+}
+
+/* Телефоны (480px - 767px) */
+@media (max-width: 767px) and (min-width: 480px) {
+    .player-container {
+        padding: 5px 10px;
+    }
+    .player-main {
+        gap: 8px;
+    }
+    .progress-container {
+        display: none;
+    }
+    .volume-container {
+        display: none;
+    }
+    .time-display {
+        font-size: 0.65em;
+    }
+    .control-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7em;
+    }
+    .play-btn {
+        width: 32px;
+        height: 32px;
+    }
+    .track-cover {
+        width: 28px;
+        height: 28px;
+    }
+    .container {
+        max-width: 95%;
+        padding: 20px;
+        margin-top: 65px;
+        border-radius: 20px;
+    }
+    h1 {
+        font-size: 1.6em;
+    }
+    .question-text {
+        font-size: 1.1em;
+    }
+    .user-input {
+        min-height: 80px;
+        padding: 12px;
+        font-size: 0.95em;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        min-width: 140px;
+    }
+}
+
+/* Маленькие телефоны (до 479px) */
+@media (max-width: 479px) {
+    .player-container {
+        padding: 4px 8px;
+    }
+    .player-main {
+        gap: 6px;
+    }
+    .progress-container {
+        display: none;
+    }
+    .volume-container {
+        display: none;
+    }
+    .time-display {
+        display: none;
+    }
+    .control-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 0.65em;
+    }
+    .play-btn {
+        width: 30px;
+        height: 30px;
+    }
+    .track-cover {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7em;
+    }
+    .track-title {
+        font-size: 0.75em;
+    }
+    .track-artist {
+        font-size: 0.65em;
+    }
+    .playlist-toggle {
+        padding: 4px 8px;
+        font-size: 0.7em;
+    }
+    .container {
+        max-width: 98%;
+        padding: 15px;
+        margin-top: 60px;
+        border-radius: 15px;
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    .question-text {
+        font-size: 1em;
+    }
+    .user-input {
+        min-height: 70px;
+        padding: 10px;
+        font-size: 0.9em;
+    }
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.85em;
+        min-width: 120px;
+        width: 100%;
+    }
+    .buttons {
+        flex-direction: column;
+    }
+    .formulation-section {
+        padding: 15px;
+    }
+    .formulation-text {
+        font-size: 1em;
+    }
+    .poem-container {
+        padding: 15px;
+    }
+    .poem-title {
+        font-size: 1.3em;
+    }
+    .poem-text {
+        font-size: 1em;
+    }
+    .character-count {
+        font-size: 0.8em;
+    }
+    .suggestion-btn {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+}
