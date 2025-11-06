@@ -474,6 +474,7 @@ h1 {
     transform: translateY(-2px);
 }
 
+
 .hearts-container {
     position: fixed;
     top: 0;
@@ -489,6 +490,132 @@ h1 {
     font-size: 24px;
     opacity: 0;
     animation: float 6s ease-in infinite;
+}
+
+/* Разные направления вращения */
+.heart.spin-left {
+    animation: floatLeft 6s ease-in infinite;
+}
+
+.heart.spin-right {
+    animation: floatRight 6s ease-in infinite;
+}
+
+.heart.spin-slow {
+    animation: floatSlow 8s ease-in-out infinite;
+}
+
+/* Увеличиваем количество сердец */
+@keyframes float {
+    0% {
+        transform: translateY(100px) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(80px) rotate(90deg) scale(1);
+    }
+    30% {
+        transform: translateY(40px) rotate(180deg) scale(1.1);
+    }
+    50% {
+        transform: translateY(0px) rotate(270deg) scale(1);
+    }
+    70% {
+        transform: translateY(-40px) rotate(360deg) scale(0.9);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(-80px) rotate(450deg) scale(0.8);
+    }
+    100% {
+        transform: translateY(-100px) rotate(540deg) scale(0.7);
+        opacity: 0;
+    }
+}
+
+/* Вращение влево */
+@keyframes floatLeft {
+    0% {
+        transform: translateY(100px) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(80px) rotate(-45deg) scale(1);
+    }
+    30% {
+        transform: translateY(40px) rotate(-90deg) scale(1.1);
+    }
+    50% {
+        transform: translateY(0px) rotate(-135deg) scale(1);
+    }
+    70% {
+        transform: translateY(-40px) rotate(-180deg) scale(0.9);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(-80px) rotate(-225deg) scale(0.8);
+    }
+    100% {
+        transform: translateY(-100px) rotate(-270deg) scale(0.7);
+        opacity: 0;
+    }
+}
+
+/* Вращение вправо */
+@keyframes floatRight {
+    0% {
+        transform: translateY(100px) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(80px) rotate(45deg) scale(1);
+    }
+    30% {
+        transform: translateY(40px) rotate(90deg) scale(1.1);
+    }
+    50% {
+        transform: translateY(0px) rotate(135deg) scale(1);
+    }
+    70% {
+        transform: translateY(-40px) rotate(180deg) scale(0.9);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(-80px) rotate(225deg) scale(0.8);
+    }
+    100% {
+        transform: translateY(-100px) rotate(270deg) scale(0.7);
+        opacity: 0;
+    }
+}
+
+/* Медленное плавание */
+@keyframes floatSlow {
+    0% {
+        transform: translateY(120px) rotate(0deg) scale(0.7);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.8;
+        transform: translateY(90px) rotate(60deg) scale(0.9);
+    }
+    40% {
+        transform: translateY(60px) rotate(120deg) scale(1);
+    }
+    60% {
+        transform: translateY(30px) rotate(180deg) scale(1.1);
+    }
+    80% {
+        opacity: 0.6;
+        transform: translateY(0px) rotate(240deg) scale(1);
+    }
+    100% {
+        transform: translateY(-30px) rotate(300deg) scale(0.8);
+        opacity: 0;
+    }
 }
 
 .loading {
