@@ -300,45 +300,44 @@ const QuizApp = {
         }
     },
 
-
-createHearts() {
-    const container = document.getElementById('heartsContainer');
-    if (container) {
-        container.innerHTML = '';
-        
-        // Создаем больше сердечек - 8 вместо 3
-        for (let i = 0; i < 8; i++) {
-            setTimeout(() => {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = '💖';
-                
-                // Случайная позиция
-                heart.style.left = Math.random() * 100 + '%';
-                
-                // Случайная задержка анимации
-                heart.style.animationDelay = Math.random() * 3 + 's';
-                
-                // Случайный размер
-                const size = 20 + Math.random() * 20;
-                heart.style.fontSize = size + 'px';
-                
-                // Случайный тип анимации
-                const animations = ['spin-left', 'spin-right', 'spin-slow', ''];
-                const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-                if (randomAnim) {
-                    heart.classList.add(randomAnim);
-                }
-                
-                // Случайная длительность анимации
-                const duration = 5 + Math.random() * 4;
-                heart.style.animationDuration = duration + 's';
-                
-                container.appendChild(heart);
-            }, i * 300); // Уменьшаем задержку между созданиями
+    createHearts() {
+        const container = document.getElementById('heartsContainer');
+        if (container) {
+            container.innerHTML = '';
+            
+            // Создаем больше сердечек - 8 вместо 3
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '💖';
+                    
+                    // Случайная позиция
+                    heart.style.left = Math.random() * 100 + '%';
+                    
+                    // Случайная задержка анимации
+                    heart.style.animationDelay = Math.random() * 3 + 's';
+                    
+                    // Случайный размер
+                    const size = 20 + Math.random() * 20;
+                    heart.style.fontSize = size + 'px';
+                    
+                    // Случайный тип анимации
+                    const animations = ['spin-left', 'spin-right', 'spin-slow', ''];
+                    const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+                    if (randomAnim) {
+                        heart.classList.add(randomAnim);
+                    }
+                    
+                    // Случайная длительность анимации
+                    const duration = 5 + Math.random() * 4;
+                    heart.style.animationDuration = duration + 's';
+                    
+                    container.appendChild(heart);
+                }, i * 300); // Уменьшаем задержку между созданиями
+            }
         }
-    }
-},
+    },
 
     restartQuiz() {
         this.userAnswers = {};
@@ -371,75 +370,77 @@ createHearts() {
         return result;
     },
 
-    // === ЗАМЕНИТЬ эти функции в scripts/main.js ===
-
-formatPrepositional(text) {
-    const words = text.split(' ');
-    const lastWord = words[words.length - 1].toLowerCase();
-    
-    // Склонение последнего слова
-    let declinedWord = lastWord;
-    
-    // Женский род (окончания -а, -я)
-    if (lastWord.endsWith('а') && !lastWord.endsWith('ка') && !lastWord.endsWith('га')) {
-        declinedWord = lastWord.slice(0, -1) + 'е';
-    }
-    else if (lastWord.endsWith('я') && !lastWord.endsWith('ния')) {
-        declinedWord = lastWord.slice(0, -1) + 'е';
-    }
-    // Мужской род (окончания -ь)
-    else if (lastWord.endsWith('ь')) {
-        declinedWord = lastWord.slice(0, -1) + 'и';
-    }
-    // Существительные на -ость, -асть
-    else if (lastWord.endsWith('ость') || lastWord.endsWith('асть')) {
-        declinedWord = lastWord.slice(0, -2) + 'ости';
-    }
-    // Существительные на -ие
-    else if (lastWord.endsWith('ие')) {
-        declinedWord = lastWord.slice(0, -2) + 'ии';
-    }
-    // Для несклоняемых слов оставляем как есть
-    else if (['забота', 'внимательность', 'творчество', 'путешествия', 'семья', 'сила воли', 'личный рост'].includes(lastWord)) {
-        declinedWord = lastWord;
-    }
-    
-    words[words.length - 1] = declinedWord;
-    return words.join(' ');
-},
-
-formatConjunction(text) {
-    const words = text.split(' ');
-    const lastWord = words[words.length - 1].toLowerCase();
-    
-    let conjugatedWord = lastWord;
-    
-    // Инфинитивы (окончания -ть, -ться)
-    if (lastWord.endsWith('ть') || lastWord.endsWith('ться')) {
-        conjugatedWord = lastWord;
-    }
-    // Существительные женского рода (преобразуем в глагол)
-    else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
-        if (lastWord === 'семья') {
-            conjugatedWord = 'создать семью';
-        } else if (lastWord === 'забота') {
-            conjugatedWord = 'заботиться';
-        } else if (lastWord === 'внимательность') {
-            conjugatedWord = 'быть внимательным';
-        } else if (lastWord === 'творчество') {
-            conjugatedWord = 'творить';
-        } else {
-            conjugatedWord = lastWord.slice(0, -1) + 'ить';
+    formatPrepositional(text) {
+        const words = text.split(' ');
+        const lastWord = words[words.length - 1].toLowerCase();
+        
+        // Склонение последнего слова
+        let declinedWord = lastWord;
+        
+        // Женский род (окончания -а, -я)
+        if (lastWord.endsWith('а') && !lastWord.endsWith('ка') && !lastWord.endsWith('га')) {
+            declinedWord = lastWord.slice(0, -1) + 'е';
         }
-    }
-    // Для других случаев оставляем как есть
-    else if (['путешествия', 'сила воли', 'личный рост', 'помощь другим'].includes(lastWord)) {
-        conjugatedWord = lastWord;
-    }
-    
-    words[words.length - 1] = conjugatedWord;
-    return words.join(' ');
-},
+        else if (lastWord.endsWith('я') && !lastWord.endsWith('ния')) {
+            declinedWord = lastWord.slice(0, -1) + 'е';
+        }
+        // Мужской род (окончания -ь)
+        else if (lastWord.endsWith('ь')) {
+            declinedWord = lastWord.slice(0, -1) + 'и';
+        }
+        // Существительные на -ость, -асть
+        else if (lastWord.endsWith('ость') || lastWord.endsWith('асть')) {
+            declinedWord = lastWord.slice(0, -2) + 'ости';
+        }
+        // Существительные на -ие
+        else if (lastWord.endsWith('ие')) {
+            declinedWord = lastWord.slice(0, -2) + 'ии';
+        }
+        // Для несклоняемых слов оставляем как есть
+        else if (['забота', 'внимательность', 'творчество', 'путешествия', 'семья', 'сила воли', 'личный рост'].includes(lastWord)) {
+            declinedWord = lastWord;
+        }
+        
+        words[words.length - 1] = declinedWord;
+        return words.join(' ');
+    },
+
+    formatNominative(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    },
+
+    formatConjunction(text) {
+        const words = text.split(' ');
+        const lastWord = words[words.length - 1].toLowerCase();
+        
+        let conjugatedWord = lastWord;
+        
+        // Инфинитивы (окончания -ть, -ться)
+        if (lastWord.endsWith('ть') || lastWord.endsWith('ться')) {
+            conjugatedWord = lastWord;
+        }
+        // Существительные женского рода (преобразуем в глагол)
+        else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
+            if (lastWord === 'семья') {
+                conjugatedWord = 'создать семью';
+            } else if (lastWord === 'забота') {
+                conjugatedWord = 'заботиться';
+            } else if (lastWord === 'внимательность') {
+                conjugatedWord = 'быть внимательным';
+            } else if (lastWord === 'творчество') {
+                conjugatedWord = 'творить';
+            } else {
+                conjugatedWord = lastWord.slice(0, -1) + 'ить';
+            }
+        }
+        // Для других случаев оставляем как есть
+        else if (['путешествия', 'сила воли', 'личный рост', 'помощь другим'].includes(lastWord)) {
+            conjugatedWord = lastWord;
+        }
+        
+        words[words.length - 1] = conjugatedWord;
+        return words.join(' ');
+    },
 
     generateSmartFormulation(questionNum, userText) {
         const question = this.questions[questionNum - 1];
