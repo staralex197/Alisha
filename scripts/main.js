@@ -12,17 +12,104 @@ const QuizApp = {
     userAnswers: {},
     currentQuestion: 0,
     questions: [],
+    isLoading: true,
 
     // Инициализация приложения
     async init() {
         console.log('🚀 Инициализация приложения...');
         
-        await this.loadQuestions();
-        this.generateQuestionScreens();
-        MusicPlayer.init();
-        HeartAnimation.init();
+        // Показываем экран загрузки
+        this.showLoadingScreen();
         
-        console.log('✅ Приложение инициализировано');
+        try {
+            // Параллельная загрузка всех ресурсов
+            await Promise.all([
+                this.loadQuestions(),
+                this.preloadResources()
+            ]);
+            
+            // Инициализация компонентов
+            this.generateQuestionScreens();
+            MusicPlayer.init();
+            HeartAnimation.init();
+            this.initColorInversion();
+            
+            // Завершение загрузки
+            setTimeout(() => {
+                this.hideLoadingScreen();
+                this.showWelcomeScreen();
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Ошибка инициализации:', error);
+            this.showErrorScreen();
+        }
+    },
+
+    // Показать экран загрузки
+    showLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgress');
+        
+        if (loadingScreen) {
+            loadingScreen.classList.add('active');
+            
+            // Анимация прогресс-бара
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 90) {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+    },
+
+    // Скрыть экран загрузки
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgress');
+        
+        if (loadingScreen && progressBar) {
+            progressBar.style.width = '100%';
+            
+            setTimeout(() => {
+                loadingScreen.classList.remove('active');
+                loadingScreen.classList.add('hidden');
+            }, 500);
+        }
+    },
+
+    // Показать экран приветствия
+    showWelcomeScreen() {
+        this.nextScreen('screen-welcome');
+        HeartAnimation.startHearts();
+    },
+
+    // Показать экран ошибки
+    showErrorScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+            loadingScreen.innerHTML = `
+                <div class="loading-content">
+                    <div style="font-size: 3em; margin-bottom: 20px;">😔</div>
+                    <h1>Что-то пошло не так</h1>
+                    <p>Попробуйте обновить страницу</p>
+                    <button class="btn btn-primary" onclick="window.location.reload()">Обновить</button>
+                </div>
+            `;
+        }
+    },
+
+    // Предзагрузка ресурсов
+    async preloadResources() {
+        return new Promise((resolve) => {
+            // Симуляция загрузки ресурсов
+            setTimeout(resolve, 1500);
+        });
     },
 
     // Загрузка вопросов
@@ -57,7 +144,7 @@ const QuizApp = {
                 suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность", "Сила воли"],
                 templates: [
                     "Моя сила проявляется в том, что {ответ}",
-                    "Я особенно ценю в себе: {ответ.именительный}",
+                    "Я особенно ценю в себе: {ответ}",
                     "Что делает меня особенным: {ответ}",
                     "Моя уникальная черта - {ответ}",
                     "Я горжусь своей способностью {ответ.союз}"
@@ -87,43 +174,72 @@ const QuizApp = {
         this.questions.forEach((question, index) => {
             const questionNumber = index + 1;
             const progressWidth = (questionNumber / this.questions.length) * 100;
+            const savedAnswer = this.userAnswers[questionNumber];
 
             const screenHTML = `
                 <div class="screen" id="screen${questionNumber}">
-                    <h1>${question.theme}</h1>
-                    <p class="question-text">${question.text}</p>
-                    
-                    ${question.suggestions && question.suggestions.length > 0 ? `
-                    <div class="suggestion-buttons">
-                        ${question.suggestions.map(suggestion => 
-                            `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${suggestion.replace(/'/g, "\\'")}')">${suggestion}</button>`
-                        ).join('')}
-                    </div>
-                    ` : ''}
-
-                    <div class="input-section">
-                        <div class="character-count" id="count${questionNumber}">0/500 символов</div>
-                        <textarea class="user-input" id="input${questionNumber}" 
-                                  placeholder="Напиши здесь всё, что считаешь важным... 💭" 
-                                  maxlength="500" 
-                                  oninput="quiz.updateCharacterCount(${questionNumber})"></textarea>
+                    <div class="question-content">
+                        <h1>${question.theme}</h1>
+                        <p class="question-text">${question.text}</p>
                         
-                        <div class="buttons">
-                            <button class="btn btn-primary" onclick="quiz.saveAnswer(${questionNumber})">💖 Записать мой ответ</button>
-                            <button class="btn btn-secondary" onclick="quiz.showFormulation(${questionNumber})">✨ Красиво оформить</button>
+                        ${question.suggestions && question.suggestions.length > 0 ? `
+                        <div class="suggestion-buttons">
+                            ${question.suggestions.map(suggestion => 
+                                `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${suggestion.replace(/'/g, "\\'")}')">${suggestion}</button>`
+                            ).join('')}
                         </div>
-                    </div>
+                        ` : ''}
 
-                    <div class="formulation-section" id="formulation${questionNumber}">
-                        <div class="formulation-text" id="formulationText${questionNumber}"></div>
-                        <div class="buttons">
-                            <button class="btn btn-success" onclick="quiz.acceptFormulation(${questionNumber})">✅ Нравится</button>
-                            <button class="btn btn-secondary" onclick="quiz.reformulate(${questionNumber})">🔄 Переформулировать</button>
+                        <div class="input-section">
+                            <div class="character-count" id="count${questionNumber}">${savedAnswer?.original?.length || 0}/500 символов</div>
+                            <textarea class="user-input" id="input${questionNumber}" 
+                                      placeholder="Напиши здесь всё, что считаешь важным... 💭" 
+                                      maxlength="500" 
+                                      oninput="quiz.updateCharacterCount(${questionNumber})">${savedAnswer?.original || ''}</textarea>
+                            
+                            <div class="progress-navigation">
+                                <div class="progress-wrapper">
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                                    </div>
+                                    <div class="progress-steps">
+                                        ${this.questions.map((_, i) => `
+                                            <div class="progress-step ${i + 1 === questionNumber ? 'active' : ''} ${i + 1 < questionNumber ? 'completed' : ''}" 
+                                                 onclick="quiz.goToQuestion(${i + 1})"></div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="nav-buttons">
+                                    <button class="nav-btn btn-outline" onclick="quiz.previousQuestion()" ${questionNumber === 1 ? 'disabled' : ''}>
+                                        ⬅ Назад
+                                    </button>
+                                    <button class="nav-btn btn-primary" onclick="quiz.saveAnswer(${questionNumber})">
+                                        ${questionNumber === this.questions.length ? 'Завершить 💫' : 'Далее ➡'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="buttons">
+                                <button class="btn btn-secondary" onclick="quiz.showFormulation(${questionNumber})">
+                                    ✨ Красиво оформить
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="progress">
-                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                        <div class="formulation-section" id="formulation${questionNumber}">
+                            <div class="formulation-text" id="formulationText${questionNumber}"></div>
+                            <div class="buttons">
+                                <button class="btn btn-outline" onclick="quiz.hideFormulation(${questionNumber})">
+                                    ↩ Вернуться
+                                </button>
+                                <button class="btn btn-success" onclick="quiz.acceptFormulation(${questionNumber})">
+                                    ✅ Сохранить
+                                </button>
+                                <button class="btn btn-secondary" onclick="quiz.reformulate(${questionNumber})">
+                                    🔄 Переформулировать
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -131,13 +247,44 @@ const QuizApp = {
         });
     },
 
+    // Навигация между вопросами
+    goToQuestion(questionNumber) {
+        if (questionNumber >= 1 && questionNumber <= this.questions.length) {
+            this.currentQuestion = questionNumber;
+            this.nextScreen('screen' + questionNumber);
+            this.updateProgressSteps();
+        }
+    },
+
+    previousQuestion() {
+        if (this.currentQuestion > 1) {
+            this.currentQuestion--;
+            this.nextScreen('screen' + this.currentQuestion);
+            this.updateProgressSteps();
+        }
+    },
+
+    nextQuestion() {
+        if (this.currentQuestion < this.questions.length) {
+            this.currentQuestion++;
+            this.nextScreen('screen' + this.currentQuestion);
+            this.updateProgressSteps();
+        }
+    },
+
+    updateProgressSteps() {
+        document.querySelectorAll('.progress-step').forEach((step, index) => {
+            const questionNumber = index + 1;
+            step.classList.toggle('active', questionNumber === this.currentQuestion);
+            step.classList.toggle('completed', questionNumber < this.currentQuestion);
+        });
+    },
+
     // Основные функции приложения
     startQuestions() {
-        if (this.questions.length === 0) {
-            alert('Вопросы загружаются... Пожалуйста, подожди немного');
-            return;
-        }
+        this.currentQuestion = 1;
         this.nextScreen('screen1');
+        this.updateProgressSteps();
         HeartAnimation.startHearts();
     },
 
@@ -148,6 +295,8 @@ const QuizApp = {
         const targetScreen = document.getElementById(screenId);
         if (targetScreen) {
             targetScreen.classList.add('active');
+            // Прокрутка к верху
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     },
 
@@ -172,6 +321,7 @@ const QuizApp = {
                 input.value = currentText + separator + text;
             }
             this.updateCharacterCount(questionNum);
+            input.focus();
         }
     },
 
@@ -192,7 +342,11 @@ const QuizApp = {
             questionText: question.text
         };
 
-        this.moveToNextQuestion(questionNum);
+        if (questionNum === this.questions.length) {
+            this.showFinalScreen();
+        } else {
+            this.nextQuestion();
+        }
     },
 
     showFormulation(questionNum) {
@@ -222,12 +376,21 @@ const QuizApp = {
         }
     },
 
-    acceptFormulation(questionNum) {
+    hideFormulation(questionNum) {
         const formulationDiv = document.getElementById(`formulation${questionNum}`);
         if (formulationDiv) {
             formulationDiv.style.display = 'none';
         }
-        this.moveToNextQuestion(questionNum);
+    },
+
+    acceptFormulation(questionNum) {
+        this.hideFormulation(questionNum);
+        
+        if (questionNum === this.questions.length) {
+            this.showFinalScreen();
+        } else {
+            this.nextQuestion();
+        }
     },
 
     reformulate(questionNum) {
@@ -241,14 +404,6 @@ const QuizApp = {
         if (formulationText) {
             formulationText.innerHTML = newFormulation;
             this.userAnswers[questionNum].formulated = newFormulation;
-        }
-    },
-
-    moveToNextQuestion(currentQ) {
-        if (currentQ < this.questions.length) {
-            this.nextScreen('screen' + (currentQ + 1));
-        } else {
-            this.showFinalScreen();
         }
     },
 
@@ -318,6 +473,34 @@ const QuizApp = {
         HeartAnimation.startHearts();
     },
 
+    // Динамическая инверсия цветов
+    initColorInversion() {
+        const player = document.getElementById('musicPlayer');
+        const container = document.getElementById('mainContainer');
+        
+        if (!player || !container) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const intersectionRatio = entry.intersectionRatio;
+                
+                // Если плеер больше чем на 30% пересекает белый контейнер - темный текст
+                if (intersectionRatio > 0.3) {
+                    player.classList.remove('light-text');
+                    player.classList.add('dark-text');
+                } else {
+                    player.classList.remove('dark-text');
+                    player.classList.add('light-text');
+                }
+            });
+        }, { 
+            threshold: [0, 0.1, 0.3, 0.5, 1],
+            rootMargin: '-50px 0px 0px 0px'
+        });
+
+        observer.observe(container);
+    },
+
     // Умные формулировки
     applySmartTemplate(template, userText) {
         const cleanText = userText.trim().replace(/[.!?]$/, '');
@@ -341,29 +524,23 @@ const QuizApp = {
         const words = text.split(' ');
         const lastWord = words[words.length - 1].toLowerCase();
         
-        // Склонение последнего слова
         let declinedWord = lastWord;
         
-        // Женский род (окончания -а, -я)
         if (lastWord.endsWith('а') && !lastWord.endsWith('ка') && !lastWord.endsWith('га')) {
             declinedWord = lastWord.slice(0, -1) + 'е';
         }
         else if (lastWord.endsWith('я') && !lastWord.endsWith('ния')) {
             declinedWord = lastWord.slice(0, -1) + 'е';
         }
-        // Мужской род (окончания -ь)
         else if (lastWord.endsWith('ь')) {
             declinedWord = lastWord.slice(0, -1) + 'и';
         }
-        // Существительные на -ость, -асть
         else if (lastWord.endsWith('ость') || lastWord.endsWith('асть')) {
             declinedWord = lastWord.slice(0, -2) + 'ости';
         }
-        // Существительные на -ие
         else if (lastWord.endsWith('ие')) {
             declinedWord = lastWord.slice(0, -2) + 'ии';
         }
-        // Для несклоняемых слов оставляем как есть
         else if (['забота', 'внимательность', 'творчество', 'путешествия', 'семья', 'сила воли', 'личный рост'].includes(lastWord)) {
             declinedWord = lastWord;
         }
@@ -373,11 +550,8 @@ const QuizApp = {
     },
 
     formatNominative(text) {
-        // Проверяем, стоит ли текст после двоеточия
-        if (text.includes(':')) {
-            return text; // Оставляем как есть для текста после двоеточия
-        }
-        return text.charAt(0).toUpperCase() + text.slice(1);
+        // Не делаем первую букву заглавной для текста в середине предложения
+        return text;
     },
 
     formatConjunction(text) {
@@ -386,11 +560,9 @@ const QuizApp = {
         
         let conjugatedWord = lastWord;
         
-        // Инфинитивы (окончания -ть, -ться)
         if (lastWord.endsWith('ть') || lastWord.endsWith('ться')) {
             conjugatedWord = lastWord;
         }
-        // Существительные женского рода (преобразуем в глагол)
         else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
             if (lastWord === 'семья') {
                 conjugatedWord = 'создать семью';
@@ -404,7 +576,6 @@ const QuizApp = {
                 conjugatedWord = lastWord.slice(0, -1) + 'ить';
             }
         }
-        // Для других случаев оставляем как есть
         else if (['путешествия', 'сила воли', 'личный рост', 'помощь другим'].includes(lastWord)) {
             conjugatedWord = lastWord;
         }
