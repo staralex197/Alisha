@@ -4,7 +4,7 @@ const HeartAnimation = {
     animationInterval: null,
     isRunning: false,
     heartCount: 0,
-    maxHearts: 30, // Меньше сердечек
+    maxHearts: 25, // Меньше сердечек
     isMobile: false,
     resizeTimeout: null,
 
@@ -36,7 +36,7 @@ const HeartAnimation = {
 
     detectDeviceType() {
         this.isMobile = window.innerWidth <= 768;
-        this.maxHearts = this.isMobile ? 20 : 30;
+        this.maxHearts = this.isMobile ? 15 : 25; // Меньше сердечек
         console.log(`💖 Сердечки: ${this.isMobile ? 'Мобильный режим' : 'Десктоп режим'}`);
     },
 
@@ -108,14 +108,14 @@ const HeartAnimation = {
                     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
                 }
 
-                /* Светлые сердечки для светлой темы */
+                /* СВЕТЛЫЕ сердечки для светлой темы */
                 [data-theme="light"] .heart {
-                    opacity: 0.6;
-                    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+                    opacity: 0.2; /* Еще более прозрачные */
+                    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));
                 }
 
                 [data-theme="dark"] .heart {
-                    opacity: 0.8;
+                    opacity: 0.4;
                     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
                 }
 
@@ -145,26 +145,26 @@ const HeartAnimation = {
 
                 @keyframes floatUp {
                     0% {
-                        transform: translateY(0) rotate(0deg) scale(0.8);
-                        opacity: 0.7;
+                        transform: translateY(0) rotate(0deg) scale(0.7);
+                        opacity: 0.3;
                     }
                     50% {
-                        transform: translateY(-200px) rotate(180deg) scale(1);
-                        opacity: 1;
+                        transform: translateY(-200px) rotate(180deg) scale(0.9);
+                        opacity: 0.5;
                     }
                     100% {
-                        transform: translateY(-400px) rotate(360deg) scale(0.6);
+                        transform: translateY(-400px) rotate(360deg) scale(0.5);
                         opacity: 0;
                     }
                 }
 
                 @keyframes floatUpSpin {
                     0% {
-                        transform: translateY(0) rotate(0deg) scale(0.8);
-                        opacity: 0.7;
+                        transform: translateY(0) rotate(0deg) scale(0.7);
+                        opacity: 0.3;
                     }
                     100% {
-                        transform: translateY(-350px) rotate(360deg) scale(0.6);
+                        transform: translateY(-350px) rotate(360deg) scale(0.5);
                         opacity: 0;
                     }
                 }
@@ -172,11 +172,11 @@ const HeartAnimation = {
                 @keyframes floatUpBounce {
                     0%, 100% {
                         transform: translateY(0);
-                        opacity: 0.7;
+                        opacity: 0.3;
                     }
                     50% {
                         transform: translateY(-250px);
-                        opacity: 1;
+                        opacity: 0.5;
                     }
                     100% {
                         transform: translateY(-400px);
@@ -187,7 +187,7 @@ const HeartAnimation = {
                 @keyframes floatUpDrift {
                     0% {
                         transform: translateY(0) translateX(0) rotate(0deg);
-                        opacity: 0.7;
+                        opacity: 0.3;
                     }
                     100% {
                         transform: translateY(-380px) translateX(50px) rotate(360deg);
@@ -198,7 +198,7 @@ const HeartAnimation = {
                 /* Адаптивность для мобильных */
                 @media (max-width: 768px) {
                     .heart {
-                        font-size: 18px !important;
+                        font-size: 14px !important;
                     }
                     
                     @keyframes floatUp {
@@ -211,7 +211,7 @@ const HeartAnimation = {
                 @media (prefers-reduced-motion: reduce) {
                     .heart {
                         animation: none !important;
-                        opacity: 0.3;
+                        opacity: 0.1;
                     }
                 }
             </style>
@@ -226,8 +226,8 @@ const HeartAnimation = {
         this.isRunning = true;
         this.clearHearts();
         
-        const creationInterval = this.isMobile ? 1500 : 1000;
-        const heartsPerInterval = this.isMobile ? 1 : 2;
+        const creationInterval = this.isMobile ? 1500 : 1200;
+        const heartsPerInterval = this.isMobile ? 1 : 1; // Меньше сердечек за раз
         
         this.animationInterval = setInterval(() => {
             if (this.heartCount < this.maxHearts) {
@@ -258,7 +258,7 @@ const HeartAnimation = {
         }
     },
 
-    // Создание одного сердечка
+    // Создание одного сердечка - генерируем по всей площади экрана
     createHeart() {
         if (!this.heartsContainer || this.heartCount >= this.maxHearts) return;
 
@@ -269,16 +269,16 @@ const HeartAnimation = {
         const randomHeart = this.heartTypes[Math.floor(Math.random() * this.heartTypes.length)];
         heart.innerHTML = randomHeart;
         
-        // Случайная позиция по всей площади экрана
+        // Случайная позиция по ВСЕЙ ПЛОЩАДИ ЭКРАНА (включая верх и низ)
         const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
+        const y = Math.random() * (window.innerHeight + 200) - 100; // +200/-100 для генерации выше/ниже видимой области
         
         heart.style.left = x + 'px';
         heart.style.top = y + 'px';
         
-        // Размер в зависимости от устройства
-        const baseSize = this.isMobile ? 14 : 16;
-        const size = baseSize + Math.random() * 20;
+        // Меньший размер
+        const baseSize = this.isMobile ? 12 : 14;
+        const size = baseSize + Math.random() * 10;
         heart.style.fontSize = size + 'px';
         
         // Случайная анимация
@@ -286,16 +286,16 @@ const HeartAnimation = {
         heart.classList.add(randomAnim);
         
         // Случайные параметры анимации
-        const baseDuration = this.isMobile ? 8 : 10;
-        const duration = baseDuration + Math.random() * 8;
+        const baseDuration = this.isMobile ? 6 : 8;
+        const duration = baseDuration + Math.random() * 6;
         heart.style.animationDuration = duration + 's';
         
-        const delay = Math.random() * 3;
+        const delay = Math.random() * 2;
         heart.style.animationDelay = delay + 's';
         
         // Прозрачность в зависимости от темы
         const theme = document.documentElement.getAttribute('data-theme');
-        heart.style.opacity = theme === 'light' ? 0.4 + Math.random() * 0.3 : 0.6 + Math.random() * 0.4;
+        heart.style.opacity = theme === 'light' ? 0.1 + Math.random() * 0.15 : 0.2 + Math.random() * 0.2;
 
         this.heartCount++;
         
@@ -335,7 +335,7 @@ const HeartAnimation = {
 
     // Плавное изменение интенсивности
     setIntensity(intensity) {
-        this.maxHearts = Math.max(20, Math.min(100, intensity));
+        this.maxHearts = Math.max(15, Math.min(50, intensity));
         
         if (this.isRunning) {
             this.stopHearts();
