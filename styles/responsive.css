@@ -74,6 +74,50 @@
     .container {
         margin-bottom: 140px; /* Место для плеера */
     }
+
+    /* Исправляем кнопки навигации */
+    .nav-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .nav-btn {
+        width: 100%;
+        padding: 12px 20px;
+    }
+
+    /* Убираем скролл в окне формулировки */
+    .formulation-section {
+        max-height: none;
+        overflow: hidden;
+    }
+
+    /* Плейлист открывается снизу как в Яндекс Музыке */
+    .playlist-container {
+        position: fixed;
+        bottom: 120px;
+        left: 0;
+        right: 0;
+        max-height: 0;
+        transform: translateY(100%);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px 20px 0 0;
+        background: var(--player-bg);
+        backdrop-filter: blur(30px) saturate(180%);
+    }
+
+    .playlist-container.open {
+        max-height: 60vh;
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .playlist {
+        max-height: 55vh;
+        padding: 20px 15px;
+    }
 }
 
 /* Для очень маленьких телефонов */
@@ -114,6 +158,16 @@
 
     .container {
         margin-bottom: 120px;
+        padding: 15px;
+    }
+
+    .nav-btn {
+        padding: 10px 15px;
+        font-size: 0.8em;
+    }
+
+    .playlist-container.open {
+        max-height: 50vh;
     }
 }
 
