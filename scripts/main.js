@@ -5,7 +5,8 @@ const QuizApp = {
         BOT_TOKEN: '8519621124:AAEtDBYSAeNW16UQiAGy0epAwwt989v9Tzs',
         CHAT_ID: '1490495592',
         JSONBIN_ID: '690bda1cae596e708f473589',
-        JSONBIN_API_KEY: '$2a$10$nFkbrwHZpy3T9KrGUS6RxecAFiNTyKuGe.DZjFqoWYEUcbGS27YRC'
+        JSONBIN_API_KEY: '$2a$10$nFkbrwHZpy3T9KrGUS6RxecAFiNTyKuGe.DZjFqoWYEUcbGS27YRC',
+        ADMIN_CHAT_ID: '1490495592'
     },
 
     // Глобальные переменные
@@ -18,31 +19,235 @@ const QuizApp = {
     async init() {
         console.log('🚀 Инициализация приложения...');
         
-        // Показываем экран загрузки
         this.showLoadingScreen();
         
         try {
-            // Загружаем вопросы
-            await this.loadQuestions();
+            // Параллельная загрузка
+            await Promise.all([
+                this.loadQuestions(),
+                this.preloadResources()
+            ]);
             
-            // Предзагрузка ресурсов
-            await this.preloadResources();
-            
-            // Инициализация компонентов
             this.generateQuestionScreens();
             MusicPlayer.init();
             HeartAnimation.init();
             this.initColorInversion();
             
-            // Завершение загрузки
+            // Запускаем обработку сообщений от бота
+            this.startBotMessagePolling();
+            
             setTimeout(() => {
                 this.hideLoadingScreen();
                 this.showWelcomeScreen();
-            }, 800);
+            }, 500);
             
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             this.showErrorScreen();
+        }
+    },
+
+    // Опрос сообщений от бота
+    startBotMessagePolling() {
+        let lastUpdateId = 0;
+        
+        const pollBot = async () => {
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`);
+                const data = await response.json();
+                
+                if (data.ok && data.result.length > 0) {
+                    data.result.forEach(update => {
+                        if (update.message) {
+                            this.processBotMessage(update.message);
+                        }
+                        lastUpdateId = update.update_id;
+                    });
+                }
+            } catch (error) {
+                console.log('Ошибка опроса бота:', error);
+            }
+            
+            // Продолжаем опрос
+            setTimeout(pollBot, 1000);
+        };
+        
+        pollBot();
+    },
+
+    // Обработка сообщений от бота
+    processBotMessage(message) {
+        if (message.chat.id.toString() !== this.config.ADMIN_CHAT_ID) return;
+        
+        const text = message.text;
+        
+        if (text.startsWith('/update_questions')) {
+            this.handleUpdateQuestionsCommand(message);
+        }
+        else if (text === '/get_questions') {
+            this.handleGetQuestionsCommand(message);
+        }
+        else if (text === '/help') {
+            this.sendBotMessage(message.chat.id, 
+                `📋 Доступные команды:\n` +
+                `/update_questions [JSON] - обновить вопросы\n` +
+                `/get_questions - получить текущие вопросы\n` +
+                `/help - справка по командам`
+            );
+        }
+    },
+
+    // Команда обновления вопросов
+    async handleUpdateQuestionsCommand(message) {
+        try {
+            const questionsText = message.text.replace('/update_questions', '').trim();
+            
+            if (!questionsText) {
+                this.sendBotMessage(message.chat.id, 
+                    '❌ Отправь JSON с вопросами после команды.\n' +
+                    'Пример: /update_questions [{"id":1,"text":"Вопрос?","theme":"Тема"}]'
+                );
+                return;
+            }
+            
+            const newQuestions = JSON.parse(questionsText);
+            
+            if (!Array.isArray(newQuestions)) {
+                throw new Error('Вопросы должны быть массивом');
+            }
+            
+            if (newQuestions.length === 0) {
+                throw new Error('Массив вопросов не может быть пустым');
+            }
+            
+            const success = await this.updateQuestionsInJSONBin(newQuestions);
+            
+            if (success) {
+                this.sendBotMessage(message.chat.id, '✅ Вопросы успешно обновлены!');
+                this.questions = newQuestions;
+                this.generateQuestionScreens();
+            } else {
+                this.sendBotMessage(message.chat.id, '❌ Ошибка обновления вопросов');
+            }
+            
+        } catch (error) {
+            console.error('Ошибка обработки команды:', error);
+            this.sendBotMessage(message.chat.id, 
+                `❌ Ошибка: ${error.message}\n\n` +
+                `Правильный формат:\n` +
+                `\`\`\`json\n` +
+                `[\n` +
+                `  {\n` +
+                `    "id": 1,\n` +
+                `    "text": "Твой вопрос?",\n` +
+                `    "theme": "🎯 Тема",\n` +
+                `    "suggestions": ["Вариант1", "Вариант2"]\n` +
+                `  }\n` +
+                `]\n` +
+                `\`\`\``
+            );
+        }
+    },
+
+    // Команда получения текущих вопросов
+    async handleGetQuestionsCommand(message) {
+        try {
+            const currentQuestions = await this.getCurrentQuestionsFromJSONBin();
+            const questionsJSON = JSON.stringify(currentQuestions, null, 2);
+            
+            this.sendBotMessage(message.chat.id, 
+                `📝 Текущие вопросы:\n\n\`\`\`json\n${questionsJSON}\n\`\`\``
+            );
+        } catch (error) {
+            this.sendBotMessage(message.chat.id, '❌ Ошибка получения вопросов');
+        }
+    },
+
+    // Отправка сообщения через бота
+    async sendBotMessage(chatId, text) {
+        try {
+            await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: text,
+                    parse_mode: 'Markdown'
+                })
+            });
+        } catch (error) {
+            console.error('Ошибка отправки сообщения:', error);
+        }
+    },
+
+    // Обновление вопросов в JSONBin
+    async updateQuestionsInJSONBin(newQuestions) {
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'X-Master-Key': this.config.JSONBIN_API_KEY,
+                    'Content-Type': 'application/json',
+                    'X-Bin-Versioning': 'false'
+                },
+                body: JSON.stringify({
+                    questions: newQuestions
+                })
+            });
+            
+            return response.ok;
+        } catch (error) {
+            console.error('Ошибка обновления вопросов:', error);
+            return false;
+        }
+    },
+
+    // Получение текущих вопросов из JSONBin
+    async getCurrentQuestionsFromJSONBin() {
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
+                headers: {
+                    'X-Master-Key': this.config.JSONBIN_API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.record.questions || this.getDefaultQuestions();
+            }
+            return this.getDefaultQuestions();
+        } catch (error) {
+            return this.getDefaultQuestions();
+        }
+    },
+
+    // Загрузка вопросов с таймаутом
+    async loadQuestions() {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
+                headers: {
+                    'X-Master-Key': this.config.JSONBIN_API_KEY,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.questions = data.record.questions || this.getDefaultQuestions();
+                console.log('✅ Вопросы загружены из JSONBin');
+            } else {
+                throw new Error('Ошибка ответа');
+            }
+        } catch (error) {
+            console.log('⚠️ Используем встроенные вопросы:', error.message);
+            this.questions = this.getDefaultQuestions();
         }
     },
 
@@ -54,7 +259,6 @@ const QuizApp = {
         if (loadingScreen) {
             loadingScreen.classList.add('active');
             
-            // Анимация прогресс-бара
             let progress = 0;
             const interval = setInterval(() => {
                 progress += Math.random() * 25;
@@ -109,28 +313,6 @@ const QuizApp = {
         return new Promise((resolve) => {
             setTimeout(resolve, 600);
         });
-    },
-
-    // Загрузка вопросов
-    async loadQuestions() {
-        try {
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
-                headers: {
-                    'X-Master-Key': this.config.JSONBIN_API_KEY,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                this.questions = data.record.questions || this.getDefaultQuestions();
-            } else {
-                this.questions = this.getDefaultQuestions();
-            }
-        } catch (error) {
-            console.error('Ошибка загрузки вопросов:', error);
-            this.questions = this.getDefaultQuestions();
-        }
     },
 
     // Резервные вопросы
@@ -408,13 +590,11 @@ const QuizApp = {
     async showFinalScreen() {
         this.nextScreen('screen-final');
         
-        // Получаем случайное стихотворение из библиотеки
         let poem = this.getRandomPoem();
         
         const finalPoemElement = document.getElementById('finalPoem');
         
         if (poem && finalPoemElement) {
-            // Используем анимацию печати
             finalPoemElement.innerHTML = `
                 <div class="poem-card fade-in">
                     <h3 class="poem-title">«${poem.title}»</h3>
@@ -430,7 +610,6 @@ const QuizApp = {
                 </div>
             `;
 
-            // Запускаем анимацию печати
             const typingArea = document.getElementById('finalPoemText');
             if (typingArea && window.poemsLibrary) {
                 await window.poemsLibrary.typeText(typingArea, poem.text, 40);
@@ -440,7 +619,6 @@ const QuizApp = {
         await this.sendResultsToTelegram(poem);
     },
 
-    // Метод для пропуска анимации
     skipFinalAnimation() {
         if (window.poemsLibrary) {
             window.poemsLibrary.stopTyping();
@@ -453,7 +631,6 @@ const QuizApp = {
         }
     },
 
-    // Получение случайного стиха из библиотеки
     getRandomPoem() {
         try {
             if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
@@ -468,7 +645,6 @@ const QuizApp = {
         }
     },
 
-    // Резервное стихотворение
     getFallbackPoem() {
         return {
             title: "Для тебя",
@@ -501,13 +677,10 @@ const QuizApp = {
         message += `\n⏰ *Время:* ${new Date().toLocaleString('ru-RU')}\n`;
         message += `📊 *Всего вопросов:* ${this.questions.length}`;
 
-        // Отправка в Telegram
         try {
             await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     chat_id: this.config.CHAT_ID,
                     text: message,
@@ -531,7 +704,6 @@ const QuizApp = {
         HeartAnimation.startHearts();
     },
 
-    // Динамическая инверсия цветов
     initColorInversion() {
         const player = document.getElementById('musicPlayer');
         const container = document.getElementById('mainContainer');
@@ -558,7 +730,6 @@ const QuizApp = {
         observer.observe(container);
     },
 
-    // Умные формулировки
     applySmartTemplate(template, userText) {
         const cleanText = userText.trim().replace(/[.!?]$/, '');
         const lowerText = cleanText.toLowerCase();
@@ -594,7 +765,6 @@ const QuizApp = {
             declinedWord = lastWord.slice(0, -2) + 'ии';
         }
         
-        // Специальные случаи
         const specialCases = {
             'забота': 'заботе',
             'внимательность': 'внимательности', 
@@ -624,7 +794,6 @@ const QuizApp = {
         
         let conjugatedWord = lastWord;
         
-        // Специальные случаи
         const specialCases = {
             'забота': 'заботиться о других',
             'внимательность': 'быть внимательным', 
@@ -672,10 +841,8 @@ const QuizApp = {
     }
 };
 
-// Создаем глобальную ссылку
 window.quiz = QuizApp;
 
-// Инициализируем приложение после загрузки страницы
 window.addEventListener('DOMContentLoaded', () => {
     QuizApp.init();
 });
