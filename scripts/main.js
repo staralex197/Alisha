@@ -1,10 +1,3 @@
-// Временно добавьте в начало main.js для проверки
-console.log('=== ПРОВЕРКА БИБЛИОТЕКИ СТИХОВ ===');
-console.log('lovePoemsLibrary:', window.lovePoemsLibrary);
-console.log('poemsLibrary:', window.poemsLibrary);
-if (window.poemsLibrary) {
-  console.log('Стихов в библиотеке:', window.poemsLibrary.poems.length);
-}
 // Основная логика приложения
 const QuizApp = {
     // Конфигурация
@@ -421,65 +414,69 @@ const QuizApp = {
         const finalPoemElement = document.getElementById('finalPoem');
         
         if (poem && finalPoemElement) {
+            // Используем анимацию печати
             finalPoemElement.innerHTML = `
-                <div class="poem-title">«${poem.title}»</div>
-                <div class="poem-text">${poem.text.replace(/\n/g, '<br>')}</div>
-                <div class="poem-author">${poem.author}${poem.year ? ', ' + poem.year + ' год' : ''}</div>
-                ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
+                <div class="poem-card fade-in">
+                    <h3 class="poem-title">«${poem.title}»</h3>
+                    <div class="poem-meta">
+                        <span class="poem-author">${poem.author}</span>
+                        <span class="poem-year">${poem.year}</span>
+                    </div>
+                    <div class="poem-text typing-area" id="finalPoemText"></div>
+                    <div class="typing-controls">
+                        <button onclick="quiz.skipFinalAnimation()" class="btn-small">⏩ Пропустить анимацию</button>
+                    </div>
+                    ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
+                </div>
             `;
+
+            // Запускаем анимацию печати
+            const typingArea = document.getElementById('finalPoemText');
+            if (typingArea && window.poemsLibrary) {
+                await window.poemsLibrary.typeText(typingArea, poem.text, 40);
+            }
         }
 
         await this.sendResultsToTelegram(poem);
     },
 
+    // Метод для пропуска анимации
+    skipFinalAnimation() {
+        if (window.poemsLibrary) {
+            window.poemsLibrary.stopTyping();
+            const typingArea = document.getElementById('finalPoemText');
+            const poem = window.poemsLibrary.getRandomPoem();
+            if (typingArea && poem) {
+                typingArea.innerHTML = poem.text.replace(/\n/g, '<br>');
+                typingArea.style.borderRight = 'none';
+            }
+        }
+    },
+
     // Получение случайного стиха из библиотеки
     getRandomPoem() {
         try {
-            // Пытаемся получить стих из библиотеки poemsLibrary
             if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
                 const poem = window.poemsLibrary.getRandomPoem();
                 if (poem && poem.title && poem.text) {
-                    console.log('📚 Стих взят из библиотеки poemsLibrary');
                     return poem;
                 }
             }
-            
-            // Если библиотека не доступна, используем встроенные стихи
-            console.log('📚 Библиотека poemsLibrary не доступна, используем встроенные стихи');
             return this.getFallbackPoem();
-            
         } catch (error) {
-            console.error('Ошибка получения стиха:', error);
             return this.getFallbackPoem();
         }
     },
 
-    // Резервные стихи (только если библиотека не работает)
+    // Резервное стихотворение
     getFallbackPoem() {
-        const fallbackPoems = [
-            {
-                title: "Ты - моё вдохновение",
-                author: "Для тебя",
-                year: "2024",
-                tags: ["любовь", "вдохновение"],
-                text: `Ты - утренний свет в моих окнах,
-Ты - шепот звезды в тишине,
-Ты - музыка неба высокого,
-Что льется так нежно во сне.`
-            },
-            {
-                title: "Улыбка твоя", 
-                author: "Для тебя",
-                year: "2024",
-                tags: ["улыбка", "свет"],
-                text: `Улыбка твоя - как солнце весеннее,
-Что тает зима в его светлых лучах,
-В твоих глазах - целая вселенная,
-Где счастье мое в самых ярких красках.`
-            }
-        ];
-        
-        return fallbackPoems[Math.floor(Math.random() * fallbackPoems.length)];
+        return {
+            title: "Для тебя",
+            author: "С любовью", 
+            year: "2024",
+            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
+            tags: ["любовь", "нежность"]
+        };
     },
 
     async sendResultsToTelegram(poem) {
@@ -681,5 +678,4 @@ window.quiz = QuizApp;
 // Инициализируем приложение после загрузки страницы
 window.addEventListener('DOMContentLoaded', () => {
     QuizApp.init();
-
 });
