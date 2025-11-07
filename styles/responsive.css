@@ -1,175 +1,48 @@
-/* Адаптивность для всех устройств с новым дизайном */
+/* Адаптивность для всех устройств с улучшенной поддержкой */
 
-/* Большие мониторы (1440px+) */
-@media (min-width: 1440px) {
+/* Очень большие мониторы (1920px+) */
+@media (min-width: 1920px) {
+    .container {
+        transform: scale(0.85);
+        max-width: 900px;
+        margin: 160px auto 50px;
+        padding: 40px;
+    }
+    
+    .music-player {
+        padding: 12px 0;
+    }
+    
+    .player-container {
+        max-width: 1600px;
+        padding: 0 40px;
+    }
+    
+    .theme-toggle {
+        top: 100px;
+        right: 40px;
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
+
+/* Большие мониторы (1440px - 1919px) */
+@media (min-width: 1440px) and (max-width: 1919px) {
     .container {
         max-width: 800px;
-        margin: 140px auto 40px; /* Увеличил отступ сверху */
+        margin: 140px auto 40px;
         padding: 35px;
-        min-height: auto;
-        transform: scale(0.85);
+        transform: scale(0.9);
         transform-origin: top center;
     }
     
-    h1 {
-        font-size: 2em;
-        margin-bottom: 15px;
+    .theme-toggle {
+        top: 90px;
+        right: 30px;
     }
     
-    .question-text {
-        font-size: 1.1em;
-        margin-bottom: 20px;
-        min-height: 40px;
-    }
-    
-    .input-section {
-        margin: 15px 0;
-    }
-    
-    .user-input {
-        min-height: 80px;
-        max-height: 100px;
-        padding: 15px;
-        font-size: 0.95em;
-    }
-    
-    .character-count {
-        margin-top: -15px;
-        margin-bottom: 10px;
-        font-size: 0.85em;
-    }
-    
-    .progress-navigation {
-        margin: 15px 0;
-        padding: 10px 0;
-    }
-    
-    .progress-wrapper {
-        margin-bottom: 8px;
-    }
-    
-    .progress-steps {
-        margin-top: 8px;
-    }
-    
-    .nav-buttons {
-        gap: 10px;
-    }
-    
-    .nav-btn {
-        padding: 10px 20px;
-        font-size: 0.9em;
-        min-width: 100px;
-    }
-    
-    .buttons {
-        margin: 15px 0;
-        gap: 10px;
-    }
-    
-    .btn {
-        padding: 12px 20px;
-        font-size: 0.9em;
-        min-width: 160px;
-    }
-    
-    .suggestion-buttons {
-        margin-bottom: 15px;
-        gap: 8px;
-    }
-    
-    .suggestion-btn {
-        padding: 8px 15px;
-        font-size: 0.85em;
-    }
-    
-    .formulation-section {
-        padding: 20px;
-        margin: 15px 0;
-        max-height: 150px;
-    }
-    
-    .formulation-text {
-        font-size: 1em;
-        margin-bottom: 15px;
-    }
-    
-    .final-content {
-        padding: 0;
-    }
-    
-    .poem-container {
-        margin: 15px 0;
-        padding: 20px;
-        max-height: 180px;
-        overflow-y: auto;
-    }
-    
-    .poem-title {
-        font-size: 1.3em;
-        margin-bottom: 10px;
-    }
-    
-    .poem-text {
-        font-size: 0.95em;
-        line-height: 1.5;
-    }
-    
-    .poem-author {
-        font-size: 0.9em;
-        margin-top: 10px;
-    }
-    
-    /* Музыкальный плеер компактный */
     .music-player {
-        padding: 6px 15px;
-    }
-    
-    .track-cover {
-        width: 30px;
-        height: 30px;
-        font-size: 0.8em;
-    }
-    
-    .track-title {
-        font-size: 0.8em;
-    }
-    
-    .track-artist {
-        font-size: 0.75em;
-    }
-    
-    .control-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.7em;
-    }
-    
-    .play-btn {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .progress-container {
-        max-width: 200px;
-        height: 4px;
-    }
-    
-    .time-display {
-        font-size: 0.7em;
-    }
-    
-    .volume-slider {
-        width: 60px;
-    }
-    
-    .playlist-toggle {
-        padding: 5px 10px;
-        font-size: 0.7em;
-    }
-    
-    .playlist-container.open {
-        max-height: 250px;
+        padding: 10px 0;
     }
 }
 
@@ -179,134 +52,120 @@
         max-width: 750px;
         margin: 130px auto 35px;
         padding: 30px;
-        transform: scale(0.9);
+        transform: scale(0.95);
         transform-origin: top center;
     }
     
+    .theme-toggle {
+        top: 85px;
+        right: 25px;
+    }
+    
+    .player-main {
+        gap: 12px;
+    }
+    
+    .progress-container {
+        max-width: 300px;
+    }
+}
+
+/* Планшеты в ландшафтной ориентации (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+    .container {
+        padding: 20px;
+        margin: 100px auto 25px;
+        width: 95%;
+        max-width: 700px;
+        min-height: auto;
+    }
+    
+    .theme-toggle {
+        top: 70px;
+        right: 20px;
+        padding: 8px 14px;
+        font-size: 0.85em;
+    }
+    
+    .music-player {
+        padding: 6px 0;
+    }
+    
+    .player-container {
+        padding: 0 15px;
+    }
+    
+    .player-main {
+        gap: 10px;
+    }
+    
+    .track-cover {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .control-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .play-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .progress-container {
+        max-width: 250px;
+    }
+    
+    .volume-slider {
+        width: 70px;
+    }
+    
     h1 {
-        font-size: 1.8em;
-        margin-bottom: 12px;
+        font-size: 1.6em;
+        margin-bottom: 15px;
     }
     
     .question-text {
         font-size: 1em;
-        margin-bottom: 15px;
-        min-height: 35px;
+        margin-bottom: 20px;
     }
     
     .user-input {
         min-height: 70px;
         max-height: 90px;
-        padding: 12px;
-        font-size: 0.9em;
-    }
-    
-    .btn {
-        padding: 10px 18px;
-        font-size: 0.85em;
-        min-width: 140px;
-    }
-    
-    .nav-btn {
-        padding: 8px 16px;
-        font-size: 0.85em;
-        min-width: 90px;
-    }
-    
-    .poem-container {
-        max-height: 160px;
         padding: 15px;
     }
     
-    .formulation-section {
-        max-height: 140px;
+    .buttons {
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .btn {
+        min-width: 140px;
+        padding: 10px 18px;
     }
 }
 
-/* Очень большие мониторы (1920px+) */
-@media (min-width: 1920px) {
-    .container {
-        transform: scale(0.8);
-        max-width: 900px;
-        margin: 150px auto 40px;
-    }
-}
-
-/* Планшеты (768px - 1023px) */
-@media (max-width: 1023px) {
+/* Планшеты в портретной ориентации (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
     .container {
         padding: 25px;
         margin: 110px auto 30px;
         width: 95%;
+        max-width: 650px;
     }
     
-    h1 {
-        font-size: 2em;
-        margin-bottom: 20px;
-    }
-    
-    .question-text {
-        font-size: 1.1em;
-        margin-bottom: 25px;
-    }
-    
-    .user-input {
-        min-height: 100px;
-        max-height: 120px;
-        padding: 18px;
-    }
-    
-    .buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .btn {
-        width: 100%;
-        max-width: 300px;
-        min-width: auto;
-    }
-    
-    .nav-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .nav-btn {
-        width: 100%;
-    }
-    
-    .progress-navigation {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .progress-wrapper {
-        width: 100%;
-    }
-    
-    .suggestion-buttons {
-        gap: 8px;
-    }
-    
-    .suggestion-btn {
-        padding: 6px 12px;
-        font-size: 0.85em;
-    }
-    
-    .formulation-section {
-        max-height: 150px;
-        padding: 20px;
-    }
-    
-    .music-player {
-        padding: 8px 15px;
+    .theme-toggle {
+        top: 80px;
+        right: 20px;
     }
     
     .player-main {
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 12px;
     }
     
     .player-track-info {
@@ -323,7 +182,7 @@
         order: 4;
         flex: 100%;
         max-width: 100%;
-        margin-top: 10px;
+        margin-top: 8px;
     }
     
     .player-extra {
@@ -337,13 +196,96 @@
     }
 }
 
-/* Телефоны (481px - 767px) */
-@media (max-width: 767px) {
+/* Большие телефоны (428px - 767px) - iPhone Pro Max, Samsung Ultra */
+@media (min-width: 428px) and (max-width: 767px) {
     .container {
         padding: 20px;
         margin: 100px auto 20px;
         width: 95%;
         border-radius: 20px;
+    }
+    
+    .theme-toggle {
+        top: 70px;
+        right: 15px;
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+    
+    .music-player {
+        padding: 8px 0;
+    }
+    
+    .player-container {
+        padding: 0 10px;
+    }
+    
+    .player-main {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .player-track-info {
+        order: 1;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .player-controls {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .progress-container {
+        order: 3;
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .player-extra {
+        order: 4;
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .time-display {
+        font-size: 0.75em;
+    }
+    
+    .volume-container {
+        flex: 1;
+        justify-content: flex-end;
+    }
+    
+    .volume-slider {
+        width: 60px;
+    }
+    
+    .playlist-toggle {
+        padding: 6px 12px;
+        font-size: 0.75em;
+    }
+    
+    .playlist-container.open {
+        max-height: 200px;
+    }
+    
+    .playlist {
+        padding: 10px 15px;
+    }
+    
+    .playlist-item {
+        padding: 10px 12px;
+    }
+    
+    .playlist-item-title {
+        font-size: 0.85em;
+    }
+    
+    .playlist-item-artist {
+        font-size: 0.75em;
     }
     
     h1 {
@@ -432,90 +374,107 @@
         font-size: 1em;
         padding: 12px;
     }
+}
+
+/* Средние телефоны (375px - 427px) - большинство современных смартфонов */
+@media (min-width: 375px) and (max-width: 427px) {
+    .container {
+        padding: 18px;
+        margin: 90px auto 18px;
+        border-radius: 18px;
+        width: 92%;
+    }
     
-    /* Музыкальный плеер для мобильных */
+    .theme-toggle {
+        top: 65px;
+        right: 12px;
+        padding: 7px 10px;
+        font-size: 0.8em;
+    }
+    
+    .theme-text {
+        display: none; /* Скрываем текст, оставляем только иконку */
+    }
+    
     .music-player {
-        padding: 8px 10px;
+        padding: 6px 0;
     }
     
     .player-container {
-        padding: 0 10px;
+        padding: 0 8px;
     }
     
-    .player-main {
-        flex-direction: column;
-        gap: 10px;
+    .track-cover {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9em;
     }
     
-    .player-track-info {
-        order: 1;
-        width: 100%;
-        justify-content: center;
+    .track-title {
+        font-size: 0.8em;
     }
     
-    .player-controls {
-        order: 2;
-        width: 100%;
-        justify-content: center;
+    .track-artist {
+        font-size: 0.75em;
     }
     
-    .progress-container {
-        order: 3;
-        width: 100%;
-        margin: 5px 0;
+    .control-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8em;
     }
     
-    .player-extra {
-        order: 4;
-        width: 100%;
-        justify-content: space-between;
+    .play-btn {
+        width: 34px;
+        height: 34px;
     }
     
     .time-display {
-        font-size: 0.75em;
-    }
-    
-    .volume-container {
-        flex: 1;
-        justify-content: flex-end;
+        font-size: 0.7em;
     }
     
     .volume-slider {
-        width: 60px;
+        width: 50px;
     }
     
     .playlist-toggle {
-        padding: 6px 12px;
-        font-size: 0.75em;
+        padding: 5px 10px;
+        font-size: 0.7em;
+    }
+    
+    .playlist-text {
+        display: none; /* Скрываем текст плейлиста */
     }
     
     .playlist-container.open {
-        max-height: 200px;
+        max-height: 180px;
     }
     
     .playlist {
-        padding: 10px 15px;
+        padding: 8px 12px;
     }
     
     .playlist-item {
-        padding: 10px 12px;
+        padding: 8px 10px;
+        margin-bottom: 4px;
+    }
+    
+    .playlist-item-icon {
+        margin-right: 10px;
+        font-size: 0.9em;
     }
     
     .playlist-item-title {
-        font-size: 0.85em;
+        font-size: 0.8em;
     }
     
     .playlist-item-artist {
-        font-size: 0.75em;
+        font-size: 0.7em;
     }
-}
-
-/* Маленькие телефоны (до 480px) */
-@media (max-width: 480px) {
-    .container {
-        padding: 15px;
-        margin: 90px auto 15px;
-        border-radius: 15px;
+    
+    .playlist-item-duration {
+        font-size: 0.7em;
+        margin-left: 10px;
     }
     
     h1 {
@@ -597,20 +556,48 @@
         font-size: 0.9em;
         padding: 10px;
     }
+}
+
+/* Маленькие телефоны (320px - 374px) - iPhone SE, компактные Android */
+@media (max-width: 374px) {
+    .container {
+        padding: 15px;
+        margin: 80px auto 15px;
+        border-radius: 15px;
+        width: 90%;
+    }
     
-    /* Музыкальный плеер для очень маленьких экранов */
-    .music-player {
+    .theme-toggle {
+        top: 60px;
+        right: 10px;
         padding: 6px 8px;
+        font-size: 0.75em;
+    }
+    
+    .theme-text {
+        display: none;
+    }
+    
+    .music-player {
+        padding: 4px 0;
     }
     
     .player-container {
-        padding: 0 8px;
+        padding: 0 6px;
+    }
+    
+    .player-main {
+        gap: 8px;
     }
     
     .track-cover {
-        width: 25px;
-        height: 25px;
-        font-size: 0.7em;
+        width: 28px;
+        height: 28px;
+        font-size: 0.8em;
+    }
+    
+    .track-details {
+        min-width: 120px;
     }
     
     .track-title {
@@ -621,77 +608,205 @@
         font-size: 0.7em;
     }
     
+    .player-controls {
+        gap: 6px;
+    }
+    
     .control-btn {
-        width: 24px;
-        height: 24px;
-        font-size: 0.65em;
+        width: 28px;
+        height: 28px;
+        font-size: 0.75em;
     }
     
     .play-btn {
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
+    }
+    
+    .progress-container {
+        height: 4px;
     }
     
     .time-display {
-        font-size: 0.7em;
+        font-size: 0.65em;
     }
     
-    .volume-slider {
-        width: 50px;
+    .volume-container {
+        display: none; /* Скрываем громкость на очень маленьких экранах */
     }
     
     .playlist-toggle {
         padding: 4px 8px;
-        font-size: 0.7em;
+        font-size: 0.65em;
+    }
+    
+    .playlist-text {
+        display: none;
     }
     
     .playlist-container.open {
-        max-height: 180px;
+        max-height: 150px;
     }
     
     .playlist {
-        padding: 8px 12px;
+        padding: 6px 10px;
     }
     
     .playlist-item {
-        padding: 8px 10px;
-        margin-bottom: 4px;
+        padding: 6px 8px;
+        margin-bottom: 3px;
     }
     
     .playlist-item-icon {
-        margin-right: 10px;
-        font-size: 0.9em;
-    }
-    
-    .playlist-item-title {
+        margin-right: 8px;
         font-size: 0.8em;
     }
     
+    .playlist-item-title {
+        font-size: 0.75em;
+    }
+    
     .playlist-item-artist {
-        font-size: 0.7em;
+        font-size: 0.65em;
     }
     
     .playlist-item-duration {
-        font-size: 0.7em;
-        margin-left: 10px;
+        font-size: 0.65em;
+        margin-left: 8px;
     }
-}
-
-/* Портретная ориентация */
-@media (max-height: 600px) and (orientation: portrait) {
-    .container {
-        margin: 80px auto 15px;
-        transform: scale(0.8);
-        padding: 20px;
+    
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 10px;
+    }
+    
+    .question-text {
+        font-size: 0.85em;
+        margin-bottom: 12px;
+        line-height: 1.5;
     }
     
     .user-input {
         min-height: 60px;
         max-height: 80px;
+        padding: 10px;
+        font-size: 0.85em;
+        border-radius: 15px;
+    }
+    
+    .buttons {
+        gap: 8px;
+    }
+    
+    .btn {
+        padding: 8px 14px;
+        font-size: 0.8em;
+        border-radius: 40px;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+    
+    .progress-wrapper {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .progress-steps {
+        justify-content: center;
+    }
+    
+    .progress-step {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .suggestion-buttons {
+        gap: 3px;
+    }
+    
+    .suggestion-btn {
+        padding: 3px 6px;
+        font-size: 0.7em;
+        border-radius: 15px;
     }
     
     .formulation-section {
         max-height: 80px;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 15px;
+    }
+    
+    .formulation-text {
+        font-size: 0.85em;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+    
+    .poem-container {
+        padding: 12px;
+        margin: 12px 0;
+        border-radius: 15px;
+    }
+    
+    .poem-title {
+        font-size: 1.1em;
+    }
+    
+    .poem-text {
+        font-size: 0.85em;
+        line-height: 1.5;
+    }
+    
+    .typing-area {
+        min-height: 80px;
+        font-size: 0.85em;
+        padding: 8px;
+        border-radius: 8px;
+    }
+    
+    .character-count {
+        font-size: 0.8em;
+        margin-top: -12px;
+        margin-bottom: 10px;
+    }
+}
+
+/* Складные телефоны и нестандартные соотношения */
+@media (max-width: 767px) and (max-height: 400px) {
+    .container {
+        margin: 60px auto 10px;
+        transform: scale(0.8);
+        transform-origin: top center;
+        min-height: auto;
+    }
+    
+    .music-player {
+        padding: 2px 0;
+    }
+    
+    .theme-toggle {
+        top: 45px;
+        right: 10px;
+        padding: 4px 6px;
+    }
+    
+    .user-input {
+        min-height: 50px;
+        max-height: 70px;
+    }
+    
+    .formulation-section {
+        max-height: 60px;
     }
     
     .poem-container {
@@ -700,11 +815,15 @@
 }
 
 /* Ландшафтная ориентация для мобильных */
-@media (max-height: 500px) and (orientation: landscape) {
+@media (max-width: 767px) and (orientation: landscape) {
     .container {
-        margin: 60px auto 10px;
-        transform: scale(0.7);
+        margin: 70px auto 15px;
         padding: 15px;
+        min-height: auto;
+    }
+    
+    .theme-toggle {
+        top: 55px;
     }
     
     .user-input {
@@ -719,60 +838,38 @@
     }
     
     .buttons {
-        margin: 10px 0;
+        margin: 8px 0;
     }
     
     .btn {
         padding: 8px 12px;
         font-size: 0.8em;
     }
+    
+    .progress-navigation {
+        margin: 15px 0;
+    }
 }
 
-/* Высокопиксельные дисплеи */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+/* Портретная ориентация с маленькой высотой */
+@media (max-height: 600px) and (orientation: portrait) {
     .container {
-        -webkit-font-smoothing: antialiased;
-        backdrop-filter: blur(30px) saturate(200%);
-    }
-}
-
-/* Темная тема поддержка */
-@media (prefers-color-scheme: dark) {
-    /* Уже используем темную тему по умолчанию */
-}
-
-/* Адаптация для touch устройств */
-@media (hover: none) and (pointer: coarse) {
-    .answer-btn:hover,
-    .btn:hover,
-    .player-btn:hover,
-    .track-item:hover {
-        transform: none;
+        margin: 80px auto 15px;
+        transform: scale(0.85);
+        padding: 20px;
     }
     
-    .answer-btn:active,
-    .btn:active,
-    .player-btn:active,
-    .track-item:active {
-        transform: scale(0.98);
+    .user-input {
+        min-height: 60px;
+        max-height: 80px;
     }
     
-    .suggestion-btn:active,
-    .nav-btn:active {
-        transform: scale(0.95);
+    .formulation-section {
+        max-height: 80px;
     }
     
-    /* Увеличиваем область клика для мобильных */
-    .btn,
-    .nav-btn,
-    .suggestion-btn,
-    .control-btn {
-        min-height: 44px;
-    }
-    
-    .progress-step {
-        min-width: 20px;
-        min-height: 20px;
+    .poem-container {
+        max-height: 150px;
     }
 }
 
@@ -780,14 +877,141 @@
 @media (max-height: 400px) {
     .container {
         margin: 50px auto 10px;
-        transform: scale(0.6);
+        transform: scale(0.7);
     }
     
     .music-player {
-        padding: 4px 8px;
+        padding: 2px 0;
     }
     
-    .player-main {
-        gap: 5px;
+    .theme-toggle {
+        top: 35px;
+    }
+}
+
+/* Динамический остров и вырезы (notch) */
+@supports (padding: max(0px)) {
+    .container {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+    }
+    
+    .music-player {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* Высокопиксельные дисплеи с поддержкой HDR */
+@media (min-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (dynamic-range: high) {
+    .container {
+        backdrop-filter: blur(40px) saturate(200%);
+    }
+    
+    .music-player {
+        backdrop-filter: blur(30px) saturate(200%);
+    }
+}
+
+/* Улучшенная поддержка тач-интерфейса */
+@media (hover: none) and (pointer: coarse) {
+    .btn, .nav-btn, .suggestion-btn, .control-btn, .playlist-toggle {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .progress-step {
+        min-width: 20px;
+        min-height: 20px;
+    }
+    
+    .user-input {
+        font-size: 16px; /* Предотвращает масштабирование в iOS */
+    }
+    
+    /* Увеличиваем область клика для touch */
+    .player-controls .control-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .playlist-item {
+        min-height: 44px;
+    }
+}
+
+/* Анимации для устройств с reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loading-spinner {
+        animation: none;
+    }
+    
+    .heart {
+        animation: none !important;
+    }
+}
+
+/* Поддержка темной темы по умолчанию */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --primary-bg: #1e1e2e;
+        --secondary-bg: #181825;
+        /* ... остальные переменные темной темы */
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        --primary-bg: #f5f5f7;
+        --secondary-bg: #ffffff;
+        /* ... остальные переменные светлой темы */
+    }
+}
+
+/* Улучшенная поддержка скроллбаров */
+@media (min-width: 768px) {
+    .playlist::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .playlist::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+    
+    .playlist::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    
+    .playlist::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Поддержка очень широких мониторов */
+@media (min-width: 2560px) {
+    .container {
+        transform: scale(0.8);
+        max-width: 1000px;
+        margin: 180px auto 60px;
+    }
+    
+    .player-container {
+        max-width: 2000px;
+    }
+    
+    .theme-toggle {
+        top: 120px;
+        right: 60px;
+        padding: 15px 25px;
+        font-size: 1.1em;
     }
 }
