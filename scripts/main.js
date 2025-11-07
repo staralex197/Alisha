@@ -217,10 +217,12 @@ const QuizApp = {
                 console.log('✅ Данные загружены из localStorage');
             } else {
                 this.questions = this.getDefaultQuestions();
+                this.userAnswers = {}; // Очищаем ответы при первом запуске
             }
         } catch (e) {
             console.log('❌ Ошибка загрузки из localStorage:', e);
             this.questions = this.getDefaultQuestions();
+            this.userAnswers = {}; // Очищаем ответы при ошибке
         }
     },
 
@@ -721,7 +723,6 @@ const QuizApp = {
                         <span class="poem-year">${this.escapeHtml(poem.year)}</span>
                     </div>
                     <div class="poem-text typing-area" id="finalPoemText"></div>
-                    ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}</div>` : ''}
                 </div>
             `;
 
@@ -753,8 +754,7 @@ const QuizApp = {
             title: "Для тебя",
             author: "С любовью", 
             year: "2024",
-            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
-            tags: ["любовь", "нежность"]
+            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души."
         };
     },
 
@@ -782,10 +782,6 @@ const QuizApp = {
         }
         message += `\n*Текст стихотворения:*\n`;
         message += `\`\`\`\n${poem.text}\n\`\`\`\n`;
-        
-        if (poem.tags && poem.tags.length > 0) {
-            message += `*Теги:* ${poem.tags.map(tag => `#${tag}`).join(' ')}\n`;
-        }
 
         message += `\n⏰ *Время отправки:* ${new Date().toLocaleString('ru-RU')}\n`;
         message += `📊 *Всего вопросов:* ${this.questions.length}`;
