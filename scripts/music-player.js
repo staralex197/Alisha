@@ -1,4 +1,4 @@
-// Музыкальный плеер
+// Умный музыкальный плеер с авто-загрузкой
 const MusicPlayer = {
     audio: null,
     isPlaying: false,
@@ -7,98 +7,174 @@ const MusicPlayer = {
     isPlaylistOpen: false,
     audioInitialized: false,
     isLoading: false,
-    volume: 0.2, // 20% громкость по умолчанию
+    volume: 0.2,
     fadeInterval: null,
     autoPlayEnabled: false,
 
-    tracks: [
-        {
-            name: "Наша жизнь",
-            artist: "2hug",
-            url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/2hug_-_Nasha_zhizn_79029104.mp3",
-            duration: "3:11"
-        },
-        {
-            name: "Ты та...",
-            artist: "Баста", 
-            url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/Basta_-_Ty_ta_61892966.mp3",
-            duration: "3:56"
-        },
-        {
-            name: "Привет",
-            artist: "MATRANG, Баста",
-            url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/MATRANG_-_Privet_64870751.mp3",
-            duration: "3:13"
-        },
-        {
-            name: "Бойсбэнд",
-            artist: "PHARAON, Ca$$xttx",
-            url: "https://github.com/staralex197/Alisha/raw/refs/heads/main/music/PHARAOH_Caxttx_-_Bojjsbjend_64493563.mp3",
-            duration: "2:58"
-        }
-    ],
+    // Треки будут загружаться автоматически
+    tracks: [],
 
-    init() {
+    async init() {
         try {
             this.audio = new Audio();
-            this.audio.volume = 0; // Начинаем с нулевой громкости
+            this.audio.volume = 0;
             this.audio.preload = 'metadata';
             
+            // Загружаем треки из папки music
+            await this.loadTracksFromFolder();
+            
             // События для обработки ошибок
-            this.audio.addEventListener('error', (e) => {
-                console.error('❌ Ошибка аудио:', e);
-                this.handleAudioError();
-            });
+            this.setupAudioEvents();
             
-            this.audio.addEventListener('loadstart', () => {
-                this.showLoadingState();
-            });
-            
-            this.audio.addEventListener('canplay', () => {
-                this.hideLoadingState();
-            });
-            
-            this.audio.addEventListener('ended', () => {
-                this.nextTrack();
-            });
-            
-            this.audio.addEventListener('waiting', () => {
-                this.showLoadingState();
-            });
-            
-            this.audio.addEventListener('canplaythrough', () => {
-                this.hideLoadingState();
-            });
-
             // Инициализация UI
-            this.updateTrackInfo(0);
-            this.renderPlaylist();
+            this.initializeUI();
             
-            // Прогресс бар по клику
-            const progressContainer = document.getElementById('progressContainer');
-            if (progressContainer) {
-                progressContainer.addEventListener('click', (e) => {
-                    this.handleProgressClick(e);
-                });
-            }
-
-            // Инициализация громкости
-            const volumeSlider = document.getElementById('volumeSlider');
-            if (volumeSlider) {
-                volumeSlider.value = this.volume * 100;
-                this.updateVolumeSlider(volumeSlider.value);
-            }
-
             this.audioInitialized = true;
-            console.log('✅ Музыкальный плеер инициализирован');
+            console.log('✅ Музыкальный плеер инициализирован, треков:', this.tracks.length);
             
-            // Автоматическое плавное воспроизведение через 2 секунды после загрузки
+            // Автоматическое плавное воспроизведение
             setTimeout(() => {
                 this.autoPlayWithFade();
             }, 2000);
             
         } catch (error) {
             console.error('❌ Ошибка инициализации плеера:', error);
+        }
+    },
+
+    // Автоматическая загрузка треков из папки music
+    async loadTracksFromFolder() {
+        try {
+            // Предполагаем, что треки лежат в папке music/
+            const trackFiles = [
+                '2hug_-_Nasha_zhizn_79029104.mp3',
+                'Basta_-_Ty_ta_61892966.mp3', 
+                'MATRANG_-_Privet_64870751.mp3',
+                'PHARAOH_Caxttx_-_Bojjsbjend_64493563.mp3'
+            ];
+
+            this.tracks = [];
+            
+            for (const filename of trackFiles) {
+                const track = {
+                    name: this.formatTrackName(filename),
+                    artist: this.getArtistFromFilename(filename),
+                    url: `music/${filename}`,
+                    duration: '0:00',
+                    filename: filename
+                };
+                
+                // Пытаемся получить реальную длительность
+                try {
+                    await this.loadTrackDuration(track);
+                } catch (e) {
+                    console.warn(`Не удалось загрузить длительность для ${filename}`);
+                }
+                
+                this.tracks.push(track);
+            }
+
+            if (this.tracks.length === 0) {
+                throw new Error('Треки не найдены');
+            }
+
+        } catch (error) {
+            console.error('❌ Ошибка загрузки треков:', error);
+            // Fallback треки
+            this.tracks = [{
+                name: "Демо трек",
+                artist: "Музыкальный плеер",
+                url: "#",
+                duration: "3:00"
+            }];
+        }
+    },
+
+    // Загрузка длительности трека
+    loadTrackDuration(track) {
+        return new Promise((resolve, reject) => {
+            const tempAudio = new Audio();
+            tempAudio.src = track.url;
+            
+            tempAudio.addEventListener('loadedmetadata', () => {
+                track.duration = this.formatTime(tempAudio.duration);
+                resolve();
+            });
+            
+            tempAudio.addEventListener('error', reject);
+            
+            // Таймаут
+            setTimeout(() => reject(new Error('Таймаут загрузки')), 5000);
+        });
+    },
+
+    // Форматирование имени файла в читаемое название
+    formatTrackName(filename) {
+        return filename
+            .replace(/\.mp3$/, '')
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase())
+            .replace(/([a-z])([A-Z])/g, '$1 $2');
+    },
+
+    // Извлечение имени артиста из文件名
+    getArtistFromFilename(filename) {
+        const parts = filename.split('_-_');
+        return parts[0] ? parts[0].replace(/_/g, ' ') : 'Неизвестный артист';
+    },
+
+    setupAudioEvents() {
+        this.audio.addEventListener('error', (e) => {
+            console.error('❌ Ошибка аудио:', e);
+            this.handleAudioError();
+        });
+        
+        this.audio.addEventListener('loadstart', () => {
+            this.showLoadingState();
+        });
+        
+        this.audio.addEventListener('canplay', () => {
+            this.hideLoadingState();
+        });
+        
+        this.audio.addEventListener('ended', () => {
+            this.nextTrack();
+        });
+        
+        this.audio.addEventListener('waiting', () => {
+            this.showLoadingState();
+        });
+        
+        this.audio.addEventListener('canplaythrough', () => {
+            this.hideLoadingState();
+        });
+    },
+
+    initializeUI() {
+        this.updateTrackInfo(0);
+        this.renderPlaylist();
+        
+        // Прогресс бар по клику
+        const progressContainer = document.getElementById('progressContainer');
+        if (progressContainer) {
+            progressContainer.addEventListener('click', (e) => {
+                this.handleProgressClick(e);
+            });
+        }
+
+        // Инициализация громкости
+        const volumeSlider = document.getElementById('volumeSlider');
+        if (volumeSlider) {
+            volumeSlider.value = this.volume * 100;
+            this.updateVolumeSlider(volumeSlider.value);
+        }
+
+        // Исправление: добавляем обработчик для кнопки плейлиста
+        const playlistToggle = document.querySelector('.playlist-toggle');
+        if (playlistToggle) {
+            playlistToggle.addEventListener('click', () => {
+                this.togglePlaylist();
+            });
         }
     },
 
@@ -112,7 +188,7 @@ const MusicPlayer = {
             
             // Загружаем первый трек если нужно
             if (!this.audio.src || this.audio.src !== this.tracks[this.currentTrack].url) {
-                await this.loadTrack(this.currentTrack, false); // false - не воспроизводить сразу
+                await this.loadTrack(this.currentTrack, false);
             }
             
             // Начинаем воспроизведение с нулевой громкостью
@@ -122,22 +198,17 @@ const MusicPlayer = {
             this.startProgressUpdate();
             
             // Плавное увеличение громкости до 20%
-            this.fadeIn(0, this.volume, 3000); // 3 секунды fade-in
+            this.fadeIn(0, this.volume, 3000);
             
         } catch (error) {
             console.error('❌ Ошибка автовоспроизведения:', error);
             this.autoPlayEnabled = false;
-            
-            // Показываем дружелюбное сообщение
-            if (error.name === 'NotAllowedError') {
-                this.showTemporaryMessage('Нажмите ▶ для воспроизведения музыки', 'info');
-            }
         }
     },
 
     // Плавное увеличение громкости (fade-in)
     fadeIn(startVolume, endVolume, duration = 3000) {
-        this.stopFade(); // Останавливаем предыдущий fade
+        this.stopFade();
     
         const startTime = performance.now();
         const initialVolume = this.audio.volume;
@@ -146,7 +217,6 @@ const MusicPlayer = {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             
-            // Кубическая easing функция для плавности
             const easeProgress = progress < 0.5 
                 ? 4 * progress * progress * progress 
                 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
@@ -156,7 +226,7 @@ const MusicPlayer = {
             if (progress < 1) {
                 this.fadeInterval = requestAnimationFrame(fadeFrame);
             } else {
-                this.audio.volume = endVolume; // Гарантируем точное значение
+                this.audio.volume = endVolume;
                 this.fadeInterval = null;
             }
         };
@@ -175,7 +245,6 @@ const MusicPlayer = {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             
-            // Кубическая easing функция
             const easeProgress = 1 - Math.pow(1 - progress, 3);
             
             this.audio.volume = initialVolume + (endVolume - initialVolume) * easeProgress;
@@ -316,51 +385,6 @@ const MusicPlayer = {
         }, 3000);
     },
 
-    // Временное сообщение
-    showTemporaryMessage(message, type = 'info') {
-        // Убедимся, что у нас есть стили для сообщений
-        if (!document.getElementById('music-message-styles')) {
-            const style = document.createElement('style');
-            style.id = 'music-message-styles';
-            style.textContent = `
-                .music-temp-message {
-                    position: fixed;
-                    top: 80px;
-                    right: 20px;
-                    padding: 10px 16px;
-                    background: var(--primary);
-                    color: white;
-                    border-radius: 20px;
-                    font-size: 0.9rem;
-                    z-index: 10001;
-                    animation: musicMessageFade 4s ease-in-out;
-                    max-width: 250px;
-                    text-align: center;
-                }
-                
-                @keyframes musicMessageFade {
-                    0% { opacity: 0; transform: translateX(100px); }
-                    15% { opacity: 1; transform: translateX(0); }
-                    85% { opacity: 1; transform: translateX(0); }
-                    100% { opacity: 0; transform: translateX(100px); }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'music-temp-message';
-        messageDiv.textContent = message;
-        
-        document.body.appendChild(messageDiv);
-        
-        setTimeout(() => {
-            if (messageDiv.parentNode) {
-                messageDiv.parentNode.removeChild(messageDiv);
-            }
-        }, 4000);
-    },
-
     showLoadingState() {
         this.isLoading = true;
         const nowPlaying = document.getElementById('nowPlaying');
@@ -432,7 +456,7 @@ const MusicPlayer = {
     updateVolumeSlider(volume) {
         const volumeSlider = document.getElementById('volumeSlider');
         if (volumeSlider) {
-            volumeSlider.style.background = `linear-gradient(90deg, var(--primary) ${volume}%, var(--surface) ${volume}%)`;
+            volumeSlider.style.background = `linear-gradient(90deg, var(--player-accent) ${volume}%, rgba(255, 255, 255, 0.2) ${volume}%)`;
         }
     },
 
@@ -514,12 +538,12 @@ const MusicPlayer = {
             
             // Воспроизводим если нужно
             if (autoPlay) {
-                this.audio.volume = 0; // Начинаем с тишины
+                this.audio.volume = 0;
                 await this.audio.play();
                 this.isPlaying = true;
                 this.updatePlayButton('⏸');
                 this.startProgressUpdate();
-                this.fadeIn(0, this.volume, 2000); // Плавное появление
+                this.fadeIn(0, this.volume, 2000);
             }
             
         } catch (error) {
@@ -528,6 +552,7 @@ const MusicPlayer = {
         }
     },
 
+    // ИСПРАВЛЕНИЕ: правильное открытие/закрытие плейлиста
     togglePlaylist() {
         const playlistContainer = document.getElementById('playlistContainer');
         if (!playlistContainer) return;
@@ -535,12 +560,11 @@ const MusicPlayer = {
         this.isPlaylistOpen = !this.isPlaylistOpen;
         
         if (this.isPlaylistOpen) {
-            playlistContainer.style.display = 'block';
-            playlistContainer.setAttribute('aria-hidden', 'false');
-            this.renderPlaylist();
+            playlistContainer.style.maxHeight = '300px';
+            playlistContainer.classList.add('open');
         } else {
-            playlistContainer.style.display = 'none';
-            playlistContainer.setAttribute('aria-hidden', 'true');
+            playlistContainer.style.maxHeight = '0';
+            playlistContainer.classList.remove('open');
         }
     },
 
@@ -587,12 +611,14 @@ const MusicPlayer = {
         
         this.renderPlaylist();
         
+        // Автоматически закрываем плейлист на мобильных устройствах
         if (window.innerWidth <= 767) {
             setTimeout(() => this.togglePlaylist(), 500);
         }
     },
 
     escapeHtml(text) {
+        if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
