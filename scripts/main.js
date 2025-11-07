@@ -22,11 +22,13 @@ const QuizApp = {
         this.showLoadingScreen();
         
         try {
-            // Параллельная загрузка всех ресурсов
+            // Сначала загружаем вопросы
+            await this.loadQuestions();
+            
+            // Параллельно остальные ресурсы
             await Promise.all([
-                this.loadQuestions(),
                 this.preloadResources(),
-                this.loadPoemsLibrary()
+                this.waitForPoemsLibrary()
             ]);
             
             // Инициализация компонентов
@@ -39,7 +41,7 @@ const QuizApp = {
             setTimeout(() => {
                 this.hideLoadingScreen();
                 this.showWelcomeScreen();
-            }, 1000);
+            }, 500);
             
         } catch (error) {
             console.error('Ошибка инициализации:', error);
@@ -47,21 +49,31 @@ const QuizApp = {
         }
     },
 
-    // Загрузка библиотеки стихов
-    async loadPoemsLibrary() {
+    // Ожидание загрузки библиотеки стихов (ИСПРАВЛЕННЫЙ МЕТОД)
+    async waitForPoemsLibrary() {
         return new Promise((resolve) => {
-            // Ждем загрузки poems-library.js
-            if (typeof poemsLibrary !== 'undefined') {
-                poemsLibrary.loadPoems().then(() => {
+            let attempts = 0;
+            const maxAttempts = 50; // 5 секунд максимум
+            
+            const checkLibrary = () => {
+                attempts++;
+                
+                if (typeof poemsLibrary !== 'undefined' && poemsLibrary.poems && poemsLibrary.poems.length > 0) {
                     console.log('📚 Библиотека стихов загружена');
                     resolve();
-                });
-            } else {
-                // Если библиотека еще не загружена, ждем
-                setTimeout(() => {
-                    this.loadPoemsLibrary().then(resolve);
-                }, 100);
-            }
+                    return;
+                }
+                
+                if (attempts >= maxAttempts) {
+                    console.warn('Библиотека стихов не загрузилась, продолжаем без неё');
+                    resolve();
+                    return;
+                }
+                
+                setTimeout(checkLibrary, 100);
+            };
+            
+            checkLibrary();
         });
     },
 
@@ -76,11 +88,11 @@ const QuizApp = {
             // Анимация прогресс-бара
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 90) progress = 90;
+                progress += Math.random() * 20;
+                if (progress > 85) progress = 85;
                 progressBar.style.width = progress + '%';
                 
-                if (progress >= 90) {
+                if (progress >= 85) {
                     clearInterval(interval);
                 }
             }, 200);
@@ -98,7 +110,7 @@ const QuizApp = {
             setTimeout(() => {
                 loadingScreen.classList.remove('active');
                 loadingScreen.classList.add('hidden');
-            }, 500);
+            }, 300);
         }
     },
 
@@ -127,7 +139,7 @@ const QuizApp = {
     async preloadResources() {
         return new Promise((resolve) => {
             // Симуляция загрузки ресурсов
-            setTimeout(resolve, 1500);
+            setTimeout(resolve, 1000);
         });
     },
 
@@ -430,7 +442,20 @@ const QuizApp = {
         this.nextScreen('screen-final');
         
         // Получаем случайное стихотворение
-        const poem = poemsLibrary.getRandomPoem();
+        let poem;
+        if (typeof poemsLibrary !== 'undefined' && poemsLibrary.getRandomPoem) {
+            poem = poemsLibrary.getRandomPoem();
+        } else {
+            // Резервное стихотворение
+            poem = {
+                title: "Для тебя",
+                author: "С любовью",
+                year: "2024",
+                text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
+                tags: ["любовь", "нежность"]
+            };
+        }
+        
         const finalPoemElement = document.getElementById('finalPoem');
         
         if (poem && finalPoemElement) {
@@ -635,19 +660,26 @@ const QuizApp = {
 
 // Функции для работы со стихами (добавляем в глобальную область видимости)
 function showRandomPoemAnimated() {
-    if (typeof poemsLibrary !== 'undefined') {
+    if (typeof poemsLibrary !== 'undefined' && poemsLibrary.displayRandomPoemWithAnimation) {
         poemsLibrary.displayRandomPoemWithAnimation('poemsContainer', 40);
+    } else {
+        document.getElementById('poemsContainer').innerHTML = `
+            <div class="poem-card">
+                <h3 class="poem-title">Библиотека стихов не загрузилась</h3>
+                <div class="poem-text">Попробуйте обновить страницу</div>
+            </div>
+        `;
     }
 }
 
 function showRandomPoem() {
-    if (typeof poemsLibrary !== 'undefined') {
+    if (typeof poemsLibrary !== 'undefined' && poemsLibrary.displayRandomPoem) {
         poemsLibrary.displayRandomPoem('poemsContainer');
     }
 }
 
 function showAllPoems() {
-    if (typeof poemsLibrary !== 'undefined') {
+    if (typeof poemsLibrary !== 'undefined' && poemsLibrary.displayAllPoems) {
         poemsLibrary.displayAllPoems('poemsContainer');
     }
 }
