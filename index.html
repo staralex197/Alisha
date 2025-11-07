@@ -3,72 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Мета-теги для SEO и соцсетей -->
+    <meta name="description" content="Психологический квиз для самопознания. Ответь на вопросы и получи персональное стихотворение">
+    <meta name="keywords" content="психология, самопознание, квиз, вопросы, стихи">
+    <meta property="og:title" content="Узнаю твою душу лучше 💫">
+    <meta property="og:description" content="Откровенный разговор с самим собой">
+    <meta property="og:type" content="website">
+    
     <title>Узнаю твою душу лучше 💫</title>
     
     <!-- Подключаем стили -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/responsive.css">
+    
+    <!-- Fallback для старых браузеров -->
+    <script>
+        // Проверка поддержки современных возможностей
+        if (!window.Promise || !window.fetch) {
+            document.write('<script src="https://cdn.polyfill.io/v3/polyfill.min.js"><\/script>');
+        }
+    </script>
 </head>
 <body>
     <!-- ЭКРАН ЗАГРУЗКИ -->
-    <div class="loading-screen active" id="loadingScreen">
+    <div class="loading-screen active" id="loadingScreen" role="status" aria-label="Загрузка приложения">
         <div class="loading-content">
-            <div class="loading-spinner"></div>
+            <div class="loading-spinner" aria-hidden="true"></div>
             <h1>Загружаем магию... ✨</h1>
             <p>Собираем самые важные вопросы для тебя</p>
             <div class="loading-progress">
-                <div class="loading-progress-bar" id="loadingProgress"></div>
+                <div class="loading-progress-bar" id="loadingProgress" role="progressbar" 
+                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
     </div>
 
     <!-- АДАПТИВНЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
-    <div class="music-player" id="musicPlayer">
+    <div class="music-player" id="musicPlayer" aria-label="Музыкальный плеер">
         <div class="player-container">
             <div class="player-main">
                 <div class="player-track-info">
-                    <div class="track-cover">🎵</div>
+                    <div class="track-cover" aria-hidden="true">🎵</div>
                     <div class="track-details">
-                        <div class="track-title" id="nowPlaying">Загрузка...</div>
+                        <div class="track-title" id="nowPlaying" aria-live="polite">Загрузка...</div>
                         <div class="track-artist" id="trackArtist">Пожалуйста, подождите</div>
                     </div>
                 </div>
                 
                 <div class="player-controls">
-                    <button class="control-btn" onclick="musicPlayer.previousTrack()">⏮</button>
-                    <button class="control-btn play-btn" onclick="musicPlayer.togglePlay()" id="playBtn">▶</button>
-                    <button class="control-btn" onclick="musicPlayer.nextTrack()">⏭</button>
+                    <button class="control-btn" onclick="MusicPlayer.previousTrack()" 
+                            aria-label="Предыдущий трек">⏮</button>
+                    <button class="control-btn play-btn" onclick="MusicPlayer.togglePlay()" 
+                            id="playBtn" aria-label="Воспроизвести">▶</button>
+                    <button class="control-btn" onclick="MusicPlayer.nextTrack()" 
+                            aria-label="Следующий трек">⏭</button>
                 </div>
                 
                 <div class="progress-container" id="progressContainer">
-                    <div class="progress-bar-music" id="musicProgress"></div>
+                    <div class="progress-bar-music" id="musicProgress" 
+                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 
                 <div class="player-extra">
                     <div class="time-display">
-                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                        <span id="currentTime" aria-live="polite">0:00</span> / 
+                        <span id="duration">0:00</span>
                     </div>
                     
                     <div class="volume-container">
-                        <span style="color: var(--player-secondary);">🔊</span>
-                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" oninput="musicPlayer.setVolume(this.value)">
+                        <span style="color: var(--player-secondary);" aria-hidden="true">🔊</span>
+                        <input type="range" class="volume-slider" id="volumeSlider" 
+                               min="0" max="100" value="50" oninput="MusicPlayer.setVolume(this.value)"
+                               aria-label="Громкость">
                     </div>
                     
-                    <button class="playlist-toggle" onclick="musicPlayer.togglePlaylist()">📋 Плейлист</button>
+                    <button class="playlist-toggle" onclick="MusicPlayer.togglePlaylist()" 
+                            aria-label="Открыть плейлист">📋 Плейлист</button>
                 </div>
             </div>
         </div>
         
         <!-- ВЫПАДАЮЩИЙ ПЛЕЙЛИСТ -->
-        <div class="playlist-container" id="playlistContainer">
-            <div class="playlist" id="playlist"></div>
+        <div class="playlist-container" id="playlistContainer" aria-label="Плейлист" hidden>
+            <div class="playlist" id="playlist" role="list"></div>
         </div>
     </div>
 
     <!-- ОСНОВНОЙ КОНТЕЙНЕР -->
     <div class="container" id="mainContainer">
         <!-- ЭКРАН ПРИВЕТСТВИЯ -->
-        <div class="screen active" id="screen-welcome">
+        <div class="screen active" id="screen-welcome" role="main">
             <div class="welcome-content">
                 <h1>💖 Расскажи мне о себе</h1>
                 <p class="question-text">
@@ -77,35 +102,71 @@
                     В конце тебя ждёт прекрасное стихотворение о любви! ✨
                 </p>
                 <div class="buttons">
-                    <button class="btn btn-primary" onclick="quiz.startQuestions()">Начать откровенный разговор 💫</button>
+                    <button class="btn btn-primary" onclick="quiz.startQuestions()" 
+                            aria-label="Начать опрос">Начать откровенный разговор 💫</button>
                 </div>
             </div>
         </div>
 
         <!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
-        <div id="questions-container"></div>
+        <div id="questions-container" aria-live="polite"></div>
 
         <!-- ФИНАЛЬНЫЙ ЭКРАН -->
         <div class="screen" id="screen-final">
             <div class="final-content">
                 <h1>Спасибо за откровенность! 💖</h1>
                 <div class="poem-container" id="finalPoem">
-                    <div class="loading">Загружаю специальное стихотворение о любви для тебя... 💕</div>
+                    <div class="loading" aria-live="polite">Загружаю специальное стихотворение о любви для тебя... 💕</div>
                 </div>
                 <p class="question-text">Твои ответы помогли мне понять тебя гораздо лучше! ✨</p>
                 <div class="buttons">
-                    <button class="btn btn-success" onclick="quiz.restartQuiz()">🔄 Пройти ещё раз</button>
+                    <button class="btn btn-success" onclick="quiz.restartQuiz()" 
+                            aria-label="Пройти опрос заново">🔄 Пройти ещё раз</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН ОШИБКИ (добавил новый) -->
+        <div class="screen" id="screen-error">
+            <div class="error-content">
+                <h1>😔 Что-то пошло не так</h1>
+                <p class="question-text">
+                    Возникла непредвиденная ошибка.<br>
+                    Пожалуйста, обновите страницу и попробуйте снова.
+                </p>
+                <div class="buttons">
+                    <button class="btn btn-primary" onclick="window.location.reload()" 
+                            aria-label="Обновить страницу">🔄 Обновить страницу</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="hearts-container" id="heartsContainer"></div>
+    <!-- КОНТЕЙНЕР ДЛЯ СЕРДЕЧЕК -->
+    <div class="hearts-container" id="heartsContainer" aria-hidden="true"></div>
 
-    <!-- Подключаем скрипты -->
+    <!-- Подключаем скрипты в ПРАВИЛЬНОМ порядке -->
     <script src="scripts/poems-library.js"></script>
-    <script src="scripts/heart-animation.js"></script>
     <script src="scripts/music-player.js"></script>
+    <script src="scripts/heart-animation.js"></script>
     <script src="scripts/main.js"></script>
+
+    <!-- Fallback если скрипты не загрузились -->
+    <script>
+        // Проверяем что основные объекты создались
+        setTimeout(() => {
+            if (typeof quiz === 'undefined' || typeof MusicPlayer === 'undefined') {
+                console.error('Основные скрипты не загрузились');
+                const errorScreen = document.getElementById('screen-error');
+                const loadingScreen = document.getElementById('loadingScreen');
+                
+                if (loadingScreen) loadingScreen.classList.remove('active');
+                if (errorScreen) {
+                    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+                    errorScreen.classList.add('active');
+                }
+            }
+        }, 3000);
+    </script>
 </body>
 </html>
