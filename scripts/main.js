@@ -20,6 +20,7 @@ const QuizApp = {
         await this.loadQuestions();
         this.generateQuestionScreens();
         MusicPlayer.init();
+        HeartAnimation.init();
         
         console.log('✅ Приложение инициализировано');
     },
@@ -69,9 +70,9 @@ const QuizApp = {
                 suggestions: ["Путешествия", "Семья", "Творчество", "Помощь другим", "Личностный рост"],
                 templates: [
                     "Я мечтаю о том, чтобы {ответ.союз}",
-                    "Мои самые сокровенные желания: {ответ.именительный}",
+                    "Мои самые сокровенные желания: {ответ}",
                     "В своих фантазиях я вижу: {ответ}",
-                    "Я стремлюсь к: {ответ.именительный}",
+                    "Я стремлюсь к: {ответ}",
                     "Моя главная цель: {ответ}"
                 ]
             }
@@ -137,7 +138,7 @@ const QuizApp = {
             return;
         }
         this.nextScreen('screen1');
-        this.createHearts();
+        HeartAnimation.startHearts();
     },
 
     nextScreen(screenId) {
@@ -184,9 +185,11 @@ const QuizApp = {
             return;
         }
 
+        const question = this.questions[questionNum - 1];
         this.userAnswers[questionNum] = {
             original: userText,
-            formulated: userText
+            formulated: userText,
+            questionText: question.text
         };
 
         this.moveToNextQuestion(questionNum);
@@ -210,9 +213,11 @@ const QuizApp = {
             formulationText.innerHTML = formulation;
             formulationDiv.style.display = 'block';
             
+            const question = this.questions[questionNum - 1];
             this.userAnswers[questionNum] = {
                 original: userText,
-                formulated: formulation
+                formulated: formulation,
+                questionText: question.text
             };
         }
     },
@@ -242,7 +247,6 @@ const QuizApp = {
     moveToNextQuestion(currentQ) {
         if (currentQ < this.questions.length) {
             this.nextScreen('screen' + (currentQ + 1));
-            this.createHearts();
         } else {
             this.showFinalScreen();
         }
@@ -267,9 +271,11 @@ const QuizApp = {
 
         for (let i = 1; i <= this.questions.length; i++) {
             if (this.userAnswers[i]) {
-                const question = this.questions[i-1];
-                message += `*${question.theme}*\n`;
-                message += `💭 *Ответ:* ${this.userAnswers[i].formulated}\n\n`;
+                const answer = this.userAnswers[i];
+                message += `*${this.questions[i-1].theme}*\n`;
+                message += `❓ *Вопрос:* ${answer.questionText}\n`;
+                message += `📝 *Оригинал:* ${answer.original}\n`;
+                message += `✨ *Формулировка:* ${answer.formulated}\n\n`;
             }
         }
 
@@ -300,45 +306,6 @@ const QuizApp = {
         }
     },
 
-    createHearts() {
-        const container = document.getElementById('heartsContainer');
-        if (container) {
-            container.innerHTML = '';
-            
-            // Создаем больше сердечек - 8 вместо 3
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'heart';
-                    heart.innerHTML = '💖';
-                    
-                    // Случайная позиция
-                    heart.style.left = Math.random() * 100 + '%';
-                    
-                    // Случайная задержка анимации
-                    heart.style.animationDelay = Math.random() * 3 + 's';
-                    
-                    // Случайный размер
-                    const size = 20 + Math.random() * 20;
-                    heart.style.fontSize = size + 'px';
-                    
-                    // Случайный тип анимации
-                    const animations = ['spin-left', 'spin-right', 'spin-slow', ''];
-                    const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-                    if (randomAnim) {
-                        heart.classList.add(randomAnim);
-                    }
-                    
-                    // Случайная длительность анимации
-                    const duration = 5 + Math.random() * 4;
-                    heart.style.animationDuration = duration + 's';
-                    
-                    container.appendChild(heart);
-                }, i * 300); // Уменьшаем задержку между созданиями
-            }
-        }
-    },
-
     restartQuiz() {
         this.userAnswers = {};
         this.currentQuestion = 0;
@@ -348,7 +315,7 @@ const QuizApp = {
         document.querySelectorAll('.formulation-section').forEach(form => form.style.display = 'none');
         
         this.nextScreen('screen-welcome');
-        this.createHearts();
+        HeartAnimation.startHearts();
     },
 
     // Умные формулировки
@@ -406,6 +373,10 @@ const QuizApp = {
     },
 
     formatNominative(text) {
+        // Проверяем, стоит ли текст после двоеточия
+        if (text.includes(':')) {
+            return text; // Оставляем как есть для текста после двоеточия
+        }
         return text.charAt(0).toUpperCase() + text.slice(1);
     },
 
