@@ -1,4 +1,4 @@
-// Умный музыкальный плеер с исправлениями
+// Умный музыкальный плеер с исправлениями плейлиста и звука
 const MusicPlayer = {
     audio: null,
     isPlaying: false,
@@ -213,7 +213,7 @@ const MusicPlayer = {
             });
         }
 
-        // Кнопка звука
+        // Кнопка звука - ИСПРАВЛЕННАЯ
         const volumeIcon = document.querySelector('.volume-icon');
         if (volumeIcon) {
             volumeIcon.addEventListener('click', (e) => {
@@ -222,9 +222,9 @@ const MusicPlayer = {
             });
         }
 
-        // Закрытие плейлиста при клике вне
+        // Закрытие плейлиста при клике вне - ИСПРАВЛЕННОЕ
         document.addEventListener('click', (e) => {
-            if (this.isPlaylistOpen && !e.target.closest('.music-player')) {
+            if (this.isPlaylistOpen && !e.target.closest('.music-player') && !e.target.closest('.playlist-container')) {
                 this.closePlaylist();
             }
         });
@@ -232,7 +232,7 @@ const MusicPlayer = {
         this.updatePlayerLayout();
     },
 
-    // Переключение звука
+    // ПЕРЕПИСАННАЯ ФУНКЦИЯ: Переключение звука
     toggleMute() {
         this.isMuted = !this.isMuted;
         
@@ -240,12 +240,24 @@ const MusicPlayer = {
             this.previousVolume = this.audio.volume;
             this.audio.volume = 0;
             this.updateVolumeIcon('🔇');
+            // Обновляем слайдер
+            const volumeSlider = document.getElementById('volumeSlider');
+            if (volumeSlider) {
+                volumeSlider.value = 0;
+                this.updateVolumeSlider(0);
+            }
         } else {
             this.audio.volume = this.previousVolume;
             this.updateVolumeIcon('🔊');
+            // Обновляем слайдер
+            const volumeSlider = document.getElementById('volumeSlider');
+            if (volumeSlider) {
+                volumeSlider.value = this.previousVolume * 100;
+                this.updateVolumeSlider(this.previousVolume * 100);
+            }
         }
         
-        this.updateVolumeSlider(this.audio.volume * 100);
+        console.log(`🔊 Звук: ${this.isMuted ? 'выключен' : 'включен'}`);
     },
 
     updateVolumeIcon(icon) {
@@ -601,7 +613,7 @@ const MusicPlayer = {
         }
     },
 
-    // Исправленное открытие/закрытие плейлиста
+    // ИСПРАВЛЕННОЕ открытие/закрытие плейлиста
     togglePlaylist() {
         if (this.isPlaylistOpen) {
             this.closePlaylist();
@@ -615,12 +627,12 @@ const MusicPlayer = {
         if (!playlistContainer) return;
 
         playlistContainer.style.display = 'block';
-        setTimeout(() => {
-            playlistContainer.style.maxHeight = this.isMobile ? '200px' : '300px';
-            playlistContainer.classList.add('open');
-        }, 10);
+        // Убираем setTimeout для мгновенного открытия
+        playlistContainer.style.maxHeight = this.isMobile ? '200px' : '300px';
+        playlistContainer.classList.add('open');
         
         this.isPlaylistOpen = true;
+        console.log('📋 Плейлист открыт');
     },
 
     closePlaylist() {
@@ -637,6 +649,7 @@ const MusicPlayer = {
         }, 400);
         
         this.isPlaylistOpen = false;
+        console.log('📋 Плейлист закрыт');
     },
 
     renderPlaylist() {
@@ -673,6 +686,7 @@ const MusicPlayer = {
         });
     },
 
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ: не закрываем плейлист на десктопе
     selectTrack(index) {
         if (index === this.currentTrack && this.isPlaying) {
             this.pauseWithFade();
@@ -682,10 +696,11 @@ const MusicPlayer = {
         
         this.renderPlaylist();
         
-        // Не закрываем плейлист сразу на десктопе
+        // Закрываем плейлист ТОЛЬКО на мобильных устройствах
         if (this.isMobile) {
             setTimeout(() => this.closePlaylist(), 1000);
         }
+        // На десктопе оставляем открытым
     },
 
     escapeHtml(text) {
