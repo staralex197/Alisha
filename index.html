@@ -78,46 +78,12 @@
                 </p>
                 <div class="buttons">
                     <button class="btn btn-primary" onclick="quiz.startQuestions()">Начать откровенный разговор 💫</button>
-                    <button class="btn btn-secondary" onclick="showScreen('screen-poems')">📖 Читать стихи о любви</button>
                 </div>
             </div>
         </div>
 
         <!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
         <div id="questions-container"></div>
-
-        <!-- ЭКРАН СО СТИХАМИ -->
-        <div class="screen" id="screen-poems">
-            <div class="welcome-content">
-                <h1>Стихи о любви 💖</h1>
-                <p class="question-text">
-                    Для тебя, моя дорогая<br>
-                    Выбери, как хочешь читать стихи
-                </p>
-                
-                <div class="buttons poems-controls">
-                    <button class="btn btn-primary" onclick="showRandomPoemAnimated()">
-                        ⌨️ С анимацией печати
-                    </button>
-                    <button class="btn btn-secondary" onclick="showRandomPoem()">
-                        📖 Случайный стих
-                    </button>
-                    <button class="btn btn-success" onclick="showAllPoems()">
-                        📚 Все стихи
-                    </button>
-                </div>
-                
-                <div id="poemsContainer" class="poems-container">
-                    <!-- Стихи будут загружены здесь -->
-                </div>
-                
-                <div class="buttons">
-                    <button class="btn btn-outline" onclick="showScreen('screen-welcome')">
-                        ← Назад к опроснику
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <!-- ФИНАЛЬНЫЙ ЭКРАН -->
         <div class="screen" id="screen-final">
@@ -129,7 +95,6 @@
                 <p class="question-text">Твои ответы помогли мне понять тебя гораздо лучше! ✨</p>
                 <div class="buttons">
                     <button class="btn btn-success" onclick="quiz.restartQuiz()">🔄 Пройти ещё раз</button>
-                    <button class="btn btn-secondary" onclick="showScreen('screen-poems')">📖 Ещё стихи</button>
                 </div>
             </div>
         </div>
@@ -138,7 +103,6 @@
     <div class="hearts-container" id="heartsContainer"></div>
 
     <!-- Подключаем скрипты -->
-    <script src="scripts/poems-data.js"></script>
     <script src="scripts/poems-library.js"></script>
     <script src="scripts/heart-animation.js"></script>
     <script src="scripts/music-player.js"></script>
