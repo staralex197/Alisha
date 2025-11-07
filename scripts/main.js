@@ -22,14 +22,11 @@ const QuizApp = {
         this.showLoadingScreen();
         
         try {
-            // Сначала загружаем вопросы
+            // Загружаем вопросы
             await this.loadQuestions();
             
-            // Параллельно остальные ресурсы
-            await Promise.all([
-                this.preloadResources(),
-                this.waitForPoemsLibrary()
-            ]);
+            // Предзагрузка ресурсов (без ожидания стихов)
+            await this.preloadResources();
             
             // Инициализация компонентов
             this.generateQuestionScreens();
@@ -41,40 +38,12 @@ const QuizApp = {
             setTimeout(() => {
                 this.hideLoadingScreen();
                 this.showWelcomeScreen();
-            }, 500);
+            }, 800);
             
         } catch (error) {
             console.error('Ошибка инициализации:', error);
             this.showErrorScreen();
         }
-    },
-
-    // Ожидание загрузки библиотеки стихов (ИСПРАВЛЕННЫЙ МЕТОД)
-    async waitForPoemsLibrary() {
-        return new Promise((resolve) => {
-            let attempts = 0;
-            const maxAttempts = 50; // 5 секунд максимум
-            
-            const checkLibrary = () => {
-                attempts++;
-                
-                if (typeof poemsLibrary !== 'undefined' && poemsLibrary.poems && poemsLibrary.poems.length > 0) {
-                    console.log('📚 Библиотека стихов загружена');
-                    resolve();
-                    return;
-                }
-                
-                if (attempts >= maxAttempts) {
-                    console.warn('Библиотека стихов не загрузилась, продолжаем без неё');
-                    resolve();
-                    return;
-                }
-                
-                setTimeout(checkLibrary, 100);
-            };
-            
-            checkLibrary();
-        });
     },
 
     // Показать экран загрузки
@@ -88,14 +57,14 @@ const QuizApp = {
             // Анимация прогресс-бара
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.random() * 20;
-                if (progress > 85) progress = 85;
+                progress += Math.random() * 25;
+                if (progress > 95) progress = 95;
                 progressBar.style.width = progress + '%';
                 
-                if (progress >= 85) {
+                if (progress >= 95) {
                     clearInterval(interval);
                 }
-            }, 200);
+            }, 150);
         }
     },
 
@@ -110,7 +79,7 @@ const QuizApp = {
             setTimeout(() => {
                 loadingScreen.classList.remove('active');
                 loadingScreen.classList.add('hidden');
-            }, 300);
+            }, 200);
         }
     },
 
@@ -138,8 +107,8 @@ const QuizApp = {
     // Предзагрузка ресурсов
     async preloadResources() {
         return new Promise((resolve) => {
-            // Симуляция загрузки ресурсов
-            setTimeout(resolve, 1000);
+            // Быстрая загрузка без ожидания стихов
+            setTimeout(resolve, 600);
         });
     },
 
@@ -442,18 +411,16 @@ const QuizApp = {
         this.nextScreen('screen-final');
         
         // Получаем случайное стихотворение
-        let poem;
-        if (typeof poemsLibrary !== 'undefined' && poemsLibrary.getRandomPoem) {
-            poem = poemsLibrary.getRandomPoem();
-        } else {
-            // Резервное стихотворение
-            poem = {
-                title: "Для тебя",
-                author: "С любовью",
-                year: "2024",
-                text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
-                tags: ["любовь", "нежность"]
-            };
+        let poem = this.getFallbackPoem();
+        
+        // Пытаемся получить стих из библиотеки, если она доступна
+        try {
+            if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
+                const libraryPoem = window.poemsLibrary.getRandomPoem();
+                if (libraryPoem) poem = libraryPoem;
+            }
+        } catch (error) {
+            console.log('Библиотека стихов не доступна, используем резервный вариант');
         }
         
         const finalPoemElement = document.getElementById('finalPoem');
@@ -468,6 +435,17 @@ const QuizApp = {
         }
 
         await this.sendResultsToTelegram(poem);
+    },
+
+    // Резервное стихотворение
+    getFallbackPoem() {
+        return {
+            title: "Для тебя",
+            author: "С любовью", 
+            year: "2024",
+            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
+            tags: ["любовь", "нежность"]
+        };
     },
 
     async sendResultsToTelegram(poem) {
@@ -658,30 +636,63 @@ const QuizApp = {
     }
 };
 
-// Функции для работы со стихами (добавляем в глобальную область видимости)
+// Функции для работы со стихами
 function showRandomPoemAnimated() {
-    if (typeof poemsLibrary !== 'undefined' && poemsLibrary.displayRandomPoemWithAnimation) {
-        poemsLibrary.displayRandomPoemWithAnimation('poemsContainer', 40);
-    } else {
-        document.getElementById('poemsContainer').innerHTML = `
-            <div class="poem-card">
-                <h3 class="poem-title">Библиотека стихов не загрузилась</h3>
-                <div class="poem-text">Попробуйте обновить страницу</div>
-            </div>
-        `;
+    try {
+        if (window.poemsLibrary && typeof window.poemsLibrary.displayRandomPoemWithAnimation === 'function') {
+            window.poemsLibrary.displayRandomPoemWithAnimation('poemsContainer', 40);
+        } else {
+            showFallbackPoem();
+        }
+    } catch (error) {
+        showFallbackPoem();
     }
 }
 
 function showRandomPoem() {
-    if (typeof poemsLibrary !== 'undefined' && poemsLibrary.displayRandomPoem) {
-        poemsLibrary.displayRandomPoem('poemsContainer');
+    try {
+        if (window.poemsLibrary && typeof window.poemsLibrary.displayRandomPoem === 'function') {
+            window.poemsLibrary.displayRandomPoem('poemsContainer');
+        } else {
+            showFallbackPoem();
+        }
+    } catch (error) {
+        showFallbackPoem();
     }
 }
 
 function showAllPoems() {
-    if (typeof poemsLibrary !== 'undefined' && poemsLibrary.displayAllPoems) {
-        poemsLibrary.displayAllPoems('poemsContainer');
+    try {
+        if (window.poemsLibrary && typeof window.poemsLibrary.displayAllPoems === 'function') {
+            window.poemsLibrary.displayAllPoems('poemsContainer');
+        } else {
+            showFallbackPoem();
+        }
+    } catch (error) {
+        showFallbackPoem();
     }
+}
+
+function showFallbackPoem() {
+    document.getElementById('poemsContainer').innerHTML = `
+        <div class="poem-card">
+            <h3 class="poem-title">Для тебя</h3>
+            <div class="poem-meta">
+                <span class="poem-author">С любовью</span>
+                <span class="poem-year">2024</span>
+            </div>
+            <div class="poem-text">
+                Ты - самое прекрасное, что случилось со мной...<br>
+                Твои глаза - как звёзды в ночи,<br>
+                Твоя улыбка - как солнце весной,<br>
+                И в каждом твоём слове - музыка души.
+            </div>
+            <div class="poem-tags">
+                <span class="tag">любовь</span>
+                <span class="tag">нежность</span>
+            </div>
+        </div>
+    `;
 }
 
 function showPoemsScreen() {
@@ -693,7 +704,7 @@ function showPoemsScreen() {
         poemsScreen.classList.add('active');
         setTimeout(() => {
             showRandomPoemAnimated();
-        }, 500);
+        }, 300);
     }
 }
 
