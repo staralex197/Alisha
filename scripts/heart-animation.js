@@ -3,6 +3,8 @@ const HeartAnimation = {
     heartsContainer: null,
     animationInterval: null,
     isRunning: false,
+    heartCount: 0,
+    maxHearts: 50,
 
     init() {
         this.heartsContainer = document.getElementById('heartsContainer');
@@ -21,7 +23,9 @@ const HeartAnimation = {
         
         // Создаем 2-3 сердечка в секунду
         this.animationInterval = setInterval(() => {
-            this.createRandomHearts(2 + Math.floor(Math.random() * 2)); // 2-3 сердечка
+            if (this.heartCount < this.maxHearts) {
+                this.createRandomHearts(2 + Math.floor(Math.random() * 2)); // 2-3 сердечка
+            }
         }, 1000);
         
         console.log('💖 Анимация сердечек запущена');
@@ -40,8 +44,10 @@ const HeartAnimation = {
     createRandomHearts(count) {
         for (let i = 0; i < count; i++) {
             setTimeout(() => {
-                this.createHeart();
-            }, i * 200); // Небольшая задержка между созданиями
+                if (this.heartCount < this.maxHearts) {
+                    this.createHeart();
+                }
+            }, i * 300); // Задержка между созданиями
         }
     },
 
@@ -52,17 +58,19 @@ const HeartAnimation = {
         heart.className = 'heart';
         heart.innerHTML = '💖';
         
-        // Случайная начальная позиция с любой стороны экрана
-        const startPosition = this.getRandomStartPosition();
-        heart.style.left = startPosition.x + 'px';
-        heart.style.top = startPosition.y + 'px';
+        // Получаем безопасную позицию
+        const safePosition = this.getSafePosition();
+        if (!safePosition) return; // Не нашли безопасную позицию
         
-        // Случайный размер
-        const size = 16 + Math.random() * 24; // 16-40px
+        heart.style.left = safePosition.x + 'px';
+        heart.style.top = safePosition.y + 'px';
+        
+        // Случайный размер (16-40px)
+        const size = 16 + Math.random() * 24;
         heart.style.fontSize = size + 'px';
         
         // Случайный тип анимации
-        const animations = ['spin-left', 'spin-right', 'spin-slow', ''];
+        const animations = ['spin-left', 'spin-right', 'spin-slow', 'spin-fast', ''];
         const randomAnim = animations[Math.floor(Math.random() * animations.length)];
         if (randomAnim) {
             heart.classList.add(randomAnim);
@@ -75,55 +83,109 @@ const HeartAnimation = {
         // Случайная задержка
         heart.style.animationDelay = (Math.random() * 2) + 's';
         
+        // Случайная прозрачность
+        heart.style.opacity = 0.7 + Math.random() * 0.3;
+        
+        // Увеличиваем счетчик
+        this.heartCount++;
+        
         // Удаляем сердечко после завершения анимации
         heart.addEventListener('animationend', () => {
             if (heart.parentNode) {
                 heart.parentNode.removeChild(heart);
+                this.heartCount--;
             }
         });
-        
+
         this.heartsContainer.appendChild(heart);
     },
 
-    getRandomStartPosition() {
+    getSafePosition() {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
+        const container = document.querySelector('.container');
         
-        // Выбираем случайную сторону для появления
-        const side = Math.floor(Math.random() * 4); // 0: верх, 1: право, 2: низ, 3: лево
+        if (!container) {
+            return this.getRandomEdgePosition(screenWidth, screenHeight);
+        }
+        
+        const containerRect = container.getBoundingClientRect();
+        
+        // Пытаемся найти безопасную позицию (макс 10 попыток)
+        for (let i = 0; i < 10; i++) {
+            const position = this.getRandomEdgePosition(screenWidth, screenHeight);
+            
+            // Проверяем не попадает ли позиция в контейнер или близко к нему
+            const buffer = 50; // буферная зона вокруг контейнера
+            const isInContainer = 
+                position.x >= containerRect.left - buffer && 
+                position.x <= containerRect.right + buffer &&
+                position.y >= containerRect.top - buffer && 
+                position.y <= containerRect.bottom + buffer;
+            
+            if (!isInContainer) {
+                return position;
+            }
+        }
+        
+        // Если не нашли безопасную позицию, возвращаем случайную на краю
+        return this.getRandomEdgePosition(screenWidth, screenHeight);
+    },
+
+    getRandomEdgePosition(screenWidth, screenHeight) {
+        // Выбираем случайную сторону для появления (0: верх, 1: право, 2: низ, 3: лево)
+        const side = Math.floor(Math.random() * 4);
+        const offset = 20; // Отступ от края
         
         switch(side) {
             case 0: // Верх
                 return {
-                    x: Math.random() * screenWidth,
-                    y: -50
+                    x: Math.random() * (screenWidth - 100) + 50,
+                    y: -offset
                 };
             case 1: // Право
                 return {
-                    x: screenWidth + 50,
-                    y: Math.random() * screenHeight
+                    x: screenWidth + offset,
+                    y: Math.random() * (screenHeight - 100) + 50
                 };
             case 2: // Низ
                 return {
-                    x: Math.random() * screenWidth,
-                    y: screenHeight + 50
+                    x: Math.random() * (screenWidth - 100) + 50,
+                    y: screenHeight + offset
                 };
             case 3: // Лево
                 return {
-                    x: -50,
-                    y: Math.random() * screenHeight
+                    x: -offset,
+                    y: Math.random() * (screenHeight - 100) + 50
                 };
             default:
-                return { x: Math.random() * screenWidth, y: -50 };
+                return { 
+                    x: Math.random() * (screenWidth - 100) + 50, 
+                    y: -offset 
+                };
         }
     },
 
     clearHearts() {
         if (this.heartsContainer) {
             this.heartsContainer.innerHTML = '';
+            this.heartCount = 0;
+        }
+    },
+
+    // Обновление позиций при ресайзе
+    handleResize() {
+        // При изменении размера окна пересоздаем сердечки
+        if (this.isRunning) {
+            this.clearHearts();
         }
     }
 };
+
+// Слушаем ресайз окна
+window.addEventListener('resize', () => {
+    HeartAnimation.handleResize();
+});
 
 // Создаем глобальную ссылку
 window.HeartAnimation = HeartAnimation;
