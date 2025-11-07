@@ -804,9 +804,6 @@ const QuizApp = {
                         <span class="poem-year">${this.escapeHtml(poem.year)}</span>
                     </div>
                     <div class="poem-text typing-area" id="finalPoemText"></div>
-                    <div class="typing-controls">
-                        <button onclick="quiz.skipFinalAnimation()" class="btn-small">⏩ Пропустить анимацию</button>
-                    </div>
                     ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}</div>` : ''}
                 </div>
             `;
@@ -818,18 +815,6 @@ const QuizApp = {
         }
 
         await this.sendResultsToTelegram(poem);
-    },
-
-    skipFinalAnimation() {
-        if (window.poemsLibrary) {
-            window.poemsLibrary.stopTyping();
-            const typingArea = document.getElementById('finalPoemText');
-            const poem = window.poemsLibrary.getRandomPoem();
-            if (typingArea && poem) {
-                typingArea.innerHTML = poem.text.replace(/\n/g, '<br>');
-                typingArea.style.borderRight = 'none';
-            }
-        }
     },
 
     getRandomPoem() {
@@ -856,9 +841,11 @@ const QuizApp = {
         };
     },
 
+    // ИСПРАВЛЕНИЕ: отправка полного стихотворения в Telegram
     async sendResultsToTelegram(poem) {
         let message = `💫 *НОВЫЕ ОТВЕТЫ!*\n\n`;
 
+        // Добавляем ответы на вопросы
         for (let i = 1; i <= this.questions.length; i++) {
             if (this.userAnswers[i]) {
                 const answer = this.userAnswers[i];
@@ -869,13 +856,21 @@ const QuizApp = {
             }
         }
 
-        message += `📜 *Стихотворение:*\n`;
-        message += `«${poem.title}»\n`;
+        // ИСПРАВЛЕНИЕ: добавляем полное стихотворение
+        message += `📜 *Стихотворение для пользователя:*\n`;
+        message += `*Название:* «${poem.title}»\n`;
         message += `*Автор:* ${poem.author}\n`;
         if (poem.year) {
             message += `*Год:* ${poem.year}\n`;
         }
-        message += `\n⏰ *Время:* ${new Date().toLocaleString('ru-RU')}\n`;
+        message += `\n*Текст стихотворения:*\n`;
+        message += `\`\`\`\n${poem.text}\n\`\`\`\n`;
+        
+        if (poem.tags && poem.tags.length > 0) {
+            message += `*Теги:* ${poem.tags.map(tag => `#${tag}`).join(' ')}\n`;
+        }
+
+        message += `\n⏰ *Время отправки:* ${new Date().toLocaleString('ru-RU')}\n`;
         message += `📊 *Всего вопросов:* ${this.questions.length}`;
 
         try {
