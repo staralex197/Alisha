@@ -14,32 +14,47 @@ const QuizApp = {
     currentQuestion: 0,
     questions: [],
     isLoading: true,
+    isOnline: true,
+    botErrorCount: 0,
+    maxBotErrors: 5,
 
     // Инициализация приложения
     async init() {
         console.log('🚀 Инициализация приложения...');
         
         this.showLoadingScreen();
+        this.loadFromStorage(); // Загружаем сохраненные данные
         
         try {
-            // Параллельная загрузка
-            await Promise.all([
-                this.loadQuestions(),
-                this.preloadResources()
+            // Проверяем онлайн статус
+            this.isOnline = navigator.onLine;
+            this.setupOnlineListeners();
+            
+            // Параллельная загрузка с таймаутом
+            await Promise.race([
+                Promise.all([
+                    this.loadQuestions(),
+                    this.preloadResources()
+                ]),
+                new Promise(resolve => setTimeout(resolve, 5000)) // 5 сек таймаут
             ]);
             
             this.generateQuestionScreens();
-            MusicPlayer.init();
-            HeartAnimation.init();
+            
+            // Инициализируем компоненты с проверкой
+            if (typeof MusicPlayer !== 'undefined') MusicPlayer.init();
+            if (typeof HeartAnimation !== 'undefined') HeartAnimation.init();
             this.initColorInversion();
             
-            // Запускаем обработку сообщений от бота
-            this.startBotMessagePolling();
+            // Запускаем обработку сообщений от бота только если онлайн
+            if (this.isOnline) {
+                this.startBotMessagePolling();
+            }
             
             setTimeout(() => {
                 this.hideLoadingScreen();
                 this.showWelcomeScreen();
-            }, 500);
+            }, 800);
             
         } catch (error) {
             console.error('Ошибка инициализации:', error);
@@ -47,13 +62,100 @@ const QuizApp = {
         }
     },
 
-    // Опрос сообщений от бота
+    // Настройка слушателей онлайн статуса
+    setupOnlineListeners() {
+        window.addEventListener('online', () => {
+            this.isOnline = true;
+            console.log('✅ Онлайн соединение восстановлено');
+            this.startBotMessagePolling();
+            
+            // Пытаемся отправить накопившиеся ответы
+            this.sendPendingResults();
+        });
+        
+        window.addEventListener('offline', () => {
+            this.isOnline = false;
+            console.log('⚠️ Оффлайн режим');
+        });
+    },
+
+    // Загрузка из localStorage
+    loadFromStorage() {
+        try {
+            const saved = localStorage.getItem('quizAppData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                this.userAnswers = data.userAnswers || {};
+                this.questions = data.questions || this.getDefaultQuestions();
+                console.log('✅ Данные загружены из localStorage');
+            }
+        } catch (e) {
+            console.log('❌ Ошибка загрузки из localStorage:', e);
+        }
+    },
+
+    // Сохранение в localStorage
+    saveToStorage() {
+        try {
+            const data = {
+                userAnswers: this.userAnswers,
+                questions: this.questions,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('quizAppData', JSON.stringify(data));
+        } catch (e) {
+            console.log('❌ Ошибка сохранения в localStorage:', e);
+        }
+    },
+
+    // Отправка накопившихся результатов
+    async sendPendingResults() {
+        const pending = localStorage.getItem('pendingResults');
+        if (pending && this.isOnline) {
+            try {
+                const results = JSON.parse(pending);
+                await this.sendResultsToTelegram(results.poem);
+                localStorage.removeItem('pendingResults');
+                console.log('✅ Накопившиеся результаты отправлены');
+            } catch (error) {
+                console.log('❌ Ошибка отправки накопившихся результатов:', error);
+            }
+        }
+    },
+
+    // Опрос сообщений от бота с улучшенной обработкой ошибок
     startBotMessagePolling() {
+        if (!this.isOnline) {
+            console.log('⚠️ Пропускаем опрос бота: оффлайн режим');
+            return;
+        }
+
+        if (this.botErrorCount >= this.maxBotErrors) {
+            console.log('❌ Прерываем опрос бота: слишком много ошибок');
+            return;
+        }
+
         let lastUpdateId = 0;
+        let isPolling = true;
         
         const pollBot = async () => {
+            if (!isPolling || !this.isOnline) return;
+            
             try {
-                const response = await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 сек таймаут
+                
+                const response = await fetch(
+                    `https://api.telegram.org/bot${this.config.BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`,
+                    { signal: controller.signal }
+                );
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.ok && data.result.length > 0) {
@@ -63,13 +165,22 @@ const QuizApp = {
                         }
                         lastUpdateId = update.update_id;
                     });
+                    this.botErrorCount = 0; // Сброс счетчика ошибок при успехе
                 }
             } catch (error) {
-                console.log('Ошибка опроса бота:', error);
+                this.botErrorCount++;
+                console.log(`❌ Ошибка опроса бота (${this.botErrorCount}/${this.maxBotErrors}):`, error.message);
+                
+                if (this.botErrorCount >= this.maxBotErrors) {
+                    console.log('🚫 Прекращаем опрос бота из-за множественных ошибок');
+                    isPolling = false;
+                    return;
+                }
             }
             
-            // Продолжаем опрос
-            setTimeout(pollBot, 1000);
+            // Продолжаем опрос с бэк-оффом при ошибках
+            const delay = this.botErrorCount > 0 ? Math.min(30000, this.botErrorCount * 2000) : 1000;
+            setTimeout(pollBot, delay);
         };
         
         pollBot();
@@ -126,6 +237,7 @@ const QuizApp = {
                 this.sendBotMessage(message.chat.id, '✅ Вопросы успешно обновлены!');
                 this.questions = newQuestions;
                 this.generateQuestionScreens();
+                this.saveToStorage();
             } else {
                 this.sendBotMessage(message.chat.id, '❌ Ошибка обновления вопросов');
             }
@@ -165,24 +277,45 @@ const QuizApp = {
 
     // Отправка сообщения через бота
     async sendBotMessage(chatId, text) {
+        if (!this.isOnline) {
+            console.log('⚠️ Пропускаем отправку сообщения: оффлайн режим');
+            return false;
+        }
+
         try {
-            await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/sendMessage`, {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const response = await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     chat_id: chatId,
                     text: text,
                     parse_mode: 'Markdown'
-                })
+                }),
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
+            return response.ok;
         } catch (error) {
-            console.error('Ошибка отправки сообщения:', error);
+            console.error('❌ Ошибка отправки сообщения:', error.message);
+            return false;
         }
     },
 
     // Обновление вопросов в JSONBin
     async updateQuestionsInJSONBin(newQuestions) {
+        if (!this.isOnline) {
+            console.log('⚠️ Пропускаем обновление JSONBin: оффлайн режим');
+            return false;
+        }
+
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
             const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}`, {
                 method: 'PUT',
                 headers: {
@@ -192,25 +325,38 @@ const QuizApp = {
                 },
                 body: JSON.stringify({
                     questions: newQuestions
-                })
+                }),
+                signal: controller.signal
             });
             
+            clearTimeout(timeoutId);
             return response.ok;
         } catch (error) {
-            console.error('Ошибка обновления вопросов:', error);
+            console.error('❌ Ошибка обновления вопросов:', error.message);
             return false;
         }
     },
 
     // Получение текущих вопросов из JSONBin
     async getCurrentQuestionsFromJSONBin() {
+        if (!this.isOnline) {
+            console.log('⚠️ Пропускаем загрузку из JSONBin: оффлайн режим');
+            return this.questions.length > 0 ? this.questions : this.getDefaultQuestions();
+        }
+
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
             const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
                 headers: {
                     'X-Master-Key': this.config.JSONBIN_API_KEY,
                     'Content-Type': 'application/json'
-                }
+                },
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
             
             if (response.ok) {
                 const data = await response.json();
@@ -218,15 +364,16 @@ const QuizApp = {
             }
             return this.getDefaultQuestions();
         } catch (error) {
+            console.log('⚠️ Ошибка загрузки из JSONBin:', error.message);
             return this.getDefaultQuestions();
         }
     },
 
-    // Загрузка вопросов с таймаутом
+    // Загрузка вопросов с улучшенной обработкой ошибок
     async loadQuestions() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
             
             const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
                 headers: {
@@ -242,8 +389,9 @@ const QuizApp = {
                 const data = await response.json();
                 this.questions = data.record.questions || this.getDefaultQuestions();
                 console.log('✅ Вопросы загружены из JSONBin');
+                this.saveToStorage();
             } else {
-                throw new Error('Ошибка ответа');
+                throw new Error(`HTTP ${response.status}`);
             }
         } catch (error) {
             console.log('⚠️ Используем встроенные вопросы:', error.message);
@@ -262,10 +410,13 @@ const QuizApp = {
             let progress = 0;
             const interval = setInterval(() => {
                 progress += Math.random() * 25;
-                if (progress > 95) progress = 95;
-                progressBar.style.width = progress + '%';
+                if (progress > 90) progress = 90;
+                if (progressBar) {
+                    progressBar.style.width = progress + '%';
+                    progressBar.setAttribute('aria-valuenow', Math.round(progress));
+                }
                 
-                if (progress >= 95) {
+                if (progress >= 90) {
                     clearInterval(interval);
                 }
             }, 150);
@@ -279,39 +430,33 @@ const QuizApp = {
         
         if (loadingScreen && progressBar) {
             progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
             
             setTimeout(() => {
                 loadingScreen.classList.remove('active');
                 loadingScreen.classList.add('hidden');
-            }, 200);
+            }, 500);
         }
     },
 
     // Показать экран приветствия
     showWelcomeScreen() {
         this.nextScreen('screen-welcome');
-        HeartAnimation.startHearts();
+        if (typeof HeartAnimation !== 'undefined') {
+            HeartAnimation.startHearts();
+        }
     },
 
     // Показать экран ошибки
     showErrorScreen() {
-        const loadingScreen = document.getElementById('loadingScreen');
-        if (loadingScreen) {
-            loadingScreen.innerHTML = `
-                <div class="loading-content">
-                    <div style="font-size: 3em; margin-bottom: 20px;">😔</div>
-                    <h1>Что-то пошло не так</h1>
-                    <p>Попробуйте обновить страницу</p>
-                    <button class="btn btn-primary" onclick="window.location.reload()">Обновить</button>
-                </div>
-            `;
-        }
+        this.nextScreen('screen-error');
     },
 
     // Предзагрузка ресурсов
     async preloadResources() {
         return new Promise((resolve) => {
-            setTimeout(resolve, 600);
+            // Предзагружаем критически важные ресурсы
+            setTimeout(resolve, 1000);
         });
     },
 
@@ -350,6 +495,11 @@ const QuizApp = {
     // Генерация экранов вопросов
     generateQuestionScreens() {
         const container = document.getElementById('questions-container');
+        if (!container) {
+            console.error('❌ Контейнер вопросов не найден');
+            return;
+        }
+        
         container.innerHTML = '';
 
         this.questions.forEach((question, index) => {
@@ -360,13 +510,13 @@ const QuizApp = {
             const screenHTML = `
                 <div class="screen" id="screen${questionNumber}">
                     <div class="question-content">
-                        <h1>${question.theme}</h1>
-                        <p class="question-text">${question.text}</p>
+                        <h1>${this.escapeHtml(question.theme)}</h1>
+                        <p class="question-text">${this.escapeHtml(question.text)}</p>
                         
                         ${question.suggestions && question.suggestions.length > 0 ? `
                         <div class="suggestion-buttons">
                             ${question.suggestions.map(suggestion => 
-                                `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${suggestion.replace(/'/g, "\\'")}')">${suggestion}</button>`
+                                `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${this.escapeHtml(suggestion.replace(/'/g, "\\'"))}')">${this.escapeHtml(suggestion)}</button>`
                             ).join('')}
                         </div>
                         ` : ''}
@@ -428,6 +578,13 @@ const QuizApp = {
         });
     },
 
+    // Экранирование HTML
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
+
     // Навигация между вопросами
     goToQuestion(questionNumber) {
         if (questionNumber >= 1 && questionNumber <= this.questions.length) {
@@ -466,7 +623,9 @@ const QuizApp = {
         this.currentQuestion = 1;
         this.nextScreen('screen1');
         this.updateProgressSteps();
-        HeartAnimation.startHearts();
+        if (typeof HeartAnimation !== 'undefined') {
+            HeartAnimation.startHearts();
+        }
     },
 
     nextScreen(screenId) {
@@ -484,7 +643,17 @@ const QuizApp = {
         const input = document.getElementById(`input${questionNum}`);
         const count = document.getElementById(`count${questionNum}`);
         if (input && count) {
-            count.textContent = `${input.value.length}/500 символов`;
+            const length = input.value.length;
+            count.textContent = `${length}/500 символов`;
+            
+            // Визуальная индикация при приближении к лимиту
+            if (length > 450) {
+                count.style.color = 'var(--warning)';
+            } else if (length > 400) {
+                count.style.color = 'var(--text-secondary)';
+            } else {
+                count.style.color = '';
+            }
         }
     },
 
@@ -511,7 +680,7 @@ const QuizApp = {
 
         const userText = input.value.trim();
         if (userText.length < 3) {
-            alert('Пожалуйста, напиши немного больше 🤗');
+            this.showTemporaryMessage('Пожалуйста, напиши немного больше 🤗', 'warning');
             return;
         }
 
@@ -522,11 +691,40 @@ const QuizApp = {
             questionText: question.text
         };
 
+        this.saveToStorage(); // Сохраняем после каждого ответа
+
         if (questionNum === this.questions.length) {
             this.showFinalScreen();
         } else {
             this.nextQuestion();
         }
+    },
+
+    // Временное сообщение
+    showTemporaryMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `temp-message temp-message-${type}`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
+            background: ${type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
+            color: white;
+            border-radius: 25px;
+            z-index: 10000;
+            animation: fadeInOut 3s ease-in-out;
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 3000);
     },
 
     showFormulation(questionNum) {
@@ -535,7 +733,7 @@ const QuizApp = {
 
         const userText = input.value.trim();
         if (userText.length < 3) {
-            alert('Напиши хотя бы пару слов 💭');
+            this.showTemporaryMessage('Напиши хотя бы пару слов 💭', 'warning');
             return;
         }
 
@@ -544,7 +742,7 @@ const QuizApp = {
         const formulationText = document.getElementById(`formulationText${questionNum}`);
 
         if (formulationDiv && formulationText) {
-            formulationText.innerHTML = formulation;
+            formulationText.innerHTML = this.escapeHtml(formulation);
             formulationDiv.style.display = 'block';
             
             const question = this.questions[questionNum - 1];
@@ -553,6 +751,8 @@ const QuizApp = {
                 formulated: formulation,
                 questionText: question.text
             };
+            
+            this.saveToStorage();
         }
     },
 
@@ -582,8 +782,9 @@ const QuizApp = {
         const formulationText = document.getElementById(`formulationText${questionNum}`);
 
         if (formulationText) {
-            formulationText.innerHTML = newFormulation;
+            formulationText.innerHTML = this.escapeHtml(newFormulation);
             this.userAnswers[questionNum].formulated = newFormulation;
+            this.saveToStorage();
         }
     },
 
@@ -597,16 +798,16 @@ const QuizApp = {
         if (poem && finalPoemElement) {
             finalPoemElement.innerHTML = `
                 <div class="poem-card fade-in">
-                    <h3 class="poem-title">«${poem.title}»</h3>
+                    <h3 class="poem-title">«${this.escapeHtml(poem.title)}»</h3>
                     <div class="poem-meta">
-                        <span class="poem-author">${poem.author}</span>
-                        <span class="poem-year">${poem.year}</span>
+                        <span class="poem-author">${this.escapeHtml(poem.author)}</span>
+                        <span class="poem-year">${this.escapeHtml(poem.year)}</span>
                     </div>
                     <div class="poem-text typing-area" id="finalPoemText"></div>
                     <div class="typing-controls">
                         <button onclick="quiz.skipFinalAnimation()" class="btn-small">⏩ Пропустить анимацию</button>
                     </div>
-                    ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
+                    ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}</div>` : ''}
                 </div>
             `;
 
@@ -678,17 +879,23 @@ const QuizApp = {
         message += `📊 *Всего вопросов:* ${this.questions.length}`;
 
         try {
-            await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    chat_id: this.config.CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            });
+            const success = await this.sendBotMessage(this.config.CHAT_ID, message);
+            
+            if (!success && this.isOnline) {
+                // Сохраняем для последующей отправки
+                localStorage.setItem('pendingResults', JSON.stringify({
+                    poem: poem,
+                    timestamp: Date.now()
+                }));
+                console.log('💾 Результаты сохранены для последующей отправки');
+            }
         } catch (error) {
-            console.log('Ошибка отправки в Telegram:', error);
+            console.log('❌ Ошибка отправки в Telegram:', error);
+            // Сохраняем для последующей отправки
+            localStorage.setItem('pendingResults', JSON.stringify({
+                poem: poem,
+                timestamp: Date.now()
+            }));
         }
     },
 
@@ -697,11 +904,18 @@ const QuizApp = {
         this.currentQuestion = 0;
         
         document.querySelectorAll('.user-input').forEach(input => input.value = '');
-        document.querySelectorAll('.character-count').forEach(count => count.textContent = '0/500 символов');
+        document.querySelectorAll('.character-count').forEach(count => {
+            count.textContent = '0/500 символов';
+            count.style.color = '';
+        });
         document.querySelectorAll('.formulation-section').forEach(form => form.style.display = 'none');
         
         this.nextScreen('screen-welcome');
-        HeartAnimation.startHearts();
+        if (typeof HeartAnimation !== 'undefined') {
+            HeartAnimation.startHearts();
+        }
+        
+        this.saveToStorage();
     },
 
     initColorInversion() {
@@ -840,6 +1054,18 @@ const QuizApp = {
         return formulations[Math.floor(Math.random() * formulations.length)];
     }
 };
+
+// Добавляем CSS для анимации сообщений
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
 
 window.quiz = QuizApp;
 
