@@ -3,97 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для тебя, моя любовь 💖</title>
+    <title>Узнаю твою душу лучше 💫</title>
+    
+    <!-- Подключаем стили -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/responsive.css">
 </head>
 <body>
-    <!-- Фон с сердечками -->
-    <div class="hearts-background"></div>
-    
-    <!-- Музыкальный плеер -->
-    <div id="musicPlayer" class="music-player">
-        <div class="player-controls">
-            <button id="playPauseBtn" class="player-btn">▶️</button>
-            <div class="track-info">
-                <span id="currentTrack">Выберите трек</span>
-            </div>
-            <button id="playlistBtn" class="player-btn">📋 Плейлист</button>
-        </div>
-        
-        <div id="playlist" class="playlist hidden">
-            <div class="playlist-header">
-                <h3>Наш плейлист</h3>
-                <button id="closePlaylist" class="close-btn">×</button>
-            </div>
-            <div class="tracks-list">
-                <!-- Треки будут добавлены через JS -->
+    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <div class="loading-screen active" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h1>Загружаем магию... ✨</h1>
+            <p>Собираем самые важные вопросы для тебя</p>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgress"></div>
             </div>
         </div>
     </div>
 
-    <!-- Главный контент -->
-    <div class="main-content">
-        <header class="hero">
-            <div class="container">
-                <h1>Для самой прекрасной 💝</h1>
-                <p>Этот сайт создан с любовью специально для тебя</p>
-            </div>
-        </header>
-
-        <!-- Система опроса -->
-        <section id="quiz" class="section">
-            <div class="container">
-                <h2>Давай узнаем друг друга лучше</h2>
-                <div class="quiz-container">
-                    <div class="progress-bar">
-                        <div class="progress" id="quizProgress"></div>
-                    </div>
-                    <div id="quizContent">
-                        <!-- Вопросы будут загружены здесь -->
-                    </div>
-                    <div id="quizResults" class="hidden">
-                        <!-- Результаты будут показаны здесь -->
+    <!-- АДАПТИВНЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
+    <div class="music-player" id="musicPlayer">
+        <div class="player-container">
+            <div class="player-main">
+                <div class="player-track-info">
+                    <div class="track-cover">🎵</div>
+                    <div class="track-details">
+                        <div class="track-title" id="nowPlaying">Загрузка...</div>
+                        <div class="track-artist" id="trackArtist">Пожалуйста, подождите</div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Библиотека стихов -->
-        <section id="poems" class="section">
-            <div class="container">
-                <h2>Стихи о любви</h2>
-                <p>Для тебя, моя дорогая 💖</p>
                 
-                <div class="poems-controls">
-                    <button onclick="showRandomPoemAnimated()" class="btn">⌨️ Случайный стих (с анимацией)</button>
-                    <button onclick="showRandomPoem()" class="btn">📖 Случайный стих</button>
-                    <button onclick="showAllPoems()" class="btn">📚 Все стихи</button>
+                <div class="player-controls">
+                    <button class="control-btn" onclick="musicPlayer.previousTrack()">⏮</button>
+                    <button class="control-btn play-btn" onclick="musicPlayer.togglePlay()" id="playBtn">▶</button>
+                    <button class="control-btn" onclick="musicPlayer.nextTrack()">⏭</button>
+                </div>
+                
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar-music" id="musicProgress"></div>
+                </div>
+                
+                <div class="player-extra">
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                    </div>
+                    
+                    <div class="volume-container">
+                        <span style="color: var(--player-secondary);">🔊</span>
+                        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" oninput="musicPlayer.setVolume(this.value)">
+                    </div>
+                    
+                    <button class="playlist-toggle" onclick="musicPlayer.togglePlaylist()">📋 Плейлист</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ВЫПАДАЮЩИЙ ПЛЕЙЛИСТ -->
+        <div class="playlist-container" id="playlistContainer">
+            <div class="playlist" id="playlist"></div>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР -->
+    <div class="container" id="mainContainer">
+        <!-- ЭКРАН ПРИВЕТСТВИЯ -->
+        <div class="screen active" id="screen-welcome">
+            <div class="welcome-content">
+                <h1>💖 Расскажи мне о себе</h1>
+                <p class="question-text">
+                    Этот опросник особенный - здесь нет готовых ответов!<br>
+                    Пиши всё, что придёт в голову, а я помогу красиво сформулировать мысли.<br>
+                    В конце тебя ждёт прекрасное стихотворение о любви! ✨
+                </p>
+                <div class="buttons">
+                    <button class="btn btn-primary" onclick="quiz.startQuestions()">Начать откровенный разговор 💫</button>
+                    <button class="btn btn-secondary" onclick="showScreen('screen-poems')">📖 Читать стихи о любви</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- КОНТЕЙНЕР ДЛЯ ВОПРОСОВ -->
+        <div id="questions-container"></div>
+
+        <!-- ЭКРАН СО СТИХАМИ -->
+        <div class="screen" id="screen-poems">
+            <div class="welcome-content">
+                <h1>Стихи о любви 💖</h1>
+                <p class="question-text">
+                    Для тебя, моя дорогая<br>
+                    Выбери, как хочешь читать стихи
+                </p>
+                
+                <div class="buttons poems-controls">
+                    <button class="btn btn-primary" onclick="showRandomPoemAnimated()">
+                        ⌨️ С анимацией печати
+                    </button>
+                    <button class="btn btn-secondary" onclick="showRandomPoem()">
+                        📖 Случайный стих
+                    </button>
+                    <button class="btn btn-success" onclick="showAllPoems()">
+                        📚 Все стихи
+                    </button>
                 </div>
                 
                 <div id="poemsContainer" class="poems-container">
                     <!-- Стихи будут загружены здесь -->
                 </div>
-            </div>
-        </section>
-
-        <!-- Финальное сообщение -->
-        <section id="final" class="section hidden">
-            <div class="container">
-                <div class="final-message">
-                    <h2>Спасибо за твои ответы! 💫</h2>
-                    <p>Ты - самое прекрасное, что случилось со мной</p>
-                    <div id="finalPoem" class="final-poem">
-                        <!-- Случайный стих будет показан здесь -->
-                    </div>
+                
+                <div class="buttons">
+                    <button class="btn btn-outline" onclick="showScreen('screen-welcome')">
+                        ← Назад к опроснику
+                    </button>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <!-- ФИНАЛЬНЫЙ ЭКРАН -->
+        <div class="screen" id="screen-final">
+            <div class="final-content">
+                <h1>Спасибо за откровенность! 💖</h1>
+                <div class="poem-container" id="finalPoem">
+                    <div class="loading">Загружаю специальное стихотворение о любви для тебя... 💕</div>
+                </div>
+                <p class="question-text">Твои ответы помогли мне понять тебя гораздо лучше! ✨</p>
+                <div class="buttons">
+                    <button class="btn btn-success" onclick="quiz.restartQuiz()">🔄 Пройти ещё раз</button>
+                    <button class="btn btn-secondary" onclick="showScreen('screen-poems')">📖 Ещё стихи</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Подключение скриптов -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <!-- Подключаем скрипты -->
     <script src="scripts/poems-data.js"></script>
     <script src="scripts/poems-library.js"></script>
+    <script src="scripts/heart-animation.js"></script>
     <script src="scripts/music-player.js"></script>
     <script src="scripts/main.js"></script>
 </body>
