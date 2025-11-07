@@ -1,1206 +1,1126 @@
-/* CSS переменные для темной и светлой тем с улучшенным дизайном */
-:root[data-theme="dark"] {
-    --primary-bg: #0f0f23;
-    --secondary-bg: #1a1a2e;
-    --surface-bg: rgba(30, 30, 46, 0.7);
-    --container-bg: rgba(30, 30, 46, 0.6);
-    --glass-effect: rgba(17, 17, 27, 0.5);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    
-    --text-primary: #e2e8f0;
-    --text-secondary: #a0aec0;
-    --text-muted: #718096;
-    
-    --accent-purple: #c084fc;
-    --accent-pink: #f472b6;
-    --accent-blue: #60a5fa;
-    --accent-green: #34d399;
-    --accent-red: #f87171;
-    --accent-yellow: #fbbf24;
-    
-    --player-bg: rgba(30, 30, 46, 0.8);
-    --player-text: rgba(255, 255, 255, 0.95);
-    --player-secondary: rgba(255, 255, 255, 0.7);
-    --player-accent: #c084fc;
-    
-    --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.5);
-    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-:root[data-theme="light"] {
-    --primary-bg: #f0f4f8;
-    --secondary-bg: #e2e8f0;
-    --surface-bg: rgba(255, 255, 255, 0.7);
-    --container-bg: rgba(255, 255, 255, 0.6);
-    --glass-effect: rgba(255, 255, 255, 0.5);
-    --glass-border: rgba(0, 0, 0, 0.1);
-    
-    --text-primary: #2d3748;
-    --text-secondary: #4a5568;
-    --text-muted: #718096;
-    
-    --accent-purple: #805ad5;
-    --accent-pink: #d53f8c;
-    --accent-blue: #3182ce;
-    --accent-green: #38a169;
-    --accent-red: #e53e3e;
-    --accent-yellow: #d69e2e;
-    
-    --player-bg: rgba(255, 255, 255, 0.8);
-    --player-text: rgba(45, 55, 72, 0.95);
-    --player-secondary: rgba(45, 55, 72, 0.7);
-    --player-accent: #805ad5;
-    
-    --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.15);
-    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    min-height: 100vh;
-    margin: 0;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    overflow-x: hidden;
-    line-height: 1.6;
-    color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    position: relative;
-}
-
-/* Фоновый градиент для красоты */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
-.theme-toggle {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    z-index: 1001;
-    background: var(--surface-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid var(--glass-border);
-    border-radius: 50px;
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--text-primary);
-    font-size: 0.9em;
-    font-weight: 500;
-    box-shadow: var(--shadow-small);
-}
-
-.theme-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-}
-
-.theme-icon {
-    font-size: 1.1em;
-}
-
-.theme-text {
-    white-space: nowrap;
-}
-
-/* ЭКРАН ЗАГРУЗКИ */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease;
-}
-
-.loading-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.loading-content {
-    text-align: center;
-    color: var(--text-primary);
-    max-width: 400px;
-    padding: 0 20px;
-}
-
-.loading-spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid var(--text-muted);
-    border-left: 4px solid var(--accent-purple);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 30px;
-}
-
-.loading-content h1 {
-    font-size: clamp(1.8em, 5vw, 2.2em);
-    margin-bottom: 15px;
-    color: var(--text-primary);
-}
-
-.loading-content p {
-    font-size: clamp(1em, 3vw, 1.1em);
-    opacity: 0.9;
-    margin-bottom: 30px;
-    color: var(--text-secondary);
-}
-
-.loading-progress {
-    width: 100%;
-    height: 6px;
-    background: var(--text-muted);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.loading-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
-    border-radius: 3px;
-    width: 0%;
-    transition: width 0.3s ease;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* АДАПТИВНЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР - ИСПРАВЛЕННЫЙ */
-.music-player {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: var(--player-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--glass-border);
-    z-index: 1000;
-    transition: all 0.3s ease;
-    padding: 8px 0;
-}
-
-.player-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.player-main {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-/* Мобильная версия плеера */
-.music-player.mobile-layout .player-main {
-    flex-direction: column;
-    gap: 10px;
-}
-
-.music-player.mobile-layout .player-track-info {
-    width: 100%;
-    justify-content: center;
-}
-
-.music-player.mobile-layout .player-controls {
-    width: 100%;
-    justify-content: center;
-}
-
-.music-player.mobile-layout .progress-container {
-    width: 100%;
-    order: 3;
-    margin: 5px 0;
-}
-
-.music-player.mobile-layout .player-extra {
-    width: 100%;
-    justify-content: space-between;
-    order: 4;
-}
-
-/* Десктоп версия плеера */
-.music-player.desktop-layout .player-main {
-    flex-direction: row;
-}
-
-.player-track-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.track-cover {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1em;
-    color: var(--text-primary);
-    box-shadow: var(--shadow-small);
-    flex-shrink: 0;
-}
-
-.track-details {
-    flex: 1;
-    min-width: 0;
-}
-
-.track-title {
-    font-size: 0.9em;
-    color: var(--player-text);
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-artist {
-    font-size: 0.8em;
-    color: var(--player-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.player-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.control-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    font-size: 0.9em;
-    cursor: pointer;
-    color: var(--player-text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-small);
-    flex-shrink: 0;
-}
-
-.control-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-    box-shadow: var(--shadow);
-}
-
-.play-btn {
-    width: 42px;
-    height: 42px;
-    background: rgba(255, 255, 255, 0.15);
-    font-size: 1em;
-}
-
-.progress-container {
-    flex: 2;
-    max-width: 400px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-.progress-container:hover {
-    height: 6px;
-}
-
-.progress-bar-music {
-    height: 100%;
-    background: linear-gradient(90deg, var(--player-accent), var(--accent-blue));
-    width: 0%;
-    transition: width 0.1s linear;
-    border-radius: 3px;
-}
-
-.player-extra {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-shrink: 0;
-}
-
-.time-display {
-    font-size: 0.8em;
-    color: var(--player-secondary);
-    white-space: nowrap;
-    font-weight: 500;
-    flex-shrink: 0;
-}
-
-.volume-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.volume-icon {
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    font-size: 1.1em;
-}
-
-.volume-icon:hover {
-    transform: scale(1.1);
-}
-
-.volume-slider {
-    width: 80px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    height: 4px;
-    outline: none;
-    -webkit-appearance: none;
-    transition: all 0.3s ease;
-}
-
-.volume-slider:hover {
-    height: 5px;
-}
-
-.volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--player-accent);
-    cursor: pointer;
-    box-shadow: var(--shadow-small);
-    transition: all 0.3s ease;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-
-/* Кнопка плейлиста */
-.playlist-toggle {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 10px;
-    padding: 8px 16px;
-    font-size: 0.8em;
-    cursor: pointer;
-    color: var(--player-text);
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    font-weight: 500;
-    box-shadow: var(--shadow-small);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-.playlist-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
-}
-
-.playlist-icon {
-    font-size: 1em;
-}
-
-.playlist-text {
-    font-weight: 500;
-}
-
-/* Плейлист - исправленное поведение */
-.playlist-container {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--glass-effect);
-    backdrop-filter: blur(20px) saturate(180%);
-    display: none;
-}
-
-.playlist-container.open {
-    max-height: min(300px, 50vh);
-    display: block;
-}
-
-.playlist {
-    padding: 15px 20px;
-    max-height: 280px;
-    overflow-y: auto;
-}
-
-.playlist-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 6px;
-    color: var(--player-text);
-    border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.playlist-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--glass-border);
-    transform: translateX(5px);
-}
-
-.playlist-item.active {
-    background: rgba(255, 255, 255, 0.15);
-    border-left: 4px solid var(--player-accent);
-    box-shadow: var(--shadow);
-}
-
-.playlist-item-icon {
-    margin-right: 15px;
-    font-size: 1em;
-    opacity: 0.9;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-.playlist-item:hover .playlist-item-icon {
-    transform: scale(1.1);
-}
-
-.playlist-item-info {
-    flex-grow: 1;
-    min-width: 0;
-}
-
-.playlist-item-title {
-    font-size: 0.9em;
-    font-weight: 600;
-    color: var(--player-text);
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.playlist-item-artist {
-    font-size: 0.8em;
-    color: var(--player-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.playlist-item-duration {
-    font-size: 0.8em;
-    color: var(--player-secondary);
-    margin-left: 15px;
-    font-weight: 500;
-    flex-shrink: 0;
-}
-
-/* ОСНОВНОЙ КОНТЕЙНЕР - полупрозрачный */
-.container {
-    background: var(--container-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 25px;
-    padding: clamp(20px, 4vw, 40px);
-    box-shadow: var(--shadow);
-    max-width: min(800px, 90vw);
-    width: 90%;
-    position: relative;
-    min-height: min(500px, 80vh);
-    margin: clamp(100px, 12vh, 140px) auto 40px;
-    transition: all 0.3s ease;
-    border: 1px solid var(--glass-border);
-    overflow: hidden;
-}
-
-.screen {
-    display: none;
-    animation: fadeInUp 0.6s ease;
-}
-
-.screen.active {
-    display: block;
-}
-
-.welcome-content,
-.final-content,
-.error-content {
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-h1 {
-    color: var(--text-primary);
-    margin-bottom: clamp(20px, 3vh, 25px);
-    font-size: clamp(1.8em, 5vw, 2.5em);
-    background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.question-text {
-    font-size: clamp(1.1em, 3vw, 1.3em);
-    color: var(--text-secondary);
-    margin-bottom: clamp(25px, 4vh, 35px);
-    line-height: 1.7;
-    min-height: clamp(40px, 6vh, 60px);
-    text-align: center;
-}
-
-.input-section {
-    margin: clamp(25px, 4vh, 35px) 0;
-}
-
-.user-input {
-    width: 100%;
-    min-height: clamp(80px, 15vh, 120px);
-    max-height: clamp(100px, 20vh, 150px);
-    padding: clamp(15px, 3vw, 20px);
-    border: 2px solid var(--glass-border);
-    border-radius: 18px;
-    font-size: clamp(1em, 2vw, 1.1em);
-    font-family: inherit;
-    resize: none;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-    background: var(--glass-effect);
-    box-shadow: var(--shadow-small);
-    line-height: 1.6;
-    color: var(--text-primary);
-    overflow-y: auto;
-}
-
-.user-input:focus {
-    outline: none;
-    border-color: var(--accent-purple);
-    box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.1), var(--shadow);
-    transform: translateY(-2px);
-}
-
-.user-input::placeholder {
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-.buttons {
-    display: flex;
-    gap: clamp(10px, 2vw, 15px);
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 10px;
-}
-
-.btn {
-    padding: clamp(12px, 2vw, 14px) clamp(20px, 3vw, 30px);
-    border: none;
-    border-radius: 50px;
-    font-size: clamp(1em, 2vw, 1.1em);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    min-width: min(180px, 100%);
-    font-weight: 600;
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    flex: 1;
-    max-width: 300px;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn:hover::before {
-    left: 100%;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-    color: var(--text-primary);
-    border: 1px solid var(--glass-border);
-}
-
-.btn-secondary {
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-    color: var(--text-primary);
-    border: 1px solid var(--glass-border);
-}
-
-.btn-success {
-    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-    color: var(--text-primary);
-    border: 1px solid var(--glass-border);
-}
-
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--accent-purple);
-    color: var(--accent-purple);
-}
-
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-}
-
-.btn:active {
-    transform: translateY(-1px);
-}
-
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.character-count {
-    text-align: right;
-    color: var(--text-secondary);
-    font-size: 0.9em;
-    margin-top: -15px;
-    margin-bottom: 15px;
-    font-weight: 500;
-}
-
-/* ОКОШКО ФОРМУЛИРОВКИ */
-.formulation-section {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
-    color: var(--text-primary);
-    padding: clamp(20px, 3vw, 25px);
-    border-radius: 20px;
-    margin: clamp(15px, 2vh, 20px) 0;
-    text-align: left;
-    display: none;
-    animation: slideInUp 0.5s ease;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    max-height: min(200px, 30vh);
-    overflow-y: auto;
-}
-
-.formulation-text {
-    font-size: clamp(1em, 2vw, 1.1em);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    font-weight: 500;
-}
-
-/* Стихотворение - убираем ползунок */
-.poem-container {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
-    color: var(--text-primary);
-    padding: clamp(20px, 3vw, 30px);
-    border-radius: 20px;
-    margin: clamp(20px, 3vh, 30px) 0;
-    text-align: center;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    max-height: min(400px, 50vh);
-    overflow-y: auto;
-}
-
-/* Убираем скроллбар для стихотворения */
-.poem-container::-webkit-scrollbar {
-    display: none;
-}
-
-.poem-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.poem-title {
-    font-size: clamp(1.4em, 4vw, 1.8em);
-    margin-bottom: 20px;
-    font-style: italic;
-    font-weight: 600;
-    color: var(--accent-purple);
-}
-
-.poem-text {
-    font-size: clamp(1em, 2vw, 1.1em);
-    line-height: 1.8;
-    font-style: italic;
-    white-space: pre-line;
-    font-weight: 500;
-}
-
-.poem-author {
-    font-size: clamp(0.9em, 2vw, 1em);
-    margin-top: 20px;
-    font-style: normal;
-    opacity: 0.9;
-    font-weight: 600;
-    color: var(--accent-blue);
-}
-
-/* ПРОГРЕСС БАР И НАВИГАЦИЯ */
-.progress-navigation {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: clamp(20px, 3vh, 25px) 0;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.progress-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 0;
-}
-
-.progress {
-    flex: 1;
-    height: 8px;
-    background: var(--text-muted);
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-blue));
-    border-radius: 4px;
-    transition: width 0.5s ease;
-    position: relative;
-}
-
-.progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: shimmer 2s infinite;
-}
-
-/* Индикаторы вопросов - исправленные */
-.progress-steps {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.progress-step {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    flex-shrink: 0;
-}
-
-.progress-step.active {
-    background: var(--accent-purple);
-    transform: scale(1.2);
-    box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.2);
-}
-
-.progress-step.completed {
-    background: var(--accent-green);
-}
-
-.progress-step:hover {
-    transform: scale(1.3);
-    box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.3);
-}
-
-.nav-buttons {
-    display: flex;
-    gap: clamp(8px, 2vw, 12px);
-    flex-shrink: 0;
-}
-
-.nav-btn {
-    padding: clamp(8px, 2vw, 10px) clamp(15px, 3vw, 20px);
-    border: none;
-    border-radius: 25px;
-    font-size: clamp(0.9em, 2vw, 0.95em);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    min-width: min(100px, 100%);
-    box-shadow: var(--shadow-small);
-    backdrop-filter: blur(10px);
-    flex: 1;
-}
-
-.nav-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-.nav-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
-
-.suggestion-buttons {
-    display: flex;
-    gap: clamp(6px, 1vw, 10px);
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-.suggestion-btn {
-    padding: clamp(6px, 1vw, 8px) clamp(12px, 2vw, 16px);
-    background: rgba(192, 132, 252, 0.1);
-    border: 2px solid rgba(192, 132, 252, 0.3);
-    border-radius: 20px;
-    color: var(--accent-purple);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: clamp(0.85em, 2vw, 0.9em);
-    font-weight: 500;
-    flex-shrink: 0;
-}
-
-.suggestion-btn:hover {
-    background: rgba(192, 132, 252, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(192, 132, 252, 0.2);
-}
-
-/* АНИМАЦИИ */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
+/* Основная логика приложения с исправленными индикаторами прогресса */
+const QuizApp = {
+    // Конфигурация
+    config: {
+        BOT_TOKEN: '8519621124:AAEtDBYSAeNW16UQiAGy0epAwwt989v9Tzs',
+        CHAT_ID: '1490495592',
+        JSONBIN_ID: '690bda1cae596e708f473589',
+        JSONBIN_API_KEY: '$2a$10$nFkbrwHZpy3T9KrGUS6RxecAFiNTyKuGe.DZjFqoWYEUcbGS27YRC',
+        ADMIN_CHAT_ID: '1490495592'
+    },
+
+    // Глобальные переменные
+    userAnswers: {},
+    currentQuestion: 0,
+    questions: [],
+    isLoading: true,
+    isOnline: true,
+    botErrorCount: 0,
+    maxBotErrors: 5,
+    isMobile: false,
+    initializationTimeout: null,
+
+    // Инициализация приложения
+    async init() {
+        console.log('🚀 Инициализация приложения...');
+        
+        try {
+            this.showLoadingScreen();
+            this.detectDeviceType();
+            this.loadFromStorage();
+            
+            // Устанавливаем таймаут инициализации (10 секунд)
+            this.initializationTimeout = setTimeout(() => {
+                if (this.isLoading) {
+                    console.log('⚠️ Таймаут инициализации, принудительный запуск');
+                    this.forceInitialization();
+                }
+            }, 10000);
+
+            // Проверяем онлайн статус
+            this.isOnline = navigator.onLine;
+            this.setupOnlineListeners();
+            this.setupThemeToggle();
+            
+            // Параллельная загрузка с улучшенной обработкой ошибок
+            await this.safeInitialization();
+            
+        } catch (error) {
+            console.error('Критическая ошибка инициализации:', error);
+            this.forceInitialization();
+        }
+    },
+
+    // Безопасная инициализация с обработкой ошибок
+    async safeInitialization() {
+        try {
+            await Promise.race([
+                Promise.all([
+                    this.loadQuestions().catch(error => {
+                        console.log('⚠️ Ошибка загрузки вопросов:', error);
+                        this.questions = this.getDefaultQuestions();
+                    }),
+                    this.preloadResources()
+                ]),
+                new Promise(resolve => setTimeout(resolve, 3000)) // 3 сек таймаут
+            ]);
+
+            this.generateQuestionScreens();
+            
+            // Инициализируем компоненты с защитой от ошибок
+            this.safeComponentInitialization();
+            
+            // Запускаем обработку сообщений от бота только если онлайн
+            if (this.isOnline) {
+                this.startBotMessagePolling();
+            }
+            
+            this.completeInitialization();
+            
+        } catch (error) {
+            console.error('Ошибка безопасной инициализации:', error);
+            this.forceInitialization();
+        }
+    },
+
+    // Безопасная инициализация компонентов
+    safeComponentInitialization() {
+        try {
+            if (typeof MusicPlayer !== 'undefined' && MusicPlayer.init) {
+                MusicPlayer.init().catch(error => {
+                    console.log('⚠️ Ошибка инициализации плеера:', error);
+                });
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка при инициализации MusicPlayer:', error);
+        }
+
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.init) {
+                HeartAnimation.init();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка при инициализации HeartAnimation:', error);
+        }
+
+        try {
+            this.initColorInversion();
+        } catch (error) {
+            console.log('⚠️ Ошибка при инициализации color inversion:', error);
+        }
+    },
+
+    // Принудительная инициализация при таймауте
+    forceInitialization() {
+        console.log('🔄 Принудительная инициализация...');
+        
+        // Гарантированно устанавливаем вопросы по умолчанию
+        if (!this.questions || this.questions.length === 0) {
+            this.questions = this.getDefaultQuestions();
+        }
+        
+        this.generateQuestionScreens();
+        this.completeInitialization();
+    },
+
+    // Завершение инициализации
+    completeInitialization() {
+        // Очищаем таймаут
+        if (this.initializationTimeout) {
+            clearTimeout(this.initializationTimeout);
+            this.initializationTimeout = null;
+        }
+        
+        this.isLoading = false;
+        
+        setTimeout(() => {
+            this.hideLoadingScreen();
+            this.showWelcomeScreen();
+            console.log('✅ Приложение успешно инициализировано');
+        }, 500);
+    },
+
+    // Определение типа устройства
+    detectDeviceType() {
+        this.isMobile = window.innerWidth <= 768;
+        console.log(`📱 Устройство: ${this.isMobile ? 'Мобильное' : 'Десктоп'}`);
+    },
+
+    // Настройка переключателя тем
+    setupThemeToggle() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (!themeToggle) {
+            console.log('⚠️ Переключатель темы не найден');
+            return;
+        }
+
+        themeToggle.addEventListener('click', () => {
+            this.toggleTheme();
+        });
+
+        // Обработка клавиатуры
+        themeToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.toggleTheme();
+            }
+        });
+    },
+
+    // Переключение темы
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Обновляем текст переключателя
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            const themeText = themeToggle.querySelector('.theme-text');
+            const themeIcon = themeToggle.querySelector('.theme-icon');
+            
+            if (newTheme === 'dark') {
+                themeText.textContent = 'Светлая';
+                themeIcon.textContent = '☀️';
+            } else {
+                themeText.textContent = 'Тёмная';
+                themeIcon.textContent = '🌙';
+            }
+        }
+    },
+
+    // Настройка слушателей онлайн статуса
+    setupOnlineListeners() {
+        window.addEventListener('online', () => {
+            this.isOnline = true;
+            console.log('✅ Онлайн соединение восстановлено');
+            this.startBotMessagePolling();
+            this.sendPendingResults();
+        });
+        
+        window.addEventListener('offline', () => {
+            this.isOnline = false;
+            console.log('⚠️ Оффлайн режим');
+        });
+    },
+
+    // Загрузка из localStorage
+    loadFromStorage() {
+        try {
+            const saved = localStorage.getItem('quizAppData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                this.userAnswers = data.userAnswers || {};
+                this.questions = data.questions || this.getDefaultQuestions();
+                console.log('✅ Данные загружены из localStorage');
+            } else {
+                this.questions = this.getDefaultQuestions();
+            }
+        } catch (e) {
+            console.log('❌ Ошибка загрузки из localStorage:', e);
+            this.questions = this.getDefaultQuestions();
+        }
+    },
+
+    // Сохранение в localStorage
+    saveToStorage() {
+        try {
+            const data = {
+                userAnswers: this.userAnswers,
+                questions: this.questions,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('quizAppData', JSON.stringify(data));
+        } catch (e) {
+            console.log('❌ Ошибка сохранения в localStorage:', e);
+        }
+    },
+
+    // Загрузка вопросов с улучшенной обработкой ошибок
+    async loadQuestions() {
+        if (!this.isOnline) {
+            console.log('⚠️ Оффлайн режим, используем локальные вопросы');
+            this.questions = this.getDefaultQuestions();
+            return;
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
+                headers: {
+                    'X-Master-Key': this.config.JSONBIN_API_KEY,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.questions = data.record.questions || this.getDefaultQuestions();
+                console.log('✅ Вопросы загружены из JSONBin');
+                this.saveToStorage();
+            } else {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (error) {
+            console.log('⚠️ Используем встроенные вопросы:', error.message);
+            this.questions = this.getDefaultQuestions();
+        }
+    },
+
+    // Показать экран загрузки
+    showLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgress');
+        
+        if (loadingScreen) {
+            loadingScreen.classList.add('active');
+            loadingScreen.classList.remove('hidden');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 25;
+                if (progress > 85) progress = 85; // Оставляем место для завершения
+                if (progressBar) {
+                    progressBar.style.width = progress + '%';
+                    progressBar.setAttribute('aria-valuenow', Math.round(progress));
+                }
+                
+                if (progress >= 85) {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+    },
+
+    // Скрыть экран загрузки
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgress');
+        
+        if (loadingScreen && progressBar) {
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            
+            setTimeout(() => {
+                loadingScreen.classList.remove('active');
+                loadingScreen.classList.add('hidden');
+            }, 500);
+        }
+    },
+
+    // Показать экран приветствия
+    showWelcomeScreen() {
+        this.nextScreen('screen-welcome');
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
+                HeartAnimation.startHearts();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка запуска сердечек:', error);
+        }
+    },
+
+    // Показать экран ошибки
+    showErrorScreen() {
+        this.nextScreen('screen-error');
+    },
+
+    // Предзагрузка ресурсов
+    async preloadResources() {
+        return new Promise((resolve) => {
+            // Минимальная задержка для плавности
+            setTimeout(resolve, 1000);
+        });
+    },
+
+    // Резервные вопросы
+    getDefaultQuestions() {
+        return [
+            {
+                id: 1,
+                text: "Опиши, в чём твоя самая сильная сторона? Что делает тебя особенным?",
+                theme: "🌟 Твоя уникальность",
+                suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность", "Сила воли"],
+                templates: [
+                    "Моя сила проявляется в {ответ.предложный}",
+                    "Я особенно ценю в себе способность {ответ.союз}",
+                    "Что делает меня особенным - это {ответ.именительный}",
+                    "Моя уникальная черта - {ответ.именительный}",
+                    "Я горжусь тем, что могу {ответ.союз}"
+                ]
+            },
+            {
+                id: 2,
+                text: "Какая у тебя самая заветная мечта? О чём ты чаще всего фантазируешь?",
+                theme: "🌈 Твои мечты",
+                suggestions: ["Путешествия", "Семья", "Творчество", "Помощь другим", "Личностный рост"],
+                templates: [
+                    "Я мечтаю о {ответ.предложный}",
+                    "Мои самые сокровенные желания связаны с {ответ.предложный}",
+                    "В своих фантазиях я вижу себя {ответ.союз}",
+                    "Я стремлюсь к {ответ.предложный}",
+                    "Моя главная цель - {ответ.именительный}"
+                ]
+            }
+        ];
+    },
+
+    // Генерация экранов вопросов с исправленными индикаторами
+    generateQuestionScreens() {
+        const container = document.getElementById('questions-container');
+        if (!container) {
+            console.error('❌ Контейнер вопросов не найден');
+            return;
+        }
+        
+        container.innerHTML = '';
+
+        this.questions.forEach((question, index) => {
+            const questionNumber = index + 1;
+            const progressWidth = (questionNumber / this.questions.length) * 100;
+            const savedAnswer = this.userAnswers[questionNumber];
+
+            const screenHTML = `
+                <div class="screen" id="screen${questionNumber}">
+                    <div class="question-content">
+                        <h1>${this.escapeHtml(question.theme)}</h1>
+                        <p class="question-text">${this.escapeHtml(question.text)}</p>
+                        
+                        ${question.suggestions && question.suggestions.length > 0 ? `
+                        <div class="suggestion-buttons">
+                            ${question.suggestions.map(suggestion => 
+                                `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${this.escapeHtml(suggestion.replace(/'/g, "\\'"))}')">${this.escapeHtml(suggestion)}</button>`
+                            ).join('')}
+                        </div>
+                        ` : ''}
+
+                        <div class="input-section">
+                            <div class="character-count" id="count${questionNumber}">${savedAnswer?.original?.length || 0}/500 символов</div>
+                            <textarea class="user-input" id="input${questionNumber}" 
+                                      placeholder="Напиши здесь всё, что считаешь важным... 💭" 
+                                      maxlength="500" 
+                                      oninput="quiz.updateCharacterCount(${questionNumber})">${savedAnswer?.original || ''}</textarea>
+                            
+                            <div class="progress-navigation">
+                                <div class="progress-wrapper">
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                                    </div>
+                                    <div class="progress-steps">
+                                        ${this.questions.map((_, i) => `
+                                            <div class="progress-step" 
+                                                 onclick="quiz.goToQuestion(${i + 1})"
+                                                 data-question="${i + 1}"></div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="nav-buttons">
+                                    <button class="nav-btn btn-outline" onclick="quiz.previousQuestion()" ${questionNumber === 1 ? 'disabled' : ''}>
+                                        ⬅ Назад
+                                    </button>
+                                    <button class="nav-btn btn-primary" onclick="quiz.saveAnswer(${questionNumber})">
+                                        ${questionNumber === this.questions.length ? 'Завершить 💫' : 'Далее ➡'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="buttons">
+                                <button class="btn btn-secondary" onclick="quiz.showFormulation(${questionNumber})">
+                                    ✨ Красиво оформить
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="formulation-section" id="formulation${questionNumber}">
+                            <div class="formulation-text" id="formulationText${questionNumber}"></div>
+                            <div class="buttons">
+                                <button class="btn btn-outline" onclick="quiz.hideFormulation(${questionNumber})">
+                                    ↩ Вернуться
+                                </button>
+                                <button class="btn btn-success" onclick="quiz.acceptFormulation(${questionNumber})">
+                                    ✅ Сохранить
+                                </button>
+                                <button class="btn btn-secondary" onclick="quiz.reformulate(${questionNumber})">
+                                    🔄 Переформулировать
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += screenHTML;
+        });
+
+        // Инициализируем индикаторы после генерации
+        this.updateProgressSteps();
+    },
+
+    // Экранирование HTML
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
+
+    // Навигация между вопросами с исправленными индикаторами
+    goToQuestion(questionNumber) {
+        if (questionNumber >= 1 && questionNumber <= this.questions.length) {
+            this.currentQuestion = questionNumber;
+            this.nextScreen('screen' + questionNumber);
+            this.updateProgressSteps();
+        }
+    },
+
+    previousQuestion() {
+        if (this.currentQuestion > 1) {
+            this.currentQuestion--;
+            this.nextScreen('screen' + this.currentQuestion);
+            this.updateProgressSteps();
+        }
+    },
+
+    nextQuestion() {
+        if (this.currentQuestion < this.questions.length) {
+            this.currentQuestion++;
+            this.nextScreen('screen' + this.currentQuestion);
+            this.updateProgressSteps();
+        }
+    },
+
+    // ИСПРАВЛЕННЫЙ МЕТОД: правильное обновление индикаторов
+    updateProgressSteps() {
+        const progressSteps = document.querySelectorAll('.progress-step');
+        console.log(`🔄 Обновление индикаторов: текущий вопрос ${this.currentQuestion}, всего шагов: ${progressSteps.length}`);
+        
+        progressSteps.forEach((step, index) => {
+            const questionNumber = index + 1;
+            
+            // Убираем все классы
+            step.classList.remove('active', 'completed');
+            
+            // Текущий вопрос
+            if (questionNumber === this.currentQuestion) {
+                step.classList.add('active');
+                console.log(`✅ Шаг ${questionNumber}: активный`);
+            }
+            // Пройденные вопросы (где есть ответы)
+            else if (this.userAnswers[questionNumber]) {
+                step.classList.add('completed');
+                console.log(`✅ Шаг ${questionNumber}: завершен`);
+            }
+            // Будущие вопросы
+            else {
+                console.log(`⏳ Шаг ${questionNumber}: ожидание`);
+            }
+        });
+    },
+
+    // Основные функции приложения
+    startQuestions() {
+        this.currentQuestion = 1;
+        this.nextScreen('screen1');
+        this.updateProgressSteps();
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
+                HeartAnimation.startHearts();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка запуска сердечек:', error);
+        }
+    },
+
+    nextScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    },
+
+    updateCharacterCount(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        const count = document.getElementById(`count${questionNum}`);
+        if (input && count) {
+            const length = input.value.length;
+            count.textContent = `${length}/500 символов`;
+            
+            // Визуальная индикация при приближении к лимиту
+            if (length > 450) {
+                count.style.color = 'var(--accent-red)';
+            } else if (length > 400) {
+                count.style.color = 'var(--accent-yellow)';
+            } else {
+                count.style.color = 'var(--text-secondary)';
+            }
+        }
+    },
+
+    addSuggestion(questionNum, text) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (input) {
+            const currentText = input.value.trim();
+            if (currentText === '') {
+                input.value = text;
+            } else {
+                const lastChar = currentText.slice(-1);
+                const connectors = ['.', '!', '?', ';', ','];
+                const separator = connectors.includes(lastChar) ? ' ' : '. ';
+                input.value = currentText + separator + text;
+            }
+            this.updateCharacterCount(questionNum);
+            input.focus();
+        }
+    },
+
+    saveAnswer(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (!input) return;
+
+        const userText = input.value.trim();
+        if (userText.length < 3) {
+            this.showTemporaryMessage('Пожалуйста, напиши немного больше 🤗', 'warning');
+            return;
+        }
+
+        const question = this.questions[questionNum - 1];
+        this.userAnswers[questionNum] = {
+            original: userText,
+            formulated: userText,
+            questionText: question.text
+        };
+
+        this.saveToStorage();
+
+        // ОБНОВЛЯЕМ ИНДИКАТОРЫ ПОСЛЕ СОХРАНЕНИЯ ОТВЕТА
+        this.updateProgressSteps();
+
+        if (questionNum === this.questions.length) {
+            this.showFinalScreen();
+        } else {
+            this.nextQuestion();
+        }
+    },
+
+    // Временное сообщение
+    showTemporaryMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `temp-message temp-message-${type}`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
+            background: ${type === 'warning' ? 'var(--accent-red)' : 
+                        type === 'success' ? 'var(--accent-green)' : 'var(--accent-purple)'};
+            color: white;
+            border-radius: 25px;
+            z-index: 10000;
+            animation: fadeInOut 3s ease-in-out;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 3000);
+    },
+
+    showFormulation(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (!input) return;
+
+        const userText = input.value.trim();
+        if (userText.length < 3) {
+            this.showTemporaryMessage('Напиши хотя бы пару слов 💭', 'warning');
+            return;
+        }
+
+        const formulation = this.generateSmartFormulation(questionNum, userText);
+        const formulationDiv = document.getElementById(`formulation${questionNum}`);
+        const formulationText = document.getElementById(`formulationText${questionNum}`);
+
+        if (formulationDiv && formulationText) {
+            formulationText.innerHTML = this.escapeHtml(formulation);
+            formulationDiv.style.display = 'block';
+            
+            const question = this.questions[questionNum - 1];
+            this.userAnswers[questionNum] = {
+                original: userText,
+                formulated: formulation,
+                questionText: question.text
+            };
+            
+            this.saveToStorage();
+        }
+    },
+
+    hideFormulation(questionNum) {
+        const formulationDiv = document.getElementById(`formulation${questionNum}`);
+        if (formulationDiv) {
+            formulationDiv.style.display = 'none';
+        }
+    },
+
+    acceptFormulation(questionNum) {
+        this.hideFormulation(questionNum);
+        
+        // ОБНОВЛЯЕМ ИНДИКАТОРЫ ПОСЛЕ ПРИНЯТИЯ ФОРМУЛИРОВКИ
+        this.updateProgressSteps();
+        
+        if (questionNum === this.questions.length) {
+            this.showFinalScreen();
+        } else {
+            this.nextQuestion();
+        }
+    },
+
+    reformulate(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (!input) return;
+
+        const userText = input.value.trim();
+        const newFormulation = this.generateSmartFormulation(questionNum, userText);
+        const formulationText = document.getElementById(`formulationText${questionNum}`);
+
+        if (formulationText) {
+            formulationText.innerHTML = this.escapeHtml(newFormulation);
+            this.userAnswers[questionNum].formulated = newFormulation;
+            this.saveToStorage();
+        }
+    },
+
+    async showFinalScreen() {
+        this.nextScreen('screen-final');
+        
+        let poem = this.getRandomPoem();
+        
+        const finalPoemElement = document.getElementById('finalPoem');
+        
+        if (poem && finalPoemElement) {
+            finalPoemElement.innerHTML = `
+                <div class="poem-card fade-in">
+                    <h3 class="poem-title">«${this.escapeHtml(poem.title)}»</h3>
+                    <div class="poem-meta">
+                        <span class="poem-author">${this.escapeHtml(poem.author)}</span>
+                        <span class="poem-year">${this.escapeHtml(poem.year)}</span>
+                    </div>
+                    <div class="poem-text typing-area" id="finalPoemText"></div>
+                    ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+                </div>
+            `;
+
+            const typingArea = document.getElementById('finalPoemText');
+            if (typingArea && window.poemsLibrary) {
+                await window.poemsLibrary.typeText(typingArea, poem.text, 40);
+            }
+        }
+
+        await this.sendResultsToTelegram(poem);
+    },
+
+    getRandomPoem() {
+        try {
+            if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
+                const poem = window.poemsLibrary.getRandomPoem();
+                if (poem && poem.title && poem.text) {
+                    return poem;
+                }
+            }
+            return this.getFallbackPoem();
+        } catch (error) {
+            return this.getFallbackPoem();
+        }
+    },
+
+    getFallbackPoem() {
+        return {
+            title: "Для тебя",
+            author: "С любовью", 
+            year: "2024",
+            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
+            tags: ["любовь", "нежность"]
+        };
+    },
+
+    // Отправка результатов в Telegram
+    async sendResultsToTelegram(poem) {
+        let message = `💫 *НОВЫЕ ОТВЕТЫ!*\n\n`;
+
+        // Добавляем ответы на вопросы
+        for (let i = 1; i <= this.questions.length; i++) {
+            if (this.userAnswers[i]) {
+                const answer = this.userAnswers[i];
+                message += `*${this.questions[i-1].theme}*\n`;
+                message += `❓ *Вопрос:* ${answer.questionText}\n`;
+                message += `📝 *Оригинал:* ${answer.original}\n`;
+                message += `✨ *Формулировка:* ${answer.formulated}\n\n`;
+            }
+        }
+
+        // Добавляем стихотворение
+        message += `📜 *Стихотворение для пользователя:*\n`;
+        message += `*Название:* «${poem.title}»\n`;
+        message += `*Автор:* ${poem.author}\n`;
+        if (poem.year) {
+            message += `*Год:* ${poem.year}\n`;
+        }
+        message += `\n*Текст стихотворения:*\n`;
+        message += `\`\`\`\n${poem.text}\n\`\`\`\n`;
+        
+        if (poem.tags && poem.tags.length > 0) {
+            message += `*Теги:* ${poem.tags.map(tag => `#${tag}`).join(' ')}\n`;
+        }
+
+        message += `\n⏰ *Время отправки:* ${new Date().toLocaleString('ru-RU')}\n`;
+        message += `📊 *Всего вопросов:* ${this.questions.length}`;
+
+        try {
+            const success = await this.sendBotMessage(this.config.CHAT_ID, message);
+            
+            if (!success && this.isOnline) {
+                // Сохраняем для последующей отправки
+                localStorage.setItem('pendingResults', JSON.stringify({
+                    poem: poem,
+                    timestamp: Date.now()
+                }));
+                console.log('💾 Результаты сохранены для последующей отправки');
+            }
+        } catch (error) {
+            console.log('❌ Ошибка отправки в Telegram:', error);
+            // Сохраняем для последующей отправки
+            localStorage.setItem('pendingResults', JSON.stringify({
+                poem: poem,
+                timestamp: Date.now()
+            }));
+        }
+    },
+
+    restartQuiz() {
+        this.userAnswers = {};
+        this.currentQuestion = 0;
+        
+        document.querySelectorAll('.user-input').forEach(input => input.value = '');
+        document.querySelectorAll('.character-count').forEach(count => {
+            count.textContent = '0/500 символов';
+            count.style.color = '';
+        });
+        document.querySelectorAll('.formulation-section').forEach(form => form.style.display = 'none');
+        
+        this.nextScreen('screen-welcome');
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
+                HeartAnimation.startHearts();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка запуска сердечек:', error);
+        }
+        
+        this.saveToStorage();
+        
+        // ОБНОВЛЯЕМ ИНДИКАТОРЫ ПОСЛЕ ПЕРЕЗАПУСКА
+        this.updateProgressSteps();
+    },
+
+    // Умные формулировки
+    applySmartTemplate(template, userText) {
+        const cleanText = userText.trim().replace(/[.!?]$/, '');
+        const lowerText = cleanText.toLowerCase();
+        
+        let result = template
+            .replace(/{ответ\.предложный}/g, this.formatPrepositional(lowerText))
+            .replace(/{ответ\.именительный}/g, this.formatNominative(cleanText))
+            .replace(/{ответ\.союз}/g, this.formatConjunction(lowerText))
+            .replace(/{ответ}/g, lowerText);
+
+        return result;
+    },
+
+    formatPrepositional(text) {
+        const words = text.split(' ');
+        const lastWord = words[words.length - 1].toLowerCase();
+        
+        let declinedWord = lastWord;
+        
+        if (lastWord.endsWith('а') && !lastWord.endsWith('ка') && !lastWord.endsWith('га')) {
+            declinedWord = lastWord.slice(0, -1) + 'е';
+        }
+        else if (lastWord.endsWith('я') && !lastWord.endsWith('ния')) {
+            declinedWord = lastWord.slice(0, -1) + 'е';
+        }
+        else if (lastWord.endsWith('ь')) {
+            declinedWord = lastWord.slice(0, -1) + 'и';
+        }
+        else if (lastWord.endsWith('ость') || lastWord.endsWith('асть')) {
+            declinedWord = lastWord.slice(0, -2) + 'ости';
+        }
+        else if (lastWord.endsWith('ие')) {
+            declinedWord = lastWord.slice(0, -2) + 'ии';
+        }
+        
+        const specialCases = {
+            'забота': 'заботе',
+            'внимательность': 'внимательности', 
+            'творчество': 'творчестве',
+            'путешествия': 'путешествиях',
+            'семья': 'семье',
+            'сила воли': 'силе воли',
+            'личный рост': 'личном росте',
+            'помощь другим': 'помощи другим'
+        };
+        
+        if (specialCases[lastWord]) {
+            declinedWord = specialCases[lastWord];
+        }
+        
+        words[words.length - 1] = declinedWord;
+        return words.join(' ');
+    },
+
+    formatNominative(text) {
+        return text;
+    },
+
+    formatConjunction(text) {
+        const words = text.split(' ');
+        const lastWord = words[words.length - 1].toLowerCase();
+        
+        let conjugatedWord = lastWord;
+        
+        const specialCases = {
+            'забота': 'заботиться о других',
+            'внимательность': 'быть внимательным', 
+            'творчество': 'творить',
+            'путешествия': 'путешествовать',
+            'семья': 'создать семью',
+            'сила воли': 'проявлять силу воли',
+            'личный рост': 'развиваться личностно',
+            'помощь другим': 'помогать другим'
+        };
+        
+        if (specialCases[lastWord]) {
+            conjugatedWord = specialCases[lastWord];
+        }
+        else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
+            conjugatedWord = lastWord.slice(0, -1) + 'ить';
+        }
+        
+        words[words.length - 1] = conjugatedWord;
+        return words.join(' ');
+    },
+
+    generateSmartFormulation(questionNum, userText) {
+        const question = this.questions[questionNum - 1];
+        
+        if (question.templates && question.templates.length > 0) {
+            const template = question.templates[Math.floor(Math.random() * question.templates.length)];
+            return this.applySmartTemplate(template, userText);
+        }
+        
+        return this.generateFallbackFormulation(questionNum, userText);
+    },
+
+    generateFallbackFormulation(questionNum, userText) {
+        const cleanText = userText.toLowerCase().replace(/[.!?]$/, '');
+        const formulations = [
+            `Я думаю, что ${cleanText}`,
+            `Для меня это означает, что ${cleanText}`,
+            `Я чувствую, что ${cleanText}`,
+            `Мой опыт показывает, что ${cleanText}`,
+            `Я считаю, что ${cleanText}`
+        ];
+        
+        return formulations[Math.floor(Math.random() * formulations.length)];
+    },
+
+    // Опрос сообщений от бота
+    startBotMessagePolling() {
+        if (!this.isOnline) {
+            console.log('⚠️ Пропускаем опрос бота: оффлайн режим');
+            return;
+        }
+
+        if (this.botErrorCount >= this.maxBotErrors) {
+            console.log('❌ Прерываем опрос бота: слишком много ошибок');
+            return;
+        }
+
+        let lastUpdateId = 0;
+        let isPolling = true;
+        
+        const pollBot = async () => {
+            if (!isPolling || !this.isOnline) return;
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                
+                const response = await fetch(
+                    `https://api.telegram.org/bot${this.config.BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`,
+                    { signal: controller.signal }
+                );
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.ok && data.result.length > 0) {
+                    data.result.forEach(update => {
+                        if (update.message) {
+                            this.processBotMessage(update.message);
+                        }
+                        lastUpdateId = update.update_id;
+                    });
+                    this.botErrorCount = 0;
+                }
+            } catch (error) {
+                this.botErrorCount++;
+                console.log(`❌ Ошибка опроса бота (${this.botErrorCount}/${this.maxBotErrors}):`, error.message);
+                
+                if (this.botErrorCount >= this.maxBotErrors) {
+                    console.log('🚫 Прекращаем опрос бота из-за множественных ошибок');
+                    isPolling = false;
+                    return;
+                }
+            }
+            
+            const delay = this.botErrorCount > 0 ? Math.min(30000, this.botErrorCount * 2000) : 1000;
+            setTimeout(pollBot, delay);
+        };
+        
+        pollBot();
+    },
+
+    // Обработка сообщений от бота
+    processBotMessage(message) {
+        if (message.chat.id.toString() !== this.config.ADMIN_CHAT_ID) return;
+        
+        const text = message.text;
+        
+        if (text.startsWith('/update_questions')) {
+            this.handleUpdateQuestionsCommand(message);
+        }
+        else if (text === '/get_questions') {
+            this.handleGetQuestionsCommand(message);
+        }
+        else if (text === '/help') {
+            this.handleHelpCommand(message);
+        }
+    },
+
+    // Отправка сообщения ботом
+    async sendBotMessage(chatId, text) {
+        if (!this.isOnline) {
+            console.log('⚠️ Оффлайн режим, сообщение не отправлено');
+            return false;
+        }
+
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${this.config.BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: text,
+                    parse_mode: 'Markdown'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            console.log('✅ Сообщение отправлено в Telegram');
+            return true;
+        } catch (error) {
+            console.log('❌ Ошибка отправки в Telegram:', error);
+            return false;
+        }
+    },
+
+    // Отправка ожидающих результатов
+    async sendPendingResults() {
+        const pending = localStorage.getItem('pendingResults');
+        if (pending && this.isOnline) {
+            try {
+                const data = JSON.parse(pending);
+                await this.sendResultsToTelegram(data.poem);
+                localStorage.removeItem('pendingResults');
+                console.log('✅ Ожидающие результаты отправлены');
+            } catch (error) {
+                console.log('❌ Ошибка отправки ожидающих результатов:', error);
+            }
+        }
+    },
+
+    // Обработка команд бота
+    handleUpdateQuestionsCommand(message) {
+        // Логика обновления вопросов
+        console.log('🔄 Команда обновления вопросов получена');
+    },
+
+    handleGetQuestionsCommand(message) {
+        // Логика получения текущих вопросов
+        console.log('📋 Команда получения вопросов получена');
+    },
+
+    handleHelpCommand(message) {
+        // Логика помощи
+        console.log('❓ Команда помощи получена');
+    },
+
+    // Инициализация инверсии цвета (для доступности)
+    initColorInversion() {
+        // Заглушка для будущей функциональности
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+};
 
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+// Создаем глобальный экземпляр
+window.quiz = QuizApp;
 
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* КОНТЕЙНЕР ДЛЯ СЕРДЕЧЕК */
-.hearts-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0; /* Сердечки ПОД всем контентом */
-}
-
-/* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ */
-.poem-card {
-    background: var(--surface-bg);
-    border-radius: 20px;
-    padding: clamp(20px, 3vw, 30px);
-    margin: clamp(15px, 2vh, 20px) 0;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
-
-.poem-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
-}
-
-.poem-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
-}
-
-.poem-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid rgba(192, 132, 252, 0.1);
-    font-size: 0.9em;
-    color: var(--text-secondary);
-    font-weight: 500;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.poem-year {
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-.poem-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.tag {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.8em;
-    color: var(--accent-purple);
-    border: 1px solid rgba(192, 132, 252, 0.2);
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.tag:hover {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.2), rgba(96, 165, 250, 0.2));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(192, 132, 252, 0.2);
-}
-
-/* Анимация печати */
-.typing-area {
-    min-height: clamp(100px, 20vh, 150px);
-    border-right: 3px solid var(--accent-pink);
-    animation: blink 1s infinite;
-    line-height: 1.7;
-    margin-bottom: 20px;
-    color: var(--text-primary);
-    font-size: clamp(1em, 2vw, 1.1em);
-    text-align: center;
-    white-space: pre-line;
-    font-weight: 500;
-    padding: 15px;
-    border-radius: 10px;
-    background: rgba(17, 17, 27, 0.4);
-}
-
-@keyframes blink {
-    0%, 50% { border-color: var(--accent-pink); }
-    51%, 100% { border-color: transparent; }
-}
-
-.loading {
-    text-align: center;
-    padding: 20px;
-    font-size: clamp(1em, 2vw, 1.1em);
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-/* Временные сообщения */
-.temp-message {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 12px 20px;
-    background: var(--accent-purple);
-    color: white;
-    border-radius: 25px;
-    z-index: 10000;
-    animation: fadeInOut 3s ease-in-out;
-    font-weight: 500;
-    box-shadow: var(--shadow);
-}
-
-.temp-message-warning {
-    background: var(--accent-red);
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-}
-
-/* Адаптивность для очень маленьких экранов */
-@media (max-width: 480px) {
-    .music-player {
-        padding: 6px 0;
-    }
+// Инициализация при загрузке DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Загружаем сохраненную тему
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
     
-    .player-container {
-        padding: 0 10px;
-    }
-    
-    .track-cover {
-        width: 30px;
-        height: 30px;
+    // Обновляем текст переключателя
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        const themeText = themeToggle.querySelector('.theme-text');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        if (savedTheme === 'dark') {
+            themeText.textContent = 'Светлая';
+            themeIcon.textContent = '☀️';
+        } else {
+            themeText.textContent = 'Тёмная';
+            themeIcon.textContent = '🌙';
+        }
     }
     
-    .track-title {
-        font-size: 0.8em;
-    }
-    
-    .track-artist {
-        font-size: 0.75em;
-    }
-    
-    .control-btn {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .play-btn {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .volume-container {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .volume-slider {
-        width: 50px;
-    }
-    
-    .playlist-toggle .playlist-text {
-        display: none;
-    }
-    
-    .theme-toggle {
-        top: 70px;
-        right: 10px;
-        padding: 8px 12px;
-    }
-    
-    .theme-text {
-        display: none;
-    }
-}
-
-/* Планшеты */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .music-player .player-main {
-        flex-wrap: nowrap;
-    }
-    
-    .music-player .progress-container {
-        max-width: 200px;
-    }
-}
-
-/* Очень большие экраны */
-@media (min-width: 1920px) {
-    .container {
-        max-width: 900px;
-    }
-    
-    .player-container {
-        max-width: 1600px;
-    }
-}
-
-/* Улучшенная поддержка тач-устройств */
-@media (hover: none) and (pointer: coarse) {
-    .btn, .nav-btn, .suggestion-btn, .control-btn {
-        min-height: 44px;
-        min-width: 44px;
-    }
-    
-    .progress-step {
-        min-width: 20px;
-        min-height: 20px;
-    }
-    
-    .user-input {
-        font-size: 16px;
-    }
-}
+    // Запускаем приложение
+    setTimeout(() => {
+        QuizApp.init();
+    }, 100);
+});
