@@ -1,4 +1,4 @@
-// Основная логика приложения с улучшенной адаптивностью
+// Основная логика приложения с исправлением бесконечной загрузки
 const QuizApp = {
     // Конфигурация
     config: {
@@ -18,51 +18,126 @@ const QuizApp = {
     botErrorCount: 0,
     maxBotErrors: 5,
     isMobile: false,
+    initializationTimeout: null,
 
     // Инициализация приложения
     async init() {
         console.log('🚀 Инициализация приложения...');
         
-        this.detectDeviceType();
-        this.showLoadingScreen();
-        this.loadFromStorage();
-        
         try {
+            this.showLoadingScreen();
+            this.detectDeviceType();
+            this.loadFromStorage();
+            
+            // Устанавливаем таймаут инициализации (10 секунд)
+            this.initializationTimeout = setTimeout(() => {
+                if (this.isLoading) {
+                    console.log('⚠️ Таймаут инициализации, принудительный запуск');
+                    this.forceInitialization();
+                }
+            }, 10000);
+
             // Проверяем онлайн статус
             this.isOnline = navigator.onLine;
             this.setupOnlineListeners();
             this.setupThemeToggle();
             
-            // Параллельная загрузка с таймаутом
+            // Параллельная загрузка с улучшенной обработкой ошибок
+            await this.safeInitialization();
+            
+        } catch (error) {
+            console.error('Критическая ошибка инициализации:', error);
+            this.forceInitialization();
+        }
+    },
+
+    // Безопасная инициализация с обработкой ошибок
+    async safeInitialization() {
+        try {
             await Promise.race([
                 Promise.all([
-                    this.loadQuestions(),
+                    this.loadQuestions().catch(error => {
+                        console.log('⚠️ Ошибка загрузки вопросов:', error);
+                        this.questions = this.getDefaultQuestions();
+                    }),
                     this.preloadResources()
                 ]),
-                new Promise(resolve => setTimeout(resolve, 5000))
+                new Promise(resolve => setTimeout(resolve, 3000)) // 3 сек таймаут
             ]);
-            
+
             this.generateQuestionScreens();
             
-            // Инициализируем компоненты с проверкой
-            if (typeof MusicPlayer !== 'undefined') MusicPlayer.init();
-            if (typeof HeartAnimation !== 'undefined') HeartAnimation.init();
-            this.initColorInversion();
+            // Инициализируем компоненты с защитой от ошибок
+            this.safeComponentInitialization();
             
             // Запускаем обработку сообщений от бота только если онлайн
             if (this.isOnline) {
                 this.startBotMessagePolling();
             }
             
-            setTimeout(() => {
-                this.hideLoadingScreen();
-                this.showWelcomeScreen();
-            }, 800);
+            this.completeInitialization();
             
         } catch (error) {
-            console.error('Ошибка инициализации:', error);
-            this.showErrorScreen();
+            console.error('Ошибка безопасной инициализации:', error);
+            this.forceInitialization();
         }
+    },
+
+    // Безопасная инициализация компонентов
+    safeComponentInitialization() {
+        try {
+            if (typeof MusicPlayer !== 'undefined' && MusicPlayer.init) {
+                MusicPlayer.init().catch(error => {
+                    console.log('⚠️ Ошибка инициализации плеера:', error);
+                });
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка при инициализации MusicPlayer:', error);
+        }
+
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.init) {
+                HeartAnimation.init();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка при инициализации HeartAnimation:', error);
+        }
+
+        try {
+            this.initColorInversion();
+        } catch (error) {
+            console.log('⚠️ Ошибка при инициализации color inversion:', error);
+        }
+    },
+
+    // Принудительная инициализация при таймауте
+    forceInitialization() {
+        console.log('🔄 Принудительная инициализация...');
+        
+        // Гарантированно устанавливаем вопросы по умолчанию
+        if (!this.questions || this.questions.length === 0) {
+            this.questions = this.getDefaultQuestions();
+        }
+        
+        this.generateQuestionScreens();
+        this.completeInitialization();
+    },
+
+    // Завершение инициализации
+    completeInitialization() {
+        // Очищаем таймаут
+        if (this.initializationTimeout) {
+            clearTimeout(this.initializationTimeout);
+            this.initializationTimeout = null;
+        }
+        
+        this.isLoading = false;
+        
+        setTimeout(() => {
+            this.hideLoadingScreen();
+            this.showWelcomeScreen();
+            console.log('✅ Приложение успешно инициализировано');
+        }, 500);
     },
 
     // Определение типа устройства
@@ -74,7 +149,10 @@ const QuizApp = {
     // Настройка переключателя тем
     setupThemeToggle() {
         const themeToggle = document.getElementById('themeToggle');
-        if (!themeToggle) return;
+        if (!themeToggle) {
+            console.log('⚠️ Переключатель темы не найден');
+            return;
+        }
 
         themeToggle.addEventListener('click', () => {
             this.toggleTheme();
@@ -111,19 +189,6 @@ const QuizApp = {
                 themeIcon.textContent = '🌙';
             }
         }
-
-        // Обновляем стили плеера
-        this.updatePlayerTheme();
-    },
-
-    // Обновление темы плеера
-    updatePlayerTheme() {
-        const player = document.getElementById('musicPlayer');
-        if (!player) return;
-
-        // Принудительное обновление стилей
-        player.style.background = 'var(--player-bg)';
-        player.style.color = 'var(--player-text)';
     },
 
     // Настройка слушателей онлайн статуса
@@ -131,7 +196,6 @@ const QuizApp = {
         window.addEventListener('online', () => {
             this.isOnline = true;
             console.log('✅ Онлайн соединение восстановлено');
-            this.showTemporaryMessage('Соединение восстановлено ✅', 'success');
             this.startBotMessagePolling();
             this.sendPendingResults();
         });
@@ -139,23 +203,7 @@ const QuizApp = {
         window.addEventListener('offline', () => {
             this.isOnline = false;
             console.log('⚠️ Оффлайн режим');
-            this.showTemporaryMessage('Оффлайн режим ⚠️', 'warning');
         });
-
-        // Слушатель ресайза для адаптивности
-        window.addEventListener('resize', () => {
-            this.handleResize();
-        });
-    },
-
-    // Обработка изменения размера окна
-    handleResize() {
-        this.detectDeviceType();
-        
-        // Обновляем позиции элементов при ресайзе
-        if (typeof HeartAnimation !== 'undefined') {
-            HeartAnimation.handleResize();
-        }
     },
 
     // Загрузка из localStorage
@@ -167,9 +215,12 @@ const QuizApp = {
                 this.userAnswers = data.userAnswers || {};
                 this.questions = data.questions || this.getDefaultQuestions();
                 console.log('✅ Данные загружены из localStorage');
+            } else {
+                this.questions = this.getDefaultQuestions();
             }
         } catch (e) {
             console.log('❌ Ошибка загрузки из localStorage:', e);
+            this.questions = this.getDefaultQuestions();
         }
     },
 
@@ -187,19 +238,681 @@ const QuizApp = {
         }
     },
 
-    // Отправка накопившихся результатов
-    async sendPendingResults() {
-        const pending = localStorage.getItem('pendingResults');
-        if (pending && this.isOnline) {
-            try {
-                const results = JSON.parse(pending);
-                await this.sendResultsToTelegram(results.poem);
-                localStorage.removeItem('pendingResults');
-                console.log('✅ Накопившиеся результаты отправлены');
-            } catch (error) {
-                console.log('❌ Ошибка отправки накопившихся результатов:', error);
+    // Загрузка вопросов с улучшенной обработкой ошибок
+    async loadQuestions() {
+        if (!this.isOnline) {
+            console.log('⚠️ Оффлайн режим, используем локальные вопросы');
+            this.questions = this.getDefaultQuestions();
+            return;
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
+                headers: {
+                    'X-Master-Key': this.config.JSONBIN_API_KEY,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.questions = data.record.questions || this.getDefaultQuestions();
+                console.log('✅ Вопросы загружены из JSONBin');
+                this.saveToStorage();
+            } else {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (error) {
+            console.log('⚠️ Используем встроенные вопросы:', error.message);
+            this.questions = this.getDefaultQuestions();
+        }
+    },
+
+    // Показать экран загрузки
+    showLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgress');
+        
+        if (loadingScreen) {
+            loadingScreen.classList.add('active');
+            loadingScreen.classList.remove('hidden');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 25;
+                if (progress > 85) progress = 85; // Оставляем место для завершения
+                if (progressBar) {
+                    progressBar.style.width = progress + '%';
+                    progressBar.setAttribute('aria-valuenow', Math.round(progress));
+                }
+                
+                if (progress >= 85) {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+    },
+
+    // Скрыть экран загрузки
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressBar = document.getElementById('loadingProgress');
+        
+        if (loadingScreen && progressBar) {
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            
+            setTimeout(() => {
+                loadingScreen.classList.remove('active');
+                loadingScreen.classList.add('hidden');
+            }, 500);
+        }
+    },
+
+    // Показать экран приветствия
+    showWelcomeScreen() {
+        this.nextScreen('screen-welcome');
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
+                HeartAnimation.startHearts();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка запуска сердечек:', error);
+        }
+    },
+
+    // Показать экран ошибки
+    showErrorScreen() {
+        this.nextScreen('screen-error');
+    },
+
+    // Предзагрузка ресурсов
+    async preloadResources() {
+        return new Promise((resolve) => {
+            // Минимальная задержка для плавности
+            setTimeout(resolve, 1000);
+        });
+    },
+
+    // Резервные вопросы
+    getDefaultQuestions() {
+        return [
+            {
+                id: 1,
+                text: "Опиши, в чём твоя самая сильная сторона? Что делает тебя особенным?",
+                theme: "🌟 Твоя уникальность",
+                suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность", "Сила воли"],
+                templates: [
+                    "Моя сила проявляется в {ответ.предложный}",
+                    "Я особенно ценю в себе способность {ответ.союз}",
+                    "Что делает меня особенным - это {ответ.именительный}",
+                    "Моя уникальная черта - {ответ.именительный}",
+                    "Я горжусь тем, что могу {ответ.союз}"
+                ]
+            },
+            {
+                id: 2,
+                text: "Какая у тебя самая заветная мечта? О чём ты чаще всего фантазируешь?",
+                theme: "🌈 Твои мечты",
+                suggestions: ["Путешествия", "Семья", "Творчество", "Помощь другим", "Личностный рост"],
+                templates: [
+                    "Я мечтаю о {ответ.предложный}",
+                    "Мои самые сокровенные желания связаны с {ответ.предложный}",
+                    "В своих фантазиях я вижу себя {ответ.союз}",
+                    "Я стремлюсь к {ответ.предложный}",
+                    "Моя главная цель - {ответ.именительный}"
+                ]
+            }
+        ];
+    },
+
+    // Генерация экранов вопросов
+    generateQuestionScreens() {
+        const container = document.getElementById('questions-container');
+        if (!container) {
+            console.error('❌ Контейнер вопросов не найден');
+            return;
+        }
+        
+        container.innerHTML = '';
+
+        this.questions.forEach((question, index) => {
+            const questionNumber = index + 1;
+            const progressWidth = (questionNumber / this.questions.length) * 100;
+            const savedAnswer = this.userAnswers[questionNumber];
+
+            const screenHTML = `
+                <div class="screen" id="screen${questionNumber}">
+                    <div class="question-content">
+                        <h1>${this.escapeHtml(question.theme)}</h1>
+                        <p class="question-text">${this.escapeHtml(question.text)}</p>
+                        
+                        ${question.suggestions && question.suggestions.length > 0 ? `
+                        <div class="suggestion-buttons">
+                            ${question.suggestions.map(suggestion => 
+                                `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${this.escapeHtml(suggestion.replace(/'/g, "\\'"))}')">${this.escapeHtml(suggestion)}</button>`
+                            ).join('')}
+                        </div>
+                        ` : ''}
+
+                        <div class="input-section">
+                            <div class="character-count" id="count${questionNumber}">${savedAnswer?.original?.length || 0}/500 символов</div>
+                            <textarea class="user-input" id="input${questionNumber}" 
+                                      placeholder="Напиши здесь всё, что считаешь важным... 💭" 
+                                      maxlength="500" 
+                                      oninput="quiz.updateCharacterCount(${questionNumber})">${savedAnswer?.original || ''}</textarea>
+                            
+                            <div class="progress-navigation">
+                                <div class="progress-wrapper">
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                                    </div>
+                                    <div class="progress-steps">
+                                        ${this.questions.map((_, i) => `
+                                            <div class="progress-step ${i + 1 === questionNumber ? 'active' : ''} ${i + 1 < questionNumber ? 'completed' : ''}" 
+                                                 onclick="quiz.goToQuestion(${i + 1})"></div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="nav-buttons">
+                                    <button class="nav-btn btn-outline" onclick="quiz.previousQuestion()" ${questionNumber === 1 ? 'disabled' : ''}>
+                                        ⬅ Назад
+                                    </button>
+                                    <button class="nav-btn btn-primary" onclick="quiz.saveAnswer(${questionNumber})">
+                                        ${questionNumber === this.questions.length ? 'Завершить 💫' : 'Далее ➡'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="buttons">
+                                <button class="btn btn-secondary" onclick="quiz.showFormulation(${questionNumber})">
+                                    ✨ Красиво оформить
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="formulation-section" id="formulation${questionNumber}">
+                            <div class="formulation-text" id="formulationText${questionNumber}"></div>
+                            <div class="buttons">
+                                <button class="btn btn-outline" onclick="quiz.hideFormulation(${questionNumber})">
+                                    ↩ Вернуться
+                                </button>
+                                <button class="btn btn-success" onclick="quiz.acceptFormulation(${questionNumber})">
+                                    ✅ Сохранить
+                                </button>
+                                <button class="btn btn-secondary" onclick="quiz.reformulate(${questionNumber})">
+                                    🔄 Переформулировать
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += screenHTML;
+        });
+    },
+
+    // Экранирование HTML
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
+
+    // Навигация между вопросами
+    goToQuestion(questionNumber) {
+        if (questionNumber >= 1 && questionNumber <= this.questions.length) {
+            this.currentQuestion = questionNumber;
+            this.nextScreen('screen' + questionNumber);
+            this.updateProgressSteps();
+        }
+    },
+
+    previousQuestion() {
+        if (this.currentQuestion > 1) {
+            this.currentQuestion--;
+            this.nextScreen('screen' + this.currentQuestion);
+            this.updateProgressSteps();
+        }
+    },
+
+    nextQuestion() {
+        if (this.currentQuestion < this.questions.length) {
+            this.currentQuestion++;
+            this.nextScreen('screen' + this.currentQuestion);
+            this.updateProgressSteps();
+        }
+    },
+
+    updateProgressSteps() {
+        document.querySelectorAll('.progress-step').forEach((step, index) => {
+            const questionNumber = index + 1;
+            step.classList.toggle('active', questionNumber === this.currentQuestion);
+            step.classList.toggle('completed', questionNumber < this.currentQuestion);
+        });
+    },
+
+    // Основные функции приложения
+    startQuestions() {
+        this.currentQuestion = 1;
+        this.nextScreen('screen1');
+        this.updateProgressSteps();
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
+                HeartAnimation.startHearts();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка запуска сердечек:', error);
+        }
+    },
+
+    nextScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    },
+
+    updateCharacterCount(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        const count = document.getElementById(`count${questionNum}`);
+        if (input && count) {
+            const length = input.value.length;
+            count.textContent = `${length}/500 символов`;
+            
+            // Визуальная индикация при приближении к лимиту
+            if (length > 450) {
+                count.style.color = 'var(--accent-red)';
+            } else if (length > 400) {
+                count.style.color = 'var(--accent-yellow)';
+            } else {
+                count.style.color = 'var(--text-secondary)';
             }
         }
+    },
+
+    addSuggestion(questionNum, text) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (input) {
+            const currentText = input.value.trim();
+            if (currentText === '') {
+                input.value = text;
+            } else {
+                const lastChar = currentText.slice(-1);
+                const connectors = ['.', '!', '?', ';', ','];
+                const separator = connectors.includes(lastChar) ? ' ' : '. ';
+                input.value = currentText + separator + text;
+            }
+            this.updateCharacterCount(questionNum);
+            input.focus();
+        }
+    },
+
+    saveAnswer(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (!input) return;
+
+        const userText = input.value.trim();
+        if (userText.length < 3) {
+            this.showTemporaryMessage('Пожалуйста, напиши немного больше 🤗', 'warning');
+            return;
+        }
+
+        const question = this.questions[questionNum - 1];
+        this.userAnswers[questionNum] = {
+            original: userText,
+            formulated: userText,
+            questionText: question.text
+        };
+
+        this.saveToStorage();
+
+        if (questionNum === this.questions.length) {
+            this.showFinalScreen();
+        } else {
+            this.nextQuestion();
+        }
+    },
+
+    // Временное сообщение
+    showTemporaryMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `temp-message temp-message-${type}`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
+            background: ${type === 'warning' ? 'var(--accent-red)' : 
+                        type === 'success' ? 'var(--accent-green)' : 'var(--accent-purple)'};
+            color: white;
+            border-radius: 25px;
+            z-index: 10000;
+            animation: fadeInOut 3s ease-in-out;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 3000);
+    },
+
+    showFormulation(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (!input) return;
+
+        const userText = input.value.trim();
+        if (userText.length < 3) {
+            this.showTemporaryMessage('Напиши хотя бы пару слов 💭', 'warning');
+            return;
+        }
+
+        const formulation = this.generateSmartFormulation(questionNum, userText);
+        const formulationDiv = document.getElementById(`formulation${questionNum}`);
+        const formulationText = document.getElementById(`formulationText${questionNum}`);
+
+        if (formulationDiv && formulationText) {
+            formulationText.innerHTML = this.escapeHtml(formulation);
+            formulationDiv.style.display = 'block';
+            
+            const question = this.questions[questionNum - 1];
+            this.userAnswers[questionNum] = {
+                original: userText,
+                formulated: formulation,
+                questionText: question.text
+            };
+            
+            this.saveToStorage();
+        }
+    },
+
+    hideFormulation(questionNum) {
+        const formulationDiv = document.getElementById(`formulation${questionNum}`);
+        if (formulationDiv) {
+            formulationDiv.style.display = 'none';
+        }
+    },
+
+    acceptFormulation(questionNum) {
+        this.hideFormulation(questionNum);
+        
+        if (questionNum === this.questions.length) {
+            this.showFinalScreen();
+        } else {
+            this.nextQuestion();
+        }
+    },
+
+    reformulate(questionNum) {
+        const input = document.getElementById(`input${questionNum}`);
+        if (!input) return;
+
+        const userText = input.value.trim();
+        const newFormulation = this.generateSmartFormulation(questionNum, userText);
+        const formulationText = document.getElementById(`formulationText${questionNum}`);
+
+        if (formulationText) {
+            formulationText.innerHTML = this.escapeHtml(newFormulation);
+            this.userAnswers[questionNum].formulated = newFormulation;
+            this.saveToStorage();
+        }
+    },
+
+    async showFinalScreen() {
+        this.nextScreen('screen-final');
+        
+        let poem = this.getRandomPoem();
+        
+        const finalPoemElement = document.getElementById('finalPoem');
+        
+        if (poem && finalPoemElement) {
+            finalPoemElement.innerHTML = `
+                <div class="poem-card fade-in">
+                    <h3 class="poem-title">«${this.escapeHtml(poem.title)}»</h3>
+                    <div class="poem-meta">
+                        <span class="poem-author">${this.escapeHtml(poem.author)}</span>
+                        <span class="poem-year">${this.escapeHtml(poem.year)}</span>
+                    </div>
+                    <div class="poem-text typing-area" id="finalPoemText"></div>
+                    ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}</div>` : ''}
+                </div>
+            `;
+
+            const typingArea = document.getElementById('finalPoemText');
+            if (typingArea && window.poemsLibrary) {
+                await window.poemsLibrary.typeText(typingArea, poem.text, 40);
+            }
+        }
+
+        await this.sendResultsToTelegram(poem);
+    },
+
+    getRandomPoem() {
+        try {
+            if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
+                const poem = window.poemsLibrary.getRandomPoem();
+                if (poem && poem.title && poem.text) {
+                    return poem;
+                }
+            }
+            return this.getFallbackPoem();
+        } catch (error) {
+            return this.getFallbackPoem();
+        }
+    },
+
+    getFallbackPoem() {
+        return {
+            title: "Для тебя",
+            author: "С любовью", 
+            year: "2024",
+            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
+            tags: ["любовь", "нежность"]
+        };
+    },
+
+    // Отправка результатов в Telegram
+    async sendResultsToTelegram(poem) {
+        let message = `💫 *НОВЫЕ ОТВЕТЫ!*\n\n`;
+
+        // Добавляем ответы на вопросы
+        for (let i = 1; i <= this.questions.length; i++) {
+            if (this.userAnswers[i]) {
+                const answer = this.userAnswers[i];
+                message += `*${this.questions[i-1].theme}*\n`;
+                message += `❓ *Вопрос:* ${answer.questionText}\n`;
+                message += `📝 *Оригинал:* ${answer.original}\n`;
+                message += `✨ *Формулировка:* ${answer.formulated}\n\n`;
+            }
+        }
+
+        // Добавляем стихотворение
+        message += `📜 *Стихотворение для пользователя:*\n`;
+        message += `*Название:* «${poem.title}»\n`;
+        message += `*Автор:* ${poem.author}\n`;
+        if (poem.year) {
+            message += `*Год:* ${poem.year}\n`;
+        }
+        message += `\n*Текст стихотворения:*\n`;
+        message += `\`\`\`\n${poem.text}\n\`\`\`\n`;
+        
+        if (poem.tags && poem.tags.length > 0) {
+            message += `*Теги:* ${poem.tags.map(tag => `#${tag}`).join(' ')}\n`;
+        }
+
+        message += `\n⏰ *Время отправки:* ${new Date().toLocaleString('ru-RU')}\n`;
+        message += `📊 *Всего вопросов:* ${this.questions.length}`;
+
+        try {
+            const success = await this.sendBotMessage(this.config.CHAT_ID, message);
+            
+            if (!success && this.isOnline) {
+                // Сохраняем для последующей отправки
+                localStorage.setItem('pendingResults', JSON.stringify({
+                    poem: poem,
+                    timestamp: Date.now()
+                }));
+                console.log('💾 Результаты сохранены для последующей отправки');
+            }
+        } catch (error) {
+            console.log('❌ Ошибка отправки в Telegram:', error);
+            // Сохраняем для последующей отправки
+            localStorage.setItem('pendingResults', JSON.stringify({
+                poem: poem,
+                timestamp: Date.now()
+            }));
+        }
+    },
+
+    restartQuiz() {
+        this.userAnswers = {};
+        this.currentQuestion = 0;
+        
+        document.querySelectorAll('.user-input').forEach(input => input.value = '');
+        document.querySelectorAll('.character-count').forEach(count => {
+            count.textContent = '0/500 символов';
+            count.style.color = '';
+        });
+        document.querySelectorAll('.formulation-section').forEach(form => form.style.display = 'none');
+        
+        this.nextScreen('screen-welcome');
+        try {
+            if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
+                HeartAnimation.startHearts();
+            }
+        } catch (error) {
+            console.log('⚠️ Ошибка запуска сердечек:', error);
+        }
+        
+        this.saveToStorage();
+    },
+
+    // Умные формулировки
+    applySmartTemplate(template, userText) {
+        const cleanText = userText.trim().replace(/[.!?]$/, '');
+        const lowerText = cleanText.toLowerCase();
+        
+        let result = template
+            .replace(/{ответ\.предложный}/g, this.formatPrepositional(lowerText))
+            .replace(/{ответ\.именительный}/g, this.formatNominative(cleanText))
+            .replace(/{ответ\.союз}/g, this.formatConjunction(lowerText))
+            .replace(/{ответ}/g, lowerText);
+
+        return result;
+    },
+
+    formatPrepositional(text) {
+        const words = text.split(' ');
+        const lastWord = words[words.length - 1].toLowerCase();
+        
+        let declinedWord = lastWord;
+        
+        if (lastWord.endsWith('а') && !lastWord.endsWith('ка') && !lastWord.endsWith('га')) {
+            declinedWord = lastWord.slice(0, -1) + 'е';
+        }
+        else if (lastWord.endsWith('я') && !lastWord.endsWith('ния')) {
+            declinedWord = lastWord.slice(0, -1) + 'е';
+        }
+        else if (lastWord.endsWith('ь')) {
+            declinedWord = lastWord.slice(0, -1) + 'и';
+        }
+        else if (lastWord.endsWith('ость') || lastWord.endsWith('асть')) {
+            declinedWord = lastWord.slice(0, -2) + 'ости';
+        }
+        else if (lastWord.endsWith('ие')) {
+            declinedWord = lastWord.slice(0, -2) + 'ии';
+        }
+        
+        const specialCases = {
+            'забота': 'заботе',
+            'внимательность': 'внимательности', 
+            'творчество': 'творчестве',
+            'путешествия': 'путешествиях',
+            'семья': 'семье',
+            'сила воли': 'силе воли',
+            'личный рост': 'личном росте',
+            'помощь другим': 'помощи другим'
+        };
+        
+        if (specialCases[lastWord]) {
+            declinedWord = specialCases[lastWord];
+        }
+        
+        words[words.length - 1] = declinedWord;
+        return words.join(' ');
+    },
+
+    formatNominative(text) {
+        return text;
+    },
+
+    formatConjunction(text) {
+        const words = text.split(' ');
+        const lastWord = words[words.length - 1].toLowerCase();
+        
+        let conjugatedWord = lastWord;
+        
+        const specialCases = {
+            'забота': 'заботиться о других',
+            'внимательность': 'быть внимательным', 
+            'творчество': 'творить',
+            'путешествия': 'путешествовать',
+            'семья': 'создать семью',
+            'сила воли': 'проявлять силу воли',
+            'личный рост': 'развиваться личностно',
+            'помощь другим': 'помогать другим'
+        };
+        
+        if (specialCases[lastWord]) {
+            conjugatedWord = specialCases[lastWord];
+        }
+        else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
+            conjugatedWord = lastWord.slice(0, -1) + 'ить';
+        }
+        
+        words[words.length - 1] = conjugatedWord;
+        return words.join(' ');
+    },
+
+    generateSmartFormulation(questionNum, userText) {
+        const question = this.questions[questionNum - 1];
+        
+        if (question.templates && question.templates.length > 0) {
+            const template = question.templates[Math.floor(Math.random() * question.templates.length)];
+            return this.applySmartTemplate(template, userText);
+        }
+        
+        return this.generateFallbackFormulation(questionNum, userText);
+    },
+
+    generateFallbackFormulation(questionNum, userText) {
+        const cleanText = userText.toLowerCase().replace(/[.!?]$/, '');
+        const formulations = [
+            `Я думаю, что ${cleanText}`,
+            `Для меня это означает, что ${cleanText}`,
+            `Я чувствую, что ${cleanText}`,
+            `Мой опыт показывает, что ${cleanText}`,
+            `Я считаю, что ${cleanText}`
+        ];
+        
+        return formulations[Math.floor(Math.random() * formulations.length)];
     },
 
     // Опрос сообщений от бота
@@ -317,7 +1030,6 @@ const QuizApp = {
                 this.generateQuestionScreens();
                 this.saveToStorage();
                 
-                // Показываем уведомление пользователю
                 this.showTemporaryMessage('Вопросы обновлены! 🔄', 'success');
             } else {
                 this.sendBotMessage(message.chat.id, '❌ Ошибка обновления вопросов');
@@ -450,423 +1162,46 @@ const QuizApp = {
         }
     },
 
-    // Загрузка вопросов
-    async loadQuestions() {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${this.config.JSONBIN_ID}/latest`, {
-                headers: {
-                    'X-Master-Key': this.config.JSONBIN_API_KEY,
-                    'Content-Type': 'application/json'
-                },
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (response.ok) {
-                const data = await response.json();
-                this.questions = data.record.questions || this.getDefaultQuestions();
-                console.log('✅ Вопросы загружены из JSONBin');
-                this.saveToStorage();
-            } else {
-                throw new Error(`HTTP ${response.status}`);
+    // Отправка накопившихся результатов
+    async sendPendingResults() {
+        const pending = localStorage.getItem('pendingResults');
+        if (pending && this.isOnline) {
+            try {
+                const results = JSON.parse(pending);
+                await this.sendResultsToTelegram(results.poem);
+                localStorage.removeItem('pendingResults');
+                console.log('✅ Накопившиеся результаты отправлены');
+            } catch (error) {
+                console.log('❌ Ошибка отправки накопившихся результатов:', error);
             }
-        } catch (error) {
-            console.log('⚠️ Используем встроенные вопросы:', error.message);
-            this.questions = this.getDefaultQuestions();
         }
     },
 
-    // Показать экран загрузки
-    showLoadingScreen() {
-        const loadingScreen = document.getElementById('loadingScreen');
-        const progressBar = document.getElementById('loadingProgress');
+    initColorInversion() {
+        const player = document.getElementById('musicPlayer');
+        const container = document.getElementById('mainContainer');
         
-        if (loadingScreen) {
-            loadingScreen.classList.add('active');
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 25;
-                if (progress > 90) progress = 90;
-                if (progressBar) {
-                    progressBar.style.width = progress + '%';
-                    progressBar.setAttribute('aria-valuenow', Math.round(progress));
-                }
+        if (!player || !container) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const intersectionRatio = entry.intersectionRatio;
                 
-                if (progress >= 90) {
-                    clearInterval(interval);
+                if (intersectionRatio > 0.3) {
+                    player.classList.remove('light-text');
+                    player.classList.add('dark-text');
+                } else {
+                    player.classList.remove('dark-text');
+                    player.classList.add('light-text');
                 }
-            }, 150);
-        }
-    },
-
-    // Скрыть экран загрузки
-    hideLoadingScreen() {
-        const loadingScreen = document.getElementById('loadingScreen');
-        const progressBar = document.getElementById('loadingProgress');
-        
-        if (loadingScreen && progressBar) {
-            progressBar.style.width = '100%';
-            progressBar.setAttribute('aria-valuenow', 100);
-            
-            setTimeout(() => {
-                loadingScreen.classList.remove('active');
-                loadingScreen.classList.add('hidden');
-            }, 500);
-        }
-    },
-
-    // Показать экран приветствия
-    showWelcomeScreen() {
-        this.nextScreen('screen-welcome');
-        if (typeof HeartAnimation !== 'undefined') {
-            HeartAnimation.startHearts();
-        }
-    },
-
-    // Показать экран ошибки
-    showErrorScreen() {
-        this.nextScreen('screen-error');
-    },
-
-    // Предзагрузка ресурсов
-    async preloadResources() {
-        return new Promise((resolve) => {
-            // Предзагружаем критические ресурсы
-            setTimeout(resolve, 1000);
-        });
-    },
-
-    // Резервные вопросы
-    getDefaultQuestions() {
-        return [
-            {
-                id: 1,
-                text: "Опиши, в чём твоя самая сильная сторона? Что делает тебя особенным?",
-                theme: "🌟 Твоя уникальность",
-                suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность", "Сила воли"],
-                templates: [
-                    "Моя сила проявляется в {ответ.предложный}",
-                    "Я особенно ценю в себе способность {ответ.союз}",
-                    "Что делает меня особенным - это {ответ.именительный}",
-                    "Моя уникальная черта - {ответ.именительный}",
-                    "Я горжусь тем, что могу {ответ.союз}"
-                ]
-            },
-            {
-                id: 2,
-                text: "Какая у тебя самая заветная мечта? О чём ты чаще всего фантазируешь?",
-                theme: "🌈 Твои мечты",
-                suggestions: ["Путешествия", "Семья", "Творчество", "Помощь другим", "Личностный рост"],
-                templates: [
-                    "Я мечтаю о {ответ.предложный}",
-                    "Мои самые сокровенные желания связаны с {ответ.предложный}",
-                    "В своих фантазиях я вижу себя {ответ.союз}",
-                    "Я стремлюсь к {ответ.предложный}",
-                    "Моя главная цель - {ответ.именительный}"
-                ]
-            }
-        ];
-    },
-
-    // Генерация экранов вопросов с улучшенной адаптивностью
-    generateQuestionScreens() {
-        const container = document.getElementById('questions-container');
-        if (!container) {
-            console.error('❌ Контейнер вопросов не найден');
-            return;
-        }
-        
-        container.innerHTML = '';
-
-        this.questions.forEach((question, index) => {
-            const questionNumber = index + 1;
-            const progressWidth = (questionNumber / this.questions.length) * 100;
-            const savedAnswer = this.userAnswers[questionNumber];
-
-            const screenHTML = `
-                <div class="screen" id="screen${questionNumber}">
-                    <div class="question-content">
-                        <h1>${this.escapeHtml(question.theme)}</h1>
-                        <p class="question-text">${this.escapeHtml(question.text)}</p>
-                        
-                        ${question.suggestions && question.suggestions.length > 0 ? `
-                        <div class="suggestion-buttons">
-                            ${question.suggestions.map(suggestion => 
-                                `<button class="suggestion-btn" onclick="quiz.addSuggestion(${questionNumber}, '${this.escapeHtml(suggestion.replace(/'/g, "\\'"))}')">${this.escapeHtml(suggestion)}</button>`
-                            ).join('')}
-                        </div>
-                        ` : ''}
-
-                        <div class="input-section">
-                            <div class="character-count" id="count${questionNumber}">${savedAnswer?.original?.length || 0}/500 символов</div>
-                            <textarea class="user-input" id="input${questionNumber}" 
-                                      placeholder="Напиши здесь всё, что считаешь важным... 💭" 
-                                      maxlength="500" 
-                                      oninput="quiz.updateCharacterCount(${questionNumber})">${savedAnswer?.original || ''}</textarea>
-                            
-                            <div class="progress-navigation">
-                                <div class="progress-wrapper">
-                                    <div class="progress">
-                                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
-                                    </div>
-                                    <div class="progress-steps">
-                                        ${this.questions.map((_, i) => `
-                                            <div class="progress-step ${i + 1 === questionNumber ? 'active' : ''} ${i + 1 < questionNumber ? 'completed' : ''}" 
-                                                 onclick="quiz.goToQuestion(${i + 1})"
-                                                 aria-label="Вопрос ${i + 1}"></div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                                <div class="nav-buttons">
-                                    <button class="nav-btn btn-outline" onclick="quiz.previousQuestion()" ${questionNumber === 1 ? 'disabled' : ''}>
-                                        ⬅ Назад
-                                    </button>
-                                    <button class="nav-btn btn-primary" onclick="quiz.saveAnswer(${questionNumber})">
-                                        ${questionNumber === this.questions.length ? 'Завершить 💫' : 'Далее ➡'}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="buttons">
-                                <button class="btn btn-secondary" onclick="quiz.showFormulation(${questionNumber})">
-                                    ✨ Красиво оформить
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="formulation-section" id="formulation${questionNumber}">
-                            <div class="formulation-text" id="formulationText${questionNumber}"></div>
-                            <div class="buttons">
-                                <button class="btn btn-outline" onclick="quiz.hideFormulation(${questionNumber})">
-                                    ↩ Вернуться
-                                </button>
-                                <button class="btn btn-success" onclick="quiz.acceptFormulation(${questionNumber})">
-                                    ✅ Сохранить
-                                </button>
-                                <button class="btn btn-secondary" onclick="quiz.reformulate(${questionNumber})">
-                                    🔄 Переформулировать
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.innerHTML += screenHTML;
-        });
-
-        // Добавляем обработчики клавиатуры для улучшенной доступности
-        this.setupKeyboardNavigation();
-    },
-
-    // Настройка навигации с клавиатуры
-    setupKeyboardNavigation() {
-        document.addEventListener('keydown', (e) => {
-            // Escape для скрытия формулировок
-            if (e.key === 'Escape') {
-                const visibleFormulation = document.querySelector('.formulation-section[style*="display: block"]');
-                if (visibleFormulation) {
-                    const questionNum = visibleFormulation.id.replace('formulation', '');
-                    this.hideFormulation(questionNum);
-                }
-            }
-            
-            // Enter для сохранения ответа когда текстовое поле в фокусе
-            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-                const activeInput = document.querySelector('.user-input:focus');
-                if (activeInput) {
-                    const questionNum = activeInput.id.replace('input', '');
-                    this.saveAnswer(questionNum);
-                }
-            }
-        });
-    },
-
-    // Экранирование HTML
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    },
-
-    // Навигация между вопросами
-    goToQuestion(questionNumber) {
-        if (questionNumber >= 1 && questionNumber <= this.questions.length) {
-            this.currentQuestion = questionNumber;
-            this.nextScreen('screen' + questionNumber);
-            this.updateProgressSteps();
-            
-            // Фокус на поле ввода для улучшенной доступности
-            setTimeout(() => {
-                const input = document.getElementById(`input${questionNumber}`);
-                if (input) input.focus();
-            }, 300);
-        }
-    },
-
-    previousQuestion() {
-        if (this.currentQuestion > 1) {
-            this.currentQuestion--;
-            this.nextScreen('screen' + this.currentQuestion);
-            this.updateProgressSteps();
-        }
-    },
-
-    nextQuestion() {
-        if (this.currentQuestion < this.questions.length) {
-            this.currentQuestion++;
-            this.nextScreen('screen' + this.currentQuestion);
-            this.updateProgressSteps();
-        }
-    },
-
-    updateProgressSteps() {
-        document.querySelectorAll('.progress-step').forEach((step, index) => {
-            const questionNumber = index + 1;
-            step.classList.toggle('active', questionNumber === this.currentQuestion);
-            step.classList.toggle('completed', questionNumber < this.currentQuestion);
-        });
-    },
-
-    // Основные функции приложения
-    startQuestions() {
-        this.currentQuestion = 1;
-        this.nextScreen('screen1');
-        this.updateProgressSteps();
-        if (typeof HeartAnimation !== 'undefined') {
-            HeartAnimation.startHearts();
-        }
-    },
-
-    nextScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.remove('active');
-        });
-        const targetScreen = document.getElementById(screenId);
-        if (targetScreen) {
-            targetScreen.classList.add('active');
-            // Плавная прокрутка к верху с учетом мобильных устройств
-            window.scrollTo({ 
-                top: 0, 
-                behavior: this.isMobile ? 'auto' : 'smooth' 
             });
-        }
-    },
+        }, { 
+            threshold: [0, 0.1, 0.3, 0.5, 1],
+            rootMargin: '-50px 0px 0px 0px'
+        });
 
-    updateCharacterCount(questionNum) {
-        const input = document.getElementById(`input${questionNum}`);
-        const count = document.getElementById(`count${questionNum}`);
-        if (input && count) {
-            const length = input.value.length;
-            count.textContent = `${length}/500 символов`;
-            
-            // Визуальная индикация при приближении к лимиту
-            if (length > 450) {
-                count.style.color = 'var(--accent-red)';
-            } else if (length > 400) {
-                count.style.color = 'var(--accent-yellow)';
-            } else {
-                count.style.color = 'var(--text-secondary)';
-            }
-        }
-    },
-
-    addSuggestion(questionNum, text) {
-        const input = document.getElementById(`input${questionNum}`);
-        if (input) {
-            const currentText = input.value.trim();
-            if (currentText === '') {
-                input.value = text;
-            } else {
-                const lastChar = currentText.slice(-1);
-                const connectors = ['.', '!', '?', ';', ','];
-                const separator = connectors.includes(lastChar) ? ' ' : '. ';
-                input.value = currentText + separator + text;
-            }
-            this.updateCharacterCount(questionNum);
-            input.focus();
-            
-            // Вибрация на мобильных устройствах
-            if (this.isMobile && navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        }
-    },
-
-    saveAnswer(questionNum) {
-        const input = document.getElementById(`input${questionNum}`);
-        if (!input) return;
-
-        const userText = input.value.trim();
-        if (userText.length < 3) {
-            this.showTemporaryMessage('Пожалуйста, напиши немного больше 🤗', 'warning');
-            
-            // Вибрация на мобильных
-            if (this.isMobile && navigator.vibrate) {
-                navigator.vibrate(200);
-            }
-            return;
-        }
-
-        const question = this.questions[questionNum - 1];
-        this.userAnswers[questionNum] = {
-            original: userText,
-            formulated: userText,
-            questionText: question.text
-        };
-
-        this.saveToStorage();
-
-        if (questionNum === this.questions.length) {
-            this.showFinalScreen();
-        } else {
-            this.nextQuestion();
-        }
-    },
-
-    // Временное сообщение с улучшенной адаптивностью
-    showTemporaryMessage(message, type = 'info') {
-        // Удаляем существующие сообщения
-        document.querySelectorAll('.temp-message').forEach(msg => msg.remove());
-
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `temp-message temp-message-${type}`;
-        messageDiv.textContent = message;
-        messageDiv.style.cssText = `
-            position: fixed;
-            top: ${this.isMobile ? '10px' : '20px'};
-            left: 50%;
-            transform: translateX(-50%);
-            padding: ${this.isMobile ? '10px 16px' : '12px 20px'};
-            background: ${type === 'warning' ? 'var(--accent-red)' : 
-                        type === 'success' ? 'var(--accent-green)' : 'var(--accent-purple)'};
-            color: white;
-            border-radius: 25px;
-            z-index: 10000;
-            animation: fadeInOut 3s ease-in-out;
-            font-weight: 500;
-            box-shadow: var(--shadow);
-            font-size: ${this.isMobile ? '0.9em' : '1em'};
-            max-width: ${this.isMobile ? '90vw' : '400px'};
-            text-align: center;
-            word-wrap: break-word;
-        `;
-        
-        document.body.appendChild(messageDiv);
-        
-        setTimeout(() => {
-            if (messageDiv.parentNode) {
-                messageDiv.parentNode.removeChild(messageDiv);
-            }
-        }, 3000);
-    },
-
-    // Остальные методы остаются без изменений...
-    // [Остальной код из оригинального файла сохраняется]
+        observer.observe(container);
+    }
 };
 
 // Добавляем CSS для анимаций сообщений
@@ -886,19 +1221,4 @@ window.quiz = QuizApp;
 // Инициализация при загрузке DOM
 window.addEventListener('DOMContentLoaded', () => {
     QuizApp.init();
-});
-
-// Обработка видимости страницы для оптимизации
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        // Страница не видна - экономим ресурсы
-        if (typeof HeartAnimation !== 'undefined') {
-            HeartAnimation.stopHearts();
-        }
-    } else {
-        // Страница снова видна
-        if (typeof HeartAnimation !== 'undefined' && QuizApp.currentQuestion > 0) {
-            HeartAnimation.startHearts();
-        }
-    }
 });
