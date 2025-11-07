@@ -1,5 +1,122 @@
 /* Адаптивность для всех устройств с улучшенной поддержкой */
 
+/* Исправленный мобильный плеер */
+@media (max-width: 768px) {
+    .music-player {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--player-bg);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-top: 1px solid var(--glass-border);
+        border-bottom: none;
+        padding: 8px 0;
+        z-index: 1000;
+        height: auto;
+        max-height: 120px;
+    }
+
+    .player-container {
+        padding: 0 10px;
+    }
+
+    .player-main {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .player-track-info {
+        order: 1;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .player-controls {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .progress-container {
+        order: 4;
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .player-extra {
+        order: 3;
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .time-display {
+        font-size: 0.7em;
+    }
+
+    .volume-container {
+        display: none; /* Скрываем громкость на мобильных */
+    }
+
+    .playlist-toggle {
+        padding: 6px 10px;
+        font-size: 0.7em;
+    }
+
+    .playlist-toggle .playlist-text {
+        display: none;
+    }
+
+    /* Поднимаем основной контейнер выше */
+    .container {
+        margin-bottom: 140px; /* Место для плеера */
+    }
+}
+
+/* Для очень маленьких телефонов */
+@media (max-width: 360px) {
+    .music-player {
+        max-height: 100px;
+        padding: 5px 0;
+    }
+
+    .player-container {
+        padding: 0 5px;
+    }
+
+    .track-cover {
+        width: 25px;
+        height: 25px;
+        font-size: 0.8em;
+    }
+
+    .track-title {
+        font-size: 0.7em;
+    }
+
+    .track-artist {
+        font-size: 0.65em;
+    }
+
+    .control-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7em;
+    }
+
+    .play-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .container {
+        margin-bottom: 120px;
+    }
+}
+
 /* Очень большие мониторы (1920px+) */
 @media (min-width: 1920px) {
     .container {
