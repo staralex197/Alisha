@@ -4,15 +4,158 @@ const HeartAnimation = {
     animationInterval: null,
     isRunning: false,
     heartCount: 0,
-    maxHearts: 50,
+    maxHearts: 80,
+
+    // Разные виды сердечек
+    heartTypes: [
+        '💖', '💗', '💓', '💘', '💝', '💕', '💞', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '❣️'
+    ],
+
+    // Типы анимаций (соответствуют CSS классам)
+    animationTypes: ['float', 'float-slow', 'float-fast', 'spin', 'bounce'],
 
     init() {
-        this.heartsContainer = document.getElementById('heartsContainer');
-        if (!this.heartsContainer) {
-            console.error('Контейнер для сердечек не найден');
-            return;
+        try {
+            this.heartsContainer = document.getElementById('heartsContainer');
+            if (!this.heartsContainer) {
+                console.warn('⚠️ Контейнер для сердечек не найден, создаем новый');
+                this.createHeartsContainer();
+            }
+            
+            this.addHeartStyles(); // Добавляем CSS стили
+            console.log('💖 Анимация сердечек инициализирована');
+            
+        } catch (error) {
+            console.error('❌ Ошибка инициализации сердечек:', error);
         }
-        console.log('💖 Анимация сердечек инициализирована');
+    },
+
+    // Создаем контейнер если не существует
+    createHeartsContainer() {
+        this.heartsContainer = document.createElement('div');
+        this.heartsContainer.id = 'heartsContainer';
+        this.heartsContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        `;
+        document.body.appendChild(this.heartsContainer);
+    },
+
+    // Добавляем CSS стили для анимаций
+    addHeartStyles() {
+        if (document.getElementById('heart-styles')) return;
+
+        const styles = `
+            <style id="heart-styles">
+                .heart {
+                    position: absolute;
+                    pointer-events: none;
+                    user-select: none;
+                    z-index: 1;
+                    animation-timing-function: ease-in-out;
+                    will-change: transform, opacity;
+                }
+
+                /* Анимация плавного всплывания */
+                .heart.float {
+                    animation: floatUp 8s ease-in-out forwards;
+                }
+
+                .heart.float-slow {
+                    animation: floatUp 12s ease-in-out forwards;
+                }
+
+                .heart.float-fast {
+                    animation: floatUp 5s ease-in-out forwards;
+                }
+
+                /* Анимация с вращением */
+                .heart.spin {
+                    animation: floatUpSpin 10s ease-in-out forwards;
+                }
+
+                /* Анимация с подпрыгиванием */
+                .heart.bounce {
+                    animation: floatUpBounce 7s ease-in-out forwards;
+                }
+
+                @keyframes floatUp {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 0.8;
+                    }
+                    50% {
+                        transform: translateY(-100px) rotate(180deg);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-250px) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+
+                @keyframes floatUpSpin {
+                    0% {
+                        transform: translateY(0) rotate(0deg) scale(0.8);
+                        opacity: 0.7;
+                    }
+                    30% {
+                        transform: translateY(-80px) rotate(120deg) scale(1.1);
+                        opacity: 1;
+                    }
+                    70% {
+                        transform: translateY(-180px) rotate(240deg) scale(1);
+                        opacity: 0.8;
+                    }
+                    100% {
+                        transform: translateY(-300px) rotate(360deg) scale(0.6);
+                        opacity: 0;
+                    }
+                }
+
+                @keyframes floatUpBounce {
+                    0%, 100% {
+                        transform: translateY(0);
+                        opacity: 0.7;
+                    }
+                    25% {
+                        transform: translateY(-60px) translateX(20px);
+                    }
+                    50% {
+                        transform: translateY(-120px) translateX(-10px);
+                        opacity: 1;
+                    }
+                    75% {
+                        transform: translateY(-180px) translateX(15px);
+                    }
+                    100% {
+                        transform: translateY(-250px) translateX(0);
+                        opacity: 0;
+                    }
+                }
+
+                /* Адаптивность для мобильных */
+                @media (max-width: 768px) {
+                    .heart {
+                        font-size: 20px !important;
+                    }
+                    
+                    @keyframes floatUp {
+                        100% {
+                            transform: translateY(-200px) rotate(360deg);
+                        }
+                    }
+                }
+            </style>
+        `;
+        
+        document.head.insertAdjacentHTML('beforeend', styles);
     },
 
     startHearts() {
@@ -21,12 +164,12 @@ const HeartAnimation = {
         this.isRunning = true;
         this.clearHearts();
         
-        // Создаем 2-3 сердечка в секунду
+        // Создаем сердечки каждую секунду
         this.animationInterval = setInterval(() => {
             if (this.heartCount < this.maxHearts) {
-                this.createRandomHearts(2 + Math.floor(Math.random() * 2)); // 2-3 сердечка
+                this.createRandomHearts(2 + Math.floor(Math.random() * 3)); // 2-4 сердечка
             }
-        }, 1000);
+        }, 800); // Чаще создаем сердечки
         
         console.log('💖 Анимация сердечек запущена');
     },
@@ -43,59 +186,67 @@ const HeartAnimation = {
 
     createRandomHearts(count) {
         for (let i = 0; i < count; i++) {
-            setTimeout(() => {
+            // Используем requestAnimationFrame для лучшей производительности
+            requestAnimationFrame(() => {
                 if (this.heartCount < this.maxHearts) {
                     this.createHeart();
                 }
-            }, i * 300); // Задержка между созданиями
+            });
         }
     },
 
     createHeart() {
-        if (!this.heartsContainer) return;
+        if (!this.heartsContainer || this.heartCount >= this.maxHearts) return;
 
         const heart = document.createElement('div');
         heart.className = 'heart';
-        heart.innerHTML = '💖';
         
-        // Получаем безопасную позицию
+        // Случайное сердечко
+        const randomHeart = this.heartTypes[Math.floor(Math.random() * this.heartTypes.length)];
+        heart.innerHTML = randomHeart;
+        
+        // Безопасная позиция (избегаем контейнер с вопросами)
         const safePosition = this.getSafePosition();
-        if (!safePosition) return; // Не нашли безопасную позицию
+        if (!safePosition) return;
         
         heart.style.left = safePosition.x + 'px';
         heart.style.top = safePosition.y + 'px';
         
-        // Случайный размер (16-40px)
-        const size = 16 + Math.random() * 24;
+        // Случайный размер
+        const size = 18 + Math.random() * 30;
         heart.style.fontSize = size + 'px';
         
-        // Случайный тип анимации
-        const animations = ['spin-left', 'spin-right', 'spin-slow', 'spin-fast', ''];
-        const randomAnim = animations[Math.floor(Math.random() * animations.length)];
-        if (randomAnim) {
-            heart.classList.add(randomAnim);
-        }
+        // Случайная анимация
+        const randomAnim = this.animationTypes[Math.floor(Math.random() * this.animationTypes.length)];
+        heart.classList.add(randomAnim);
         
-        // Случайная длительность анимации (3-8 секунд)
-        const duration = 3 + Math.random() * 5;
+        // Случайные параметры анимации
+        const duration = 4 + Math.random() * 8;
         heart.style.animationDuration = duration + 's';
         
-        // Случайная задержка
-        heart.style.animationDelay = (Math.random() * 2) + 's';
+        const delay = Math.random() * 3;
+        heart.style.animationDelay = delay + 's';
         
-        // Случайная прозрачность
-        heart.style.opacity = 0.7 + Math.random() * 0.3;
+        // Случайная прозрачность и цветовые эффекты
+        heart.style.opacity = 0.6 + Math.random() * 0.4;
         
-        // Увеличиваем счетчик
+        // Случайное смещение по X для разнообразия траекторий
+        if (Math.random() > 0.5) {
+            heart.style.setProperty('--random-x', (Math.random() * 100 - 50) + 'px');
+        }
+
         this.heartCount++;
         
-        // Удаляем сердечко после завершения анимации
-        heart.addEventListener('animationend', () => {
+        // Удаляем после анимации
+        const removeHeart = () => {
             if (heart.parentNode) {
                 heart.parentNode.removeChild(heart);
                 this.heartCount--;
             }
-        });
+        };
+
+        heart.addEventListener('animationend', removeHeart);
+        heart.addEventListener('animationcancel', removeHeart);
 
         this.heartsContainer.appendChild(heart);
     },
@@ -103,66 +254,68 @@ const HeartAnimation = {
     getSafePosition() {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        const container = document.querySelector('.container');
         
-        if (!container) {
-            return this.getRandomEdgePosition(screenWidth, screenHeight);
-        }
+        // Ищем все контейнеры которые нужно избегать
+        const questionContainer = document.querySelector('.container, .question-content, .screen.active');
+        const avoidElements = questionContainer ? [questionContainer] : [];
         
-        const containerRect = container.getBoundingClientRect();
-        
-        // Пытаемся найти безопасную позицию (макс 10 попыток)
-        for (let i = 0; i < 10; i++) {
+        // Пытаемся найти безопасную позицию
+        for (let i = 0; i < 15; i++) {
             const position = this.getRandomEdgePosition(screenWidth, screenHeight);
             
-            // Проверяем не попадает ли позиция в контейнер или близко к нему
-            const buffer = 50; // буферная зона вокруг контейнера
-            const isInContainer = 
-                position.x >= containerRect.left - buffer && 
-                position.x <= containerRect.right + buffer &&
-                position.y >= containerRect.top - buffer && 
-                position.y <= containerRect.bottom + buffer;
+            let isSafe = true;
+            for (const element of avoidElements) {
+                const rect = element.getBoundingClientRect();
+                const buffer = 80; // Больший буфер
+                
+                const isOverlapping = 
+                    position.x >= rect.left - buffer && 
+                    position.x <= rect.right + buffer &&
+                    position.y >= rect.top - buffer && 
+                    position.y <= rect.bottom + buffer;
+                
+                if (isOverlapping) {
+                    isSafe = false;
+                    break;
+                }
+            }
             
-            if (!isInContainer) {
+            if (isSafe) {
                 return position;
             }
         }
         
-        // Если не нашли безопасную позицию, возвращаем случайную на краю
+        // Если не нашли - возвращаем позицию по краю
         return this.getRandomEdgePosition(screenWidth, screenHeight);
     },
 
     getRandomEdgePosition(screenWidth, screenHeight) {
-        // Выбираем случайную сторону для появления (0: верх, 1: право, 2: низ, 3: лево)
         const side = Math.floor(Math.random() * 4);
-        const offset = 20; // Отступ от края
+        const offset = 30;
         
         switch(side) {
             case 0: // Верх
                 return {
-                    x: Math.random() * (screenWidth - 100) + 50,
+                    x: Math.random() * screenWidth,
                     y: -offset
                 };
             case 1: // Право
                 return {
                     x: screenWidth + offset,
-                    y: Math.random() * (screenHeight - 100) + 50
+                    y: Math.random() * screenHeight
                 };
             case 2: // Низ
                 return {
-                    x: Math.random() * (screenWidth - 100) + 50,
+                    x: Math.random() * screenWidth,
                     y: screenHeight + offset
                 };
             case 3: // Лево
                 return {
                     x: -offset,
-                    y: Math.random() * (screenHeight - 100) + 50
+                    y: Math.random() * screenHeight
                 };
             default:
-                return { 
-                    x: Math.random() * (screenWidth - 100) + 50, 
-                    y: -offset 
-                };
+                return { x: Math.random() * screenWidth, y: -offset };
         }
     },
 
@@ -173,12 +326,16 @@ const HeartAnimation = {
         }
     },
 
-    // Обновление позиций при ресайзе
+    // Обновление при ресайзе
     handleResize() {
-        // При изменении размера окна пересоздаем сердечки
         if (this.isRunning) {
             this.clearHearts();
         }
+    },
+
+    // Плавное изменение интенсивности
+    setIntensity(intensity) {
+        this.maxHearts = Math.max(20, Math.min(100, intensity));
     }
 };
 
@@ -187,5 +344,9 @@ window.addEventListener('resize', () => {
     HeartAnimation.handleResize();
 });
 
-// Создаем глобальную ссылку
+// Автоматическая инициализация
+document.addEventListener('DOMContentLoaded', () => {
+    HeartAnimation.init();
+});
+
 window.HeartAnimation = HeartAnimation;
