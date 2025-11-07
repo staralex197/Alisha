@@ -7,12 +7,13 @@ const MusicPlayer = {
     isPlaylistOpen: false,
     audioInitialized: false,
     isLoading: false,
-    volume: 0.5,
+    volume: 0.2, // Начинаем с 20% громкости
     fadeInterval: null,
     autoPlayEnabled: false,
     isMobile: false,
     isMuted: false,
-    previousVolume: 0.5,
+    previousVolume: 0.2,
+    loadedTracks: new Set(), // Для отслеживания загруженных треков
 
     // Треки будут загружаться автоматически
     tracks: [],
@@ -58,8 +59,17 @@ const MusicPlayer = {
             ];
 
             this.tracks = [];
+            this.loadedTracks.clear(); // Очищаем множество
             
             for (const filename of trackFiles) {
+                // Проверяем, нет ли уже этого трека
+                if (this.loadedTracks.has(filename)) {
+                    console.log(`⚠️ Пропускаем дубликат: ${filename}`);
+                    continue;
+                }
+                
+                this.loadedTracks.add(filename);
+                
                 const track = {
                     name: this.formatTrackName(filename),
                     artist: this.getArtistFromFilename(filename),
@@ -80,6 +90,8 @@ const MusicPlayer = {
             if (this.tracks.length === 0) {
                 throw new Error('Треки не найдены');
             }
+
+            console.log(`✅ Загружено ${this.tracks.length} треков`);
 
         } catch (error) {
             console.error('❌ Ошибка загрузки треков:', error);
@@ -247,13 +259,16 @@ const MusicPlayer = {
                 this.updateVolumeSlider(0);
             }
         } else {
-            this.audio.volume = this.previousVolume;
+            // Включаем звук на 20%
+            const newVolume = 0.2;
+            this.audio.volume = newVolume;
+            this.volume = newVolume;
             this.updateVolumeIcon('🔊');
             // Обновляем слайдер
             const volumeSlider = document.getElementById('volumeSlider');
             if (volumeSlider) {
-                volumeSlider.value = this.previousVolume * 100;
-                this.updateVolumeSlider(this.previousVolume * 100);
+                volumeSlider.value = newVolume * 100;
+                this.updateVolumeSlider(newVolume * 100);
             }
         }
         
@@ -277,10 +292,14 @@ const MusicPlayer = {
                 this.loadTrack(this.currentTrack, false);
             }
             
+            // Начинаем с нулевой громкости
+            this.audio.volume = 0;
             this.audio.play().then(() => {
                 this.isPlaying = true;
                 this.updatePlayButton('⏸');
                 this.startProgressUpdate();
+                // Плавное увеличение до 20%
+                this.fadeIn(0, 0.2, 3000);
             }).catch(error => {
                 console.log('Автовоспроизведение заблокировано');
             });
@@ -627,10 +646,16 @@ const MusicPlayer = {
         if (!playlistContainer) return;
 
         playlistContainer.style.display = 'block';
-        // Убираем setTimeout для мгновенного открытия
-        playlistContainer.style.maxHeight = this.isMobile ? '200px' : '300px';
-        playlistContainer.classList.add('open');
         
+        // Анимация открытия снизу для мобильных
+        if (this.isMobile) {
+            playlistContainer.style.transform = 'translateY(0)';
+            playlistContainer.style.opacity = '1';
+        } else {
+            playlistContainer.style.maxHeight = '300px';
+        }
+        
+        playlistContainer.classList.add('open');
         this.isPlaylistOpen = true;
         console.log('📋 Плейлист открыт');
     },
@@ -639,7 +664,13 @@ const MusicPlayer = {
         const playlistContainer = document.getElementById('playlistContainer');
         if (!playlistContainer) return;
 
-        playlistContainer.style.maxHeight = '0';
+        if (this.isMobile) {
+            playlistContainer.style.transform = 'translateY(100%)';
+            playlistContainer.style.opacity = '0';
+        } else {
+            playlistContainer.style.maxHeight = '0';
+        }
+        
         playlistContainer.classList.remove('open');
         
         setTimeout(() => {
