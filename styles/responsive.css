@@ -1,336 +1,473 @@
+/* Адаптивность для всех устройств */
+
 /* Большие мониторы (1440px+) */
 @media (min-width: 1440px) {
-    .player-container {
-        padding: 12px 30px;
-    }
-    .player-main {
-        gap: 25px;
-    }
-    .progress-container {
-        max-width: 500px;
-    }
     .container {
-        max-width: 900px;
-        margin-top: 120px;
-        padding: 50px;
+        max-width: 1000px;
+        margin: 80px auto 40px;
+        padding: 30px;
+        min-height: auto;
+        max-height: 85vh;
+        overflow-y: auto;
     }
+    
+    .container::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+    }
+    
+    .container::-webkit-scrollbar-thumb {
+        background: rgba(102, 126, 234, 0.5);
+        border-radius: 3px;
+    }
+    
+    .question-content {
+        max-height: 65vh;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+    
+    .input-section {
+        margin: 20px 0;
+    }
+    
+    .user-input {
+        min-height: 100px;
+        max-height: 150px;
+    }
+    
+    .progress-navigation {
+        margin: 20px 0;
+        position: sticky;
+        bottom: 0;
+        background: var(--container-bg);
+        padding: 15px 0;
+        border-top: 1px solid rgba(102, 126, 234, 0.1);
+    }
+    
+    .final-content {
+        max-height: 70vh;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+    
+    .poem-container {
+        max-height: 300px;
+        overflow-y: auto;
+        margin: 20px 0;
+        padding: 20px;
+    }
+    
     h1 {
-        font-size: 2.8em;
+        font-size: 2.3em;
+    }
+    
+    .question-text {
+        font-size: 1.2em;
     }
 }
 
 /* Ноутбуки (1024px - 1439px) */
-@media (max-width: 1439px) and (min-width: 1024px) {
-    .player-container {
-        padding: 10px 25px;
-    }
-    .progress-container {
-        max-width: 350px;
-    }
+@media (min-width: 1024px) and (max-width: 1439px) {
     .container {
-        max-width: 800px;
-        margin-top: 110px;
-        padding: 40px;
+        max-width: 900px;
+        margin: 70px auto 30px;
+        padding: 25px;
+        min-height: auto;
+        max-height: 80vh;
+        overflow-y: auto;
     }
-}
-
-/* Планшеты (768px - 1023px) */
-@media (max-width: 1023px) and (min-width: 768px) {
-    .player-container {
-        padding: 8px 20px;
+    
+    .question-content {
+        max-height: 60vh;
+        overflow-y: auto;
     }
-    .player-main {
-        gap: 15px;
+    
+    .user-input {
+        min-height: 90px;
+        max-height: 130px;
     }
-    .progress-container {
-        max-width: 250px;
+    
+    .final-content {
+        max-height: 65vh;
+        overflow-y: auto;
     }
-    .volume-slider {
-        width: 60px;
+    
+    .poem-container {
+        max-height: 250px;
+        overflow-y: auto;
+        margin: 15px 0;
+        padding: 15px;
     }
-    .time-display {
-        font-size: 0.75em;
-    }
-    .container {
-        max-width: 700px;
-        padding: 35px;
-        margin-top: 100px;
-    }
+    
     h1 {
         font-size: 2.2em;
+        margin-bottom: 20px;
     }
+    
     .question-text {
-        font-size: 1.2em;
-    }
-    .user-input {
-        min-height: 120px;
-        padding: 20px;
-        font-size: 1em;
-    }
-    .btn {
-        padding: 14px 30px;
-        font-size: 1em;
-        min-width: 180px;
-    }
-    .formulation-section {
-        padding: 25px;
-    }
-    .formulation-text {
         font-size: 1.1em;
-    }
-    .poem-container {
-        padding: 25px;
-    }
-    .poem-title {
-        font-size: 1.7em;
-    }
-    .poem-text {
-        font-size: 1.1em;
-    }
-    .progress-navigation {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .nav-buttons {
-        width: 100%;
-        justify-content: space-between;
-    }
-    .nav-btn {
-        flex: 1;
-        min-width: auto;
+        margin-bottom: 25px;
     }
 }
 
-/* Телефоны (480px - 767px) */
-@media (max-width: 767px) and (min-width: 480px) {
+/* Компактный режим для всех больших экранов */
+@media (min-width: 1024px) {
+    .container {
+        transform: scale(0.9);
+        transform-origin: top center;
+    }
+    
+    /* Убираем масштабирование при очень больших экранах */
+    @media (min-width: 1920px) {
+        .container {
+            transform: scale(1);
+            max-width: 1200px;
+        }
+    }
+    
+    /* Оптимизация для экранов с маленькой высотой */
+    @media (max-height: 800px) {
+        .container {
+            margin: 50px auto 20px;
+            padding: 20px;
+            max-height: 75vh;
+        }
+        
+        .question-content {
+            max-height: 55vh;
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .question-text {
+            font-size: 1em;
+            margin-bottom: 20px;
+            min-height: 40px;
+        }
+        
+        .user-input {
+            min-height: 80px;
+            max-height: 100px;
+            padding: 15px;
+        }
+        
+        .buttons {
+            margin: 15px 0;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            font-size: 0.95em;
+        }
+        
+        .poem-container {
+            max-height: 200px;
+            margin: 10px 0;
+            padding: 15px;
+        }
+    }
+}
+
+/* Оптимизация музыкального плеера для больших экранов */
+@media (min-width: 1024px) {
+    .music-player {
+        padding: 8px 20px;
+    }
+    
     .player-container {
-        padding: 6px 15px;
+        max-width: 1400px;
     }
-    .player-main {
-        gap: 10px;
-        flex-wrap: wrap;
+    
+    .track-cover {
+        width: 35px;
+        height: 35px;
     }
-    .player-track-info {
-        order: 1;
-        flex: 100%;
-        margin-bottom: 8px;
-    }
-    .player-controls {
-        order: 2;
-    }
-    .progress-container {
-        order: 3;
-        flex: 1;
-        max-width: none;
-        margin: 0 10px;
-    }
-    .player-extra {
-        order: 4;
-        gap: 10px;
-    }
-    .progress-container {
-        display: block;
-    }
-    .volume-container {
-        display: none;
-    }
-    .time-display {
-        font-size: 0.7em;
-    }
+    
     .control-btn {
         width: 32px;
         height: 32px;
         font-size: 0.8em;
     }
+    
     .play-btn {
         width: 36px;
         height: 36px;
     }
-    .track-cover {
-        width: 32px;
-        height: 32px;
-    }
-    .container {
-        max-width: 95%;
-        padding: 25px;
-        margin-top: 90px;
-        border-radius: 20px;
-    }
-    h1 {
-        font-size: 1.8em;
-    }
-    .question-text {
-        font-size: 1.1em;
-    }
-    .user-input {
-        min-height: 100px;
-        padding: 18px;
-        font-size: 0.95em;
-    }
-    .btn {
-        padding: 12px 25px;
-        font-size: 0.95em;
-        min-width: 160px;
-    }
-    .buttons {
-        gap: 12px;
-    }
-    .progress-navigation {
-        margin: 20px 0;
-    }
-    .nav-btn {
-        padding: 10px 20px;
-        font-size: 0.9em;
-        min-width: 100px;
-    }
-    .suggestion-buttons {
-        gap: 8px;
-    }
-    .suggestion-btn {
-        padding: 8px 16px;
-        font-size: 0.85em;
-    }
-}
-
-/* Маленькие телефоны (до 479px) */
-@media (max-width: 479px) {
-    .player-container {
-        padding: 5px 10px;
-    }
-    .player-main {
-        gap: 8px;
-    }
-    .progress-container {
-        display: none;
-    }
-    .volume-container {
-        display: none;
-    }
+    
     .time-display {
-        display: none;
-    }
-    .control-btn {
-        width: 30px;
-        height: 30px;
         font-size: 0.75em;
     }
-    .play-btn {
-        width: 34px;
-        height: 34px;
+    
+    .volume-slider {
+        width: 70px;
     }
-    .track-cover {
-        width: 28px;
-        height: 28px;
-        font-size: 0.9em;
-    }
-    .track-title {
-        font-size: 0.8em;
-    }
-    .track-artist {
-        font-size: 0.7em;
-    }
+    
     .playlist-toggle {
         padding: 6px 12px;
         font-size: 0.75em;
     }
+}
+
+/* Планшеты (768px - 1023px) */
+@media (max-width: 1023px) {
     .container {
-        max-width: 98%;
-        padding: 20px;
+        padding: 0 15px;
+    }
+    
+    .hero {
+        padding: 60px 0;
+    }
+    
+    .hero h1 {
+        font-size: 2.5em;
+    }
+    
+    .section h2 {
+        font-size: 2em;
+    }
+    
+    .quiz-container {
+        padding: 25px;
+    }
+    
+    .music-player {
+        padding: 8px 15px;
+    }
+    
+    .player-controls {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .track-info {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: 5px;
+    }
+}
+
+/* Телефоны (481px - 767px) */
+@media (max-width: 767px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .main-content {
         margin-top: 80px;
+    }
+    
+    .hero {
+        padding: 40px 0;
+    }
+    
+    .hero h1 {
+        font-size: 2em;
+    }
+    
+    .hero p {
+        font-size: 1.1em;
+    }
+    
+    .section {
+        padding: 40px 0;
+    }
+    
+    .section h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    .quiz-container {
+        padding: 20px 15px;
         border-radius: 15px;
     }
-    h1 {
-        font-size: 1.6em;
-    }
+    
     .question-text {
-        font-size: 1em;
-        margin-bottom: 25px;
+        font-size: 1.1em;
     }
-    .user-input {
-        min-height: 90px;
-        padding: 15px;
-        font-size: 0.9em;
+    
+    .answers {
+        gap: 8px;
     }
+    
+    .answer-btn {
+        padding: 12px 15px;
+        font-size: 0.95em;
+    }
+    
+    .quiz-navigation {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
     .btn {
         padding: 10px 20px;
-        font-size: 0.9em;
-        min-width: 140px;
+        font-size: 0.95em;
         width: 100%;
+        margin: 2px 0;
     }
-    .buttons {
-        flex-direction: column;
-        gap: 10px;
+    
+    /* Музыкальный плеер для мобильных */
+    .music-player {
+        padding: 10px;
     }
-    .formulation-section {
-        padding: 20px;
+    
+    .player-controls {
+        justify-content: space-around;
     }
-    .formulation-text {
-        font-size: 1em;
-    }
-    .poem-container {
-        padding: 20px;
-    }
-    .poem-title {
-        font-size: 1.5em;
-    }
-    .poem-text {
-        font-size: 1em;
-    }
-    .character-count {
-        font-size: 0.8em;
-    }
-    .suggestion-btn {
+    
+    .player-btn {
         padding: 6px 12px;
+        font-size: 0.9em;
+    }
+    
+    .track-info {
+        font-size: 0.8em;
+        flex-basis: auto;
+        order: 0;
+        margin-top: 0;
+    }
+    
+    .playlist {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 0;
+        z-index: 2000;
+        overflow-y: auto;
+    }
+}
+
+/* Маленькие телефоны (до 480px) */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.8em;
+    }
+    
+    .hero p {
+        font-size: 1em;
+    }
+    
+    .section h2 {
+        font-size: 1.6em;
+    }
+    
+    .quiz-container {
+        padding: 15px 10px;
+    }
+    
+    .question-text {
+        font-size: 1em;
+    }
+    
+    .answer-btn {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+    
+    .music-player {
+        padding: 8px 5px;
+    }
+    
+    .player-btn {
+        padding: 5px 8px;
         font-size: 0.8em;
     }
-    .progress-navigation {
-        flex-direction: column;
-        gap: 12px;
-    }
-    .nav-buttons {
-        width: 100%;
-        gap: 10px;
-    }
-    .nav-btn {
-        flex: 1;
-        padding: 8px 16px;
-        font-size: 0.85em;
-        min-width: auto;
-    }
-    .progress-steps {
-        gap: 6px;
-    }
-    .progress-step {
-        width: 10px;
-        height: 10px;
+    
+    .track-info {
+        font-size: 0.75em;
     }
 }
 
-/* Особые стили для ландшафтной ориентации */
-@media (max-height: 600px) and (orientation: landscape) {
-    .container {
+/* Портретная ориентация */
+@media (max-height: 600px) and (orientation: portrait) {
+    .hero {
+        padding: 30px 0;
+    }
+    
+    .section {
+        padding: 30px 0;
+    }
+    
+    .main-content {
         margin-top: 70px;
-        padding: 20px;
-        min-height: 300px;
-    }
-    .user-input {
-        min-height: 60px;
-    }
-    .loading-screen .loading-content {
-        transform: scale(0.8);
     }
 }
 
-/* Высокие экраны */
-@media (min-height: 1000px) {
-    .container {
-        margin-top: 150px;
-        min-height: 600px;
+/* Ландшафтная ориентация для мобильных */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        padding: 20px 0;
     }
-    h1 {
-        font-size: 3em;
+    
+    .section {
+        padding: 20px 0;
     }
-    .question-text {
-        font-size: 1.5em;
+    
+    .quiz-container {
+        padding: 15px;
+    }
+    
+    .answers {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+}
+
+/* Высокопиксельные дисплеи */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero h1 {
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+/* Темная тема поддержка */
+@media (prefers-color-scheme: dark) {
+    .playlist {
+        background: rgba(30, 30, 30, 0.95);
+        color: white;
+    }
+    
+    .playlist-header h3 {
+        color: #ff6b6b;
+    }
+    
+    .track-item {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .track-artist,
+    .track-duration {
+        color: #ccc;
+    }
+}
+
+/* Адаптация для touch устройств */
+@media (hover: none) and (pointer: coarse) {
+    .answer-btn:hover,
+    .btn:hover,
+    .player-btn:hover,
+    .btn-small:hover,
+    .track-item:hover {
+        transform: none;
+    }
+    
+    .answer-btn:active,
+    .btn:active,
+    .player-btn:active,
+    .btn-small:active,
+    .track-item:active {
+        transform: scale(0.98);
     }
 }
