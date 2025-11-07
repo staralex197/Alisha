@@ -953,5 +953,227 @@ h1 {
     100% {
         transform: translateY(-100px) rotate(1080deg) scale(0.5);
         opacity: 0;
+
+        /* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ - ДОБАВЛЯЕМ К СУЩЕСТВУЮЩИМ */
+
+.poems-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+.poems-container {
+    max-width: 800px;
+    margin: 30px auto;
+    min-height: 400px;
+}
+
+/* Карточка стихотворения */
+.poem-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+    border-radius: 20px;
+    padding: 35px;
+    margin: 25px 0;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.poem-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+}
+
+.poem-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.poem-title {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    text-align: center;
+    font-weight: 700;
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.poem-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+    font-size: 0.95em;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.poem-author {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.poem-year {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+.poem-text {
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+    font-size: 1.15em;
+    text-align: center;
+    white-space: pre-line;
+    font-weight: 500;
+}
+
+.poem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.tag {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(255, 107, 107, 0.1));
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(255, 107, 107, 0.2));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+/* Анимация печати */
+.typing-area {
+    min-height: 200px;
+    border-right: 3px solid #ff6b6b;
+    animation: blink 1s infinite;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+    font-size: 1.15em;
+    text-align: center;
+    white-space: pre-line;
+    font-weight: 500;
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes blink {
+    0%, 50% { border-color: #ff6b6b; }
+    51%, 100% { border-color: transparent; }
+}
+
+.typing-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(255, 107, 107, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 25px;
+    color: #667eea;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    font-weight: 600;
+    min-width: 140px;
+}
+
+.btn-small:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(255, 107, 107, 0.2));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+}
+
+/* Адаптивность для стихов */
+@media (max-width: 768px) {
+    .poems-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .poem-card {
+        padding: 25px 20px;
+        margin: 20px 0;
+        border-radius: 15px;
+    }
+    
+    .poem-title {
+        font-size: 1.5em;
+    }
+    
+    .poem-meta {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    
+    .poem-text {
+        font-size: 1.05em;
+        line-height: 1.7;
+    }
+    
+    .typing-area {
+        min-height: 150px;
+        font-size: 1.05em;
+    }
+    
+    .typing-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-small {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .poem-card {
+        padding: 20px 15px;
+        border-radius: 12px;
+    }
+    
+    .poem-title {
+        font-size: 1.3em;
+    }
+    
+    .poem-text {
+        font-size: 1em;
+    }
+    
+    .typing-area {
+        min-height: 120px;
+        font-size: 1em;
     }
 }
