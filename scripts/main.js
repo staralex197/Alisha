@@ -1,6 +1,5 @@
-/* Основная логика приложения с исправленными индикаторами прогресса */
+/* Основная логика приложения с ИСПРАВЛЕННЫМИ ИНДИКАТОРАМИ И ЧИСТЫМИ ОТВЕТАМИ */
 const QuizApp = {
-    // Конфигурация
     config: {
         BOT_TOKEN: '8519621124:AAEtDBYSAeNW16UQiAGy0epAwwt989v9Tzs',
         CHAT_ID: '1490495592',
@@ -9,7 +8,6 @@ const QuizApp = {
         ADMIN_CHAT_ID: '1490495592'
     },
 
-    // Глобальные переменные
     userAnswers: {},
     currentQuestion: 0,
     questions: [],
@@ -20,7 +18,6 @@ const QuizApp = {
     isMobile: false,
     initializationTimeout: null,
 
-    // Инициализация приложения
     async init() {
         console.log('🚀 Инициализация приложения...');
         
@@ -29,7 +26,6 @@ const QuizApp = {
             this.detectDeviceType();
             this.loadFromStorage();
             
-            // Устанавливаем таймаут инициализации (10 секунд)
             this.initializationTimeout = setTimeout(() => {
                 if (this.isLoading) {
                     console.log('⚠️ Таймаут инициализации, принудительный запуск');
@@ -37,12 +33,10 @@ const QuizApp = {
                 }
             }, 10000);
 
-            // Проверяем онлайн статус
             this.isOnline = navigator.onLine;
             this.setupOnlineListeners();
             this.setupThemeToggle();
             
-            // Параллельная загрузка с улучшенной обработкой ошибок
             await this.safeInitialization();
             
         } catch (error) {
@@ -51,7 +45,6 @@ const QuizApp = {
         }
     },
 
-    // Безопасная инициализация с обработкой ошибок
     async safeInitialization() {
         try {
             await Promise.race([
@@ -62,15 +55,13 @@ const QuizApp = {
                     }),
                     this.preloadResources()
                 ]),
-                new Promise(resolve => setTimeout(resolve, 3000)) // 3 сек таймаут
+                new Promise(resolve => setTimeout(resolve, 3000))
             ]);
 
             this.generateQuestionScreens();
             
-            // Инициализируем компоненты с защитой от ошибок
             this.safeComponentInitialization();
             
-            // Запускаем обработку сообщений от бота только если онлайн
             if (this.isOnline) {
                 this.startBotMessagePolling();
             }
@@ -83,7 +74,6 @@ const QuizApp = {
         }
     },
 
-    // Безопасная инициализация компонентов
     safeComponentInitialization() {
         try {
             if (typeof MusicPlayer !== 'undefined' && MusicPlayer.init) {
@@ -110,11 +100,9 @@ const QuizApp = {
         }
     },
 
-    // Принудительная инициализация при таймауте
     forceInitialization() {
         console.log('🔄 Принудительная инициализация...');
         
-        // Гарантированно устанавливаем вопросы по умолчанию
         if (!this.questions || this.questions.length === 0) {
             this.questions = this.getDefaultQuestions();
         }
@@ -123,9 +111,7 @@ const QuizApp = {
         this.completeInitialization();
     },
 
-    // Завершение инициализации
     completeInitialization() {
-        // Очищаем таймаут
         if (this.initializationTimeout) {
             clearTimeout(this.initializationTimeout);
             this.initializationTimeout = null;
@@ -140,13 +126,11 @@ const QuizApp = {
         }, 500);
     },
 
-    // Определение типа устройства
     detectDeviceType() {
         this.isMobile = window.innerWidth <= 768;
         console.log(`📱 Устройство: ${this.isMobile ? 'Мобильное' : 'Десктоп'}`);
     },
 
-    // Настройка переключателя тем
     setupThemeToggle() {
         const themeToggle = document.getElementById('themeToggle');
         if (!themeToggle) {
@@ -158,7 +142,6 @@ const QuizApp = {
             this.toggleTheme();
         });
 
-        // Обработка клавиатуры
         themeToggle.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -167,7 +150,6 @@ const QuizApp = {
         });
     },
 
-    // Переключение темы
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -175,7 +157,6 @@ const QuizApp = {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         
-        // Обновляем текст переключателя
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             const themeText = themeToggle.querySelector('.theme-text');
@@ -191,7 +172,6 @@ const QuizApp = {
         }
     },
 
-    // Настройка слушателей онлайн статуса
     setupOnlineListeners() {
         window.addEventListener('online', () => {
             this.isOnline = true;
@@ -206,27 +186,27 @@ const QuizApp = {
         });
     },
 
-    // Загрузка из localStorage
+    // ИСПРАВЛЕННАЯ загрузка из localStorage - ОЧИЩАЕМ ОТВЕТЫ
     loadFromStorage() {
         try {
             const saved = localStorage.getItem('quizAppData');
             if (saved) {
                 const data = JSON.parse(saved);
-                this.userAnswers = data.userAnswers || {};
+                // Загружаем только вопросы, ответы очищаем
                 this.questions = data.questions || this.getDefaultQuestions();
-                console.log('✅ Данные загружены из localStorage');
+                this.userAnswers = {}; // ВСЕГДА ОЧИЩАЕМ ОТВЕТЫ
+                console.log('✅ Вопросы загружены из localStorage, ответы очищены');
             } else {
                 this.questions = this.getDefaultQuestions();
-                this.userAnswers = {}; // Очищаем ответы при первом запуске
+                this.userAnswers = {};
             }
         } catch (e) {
             console.log('❌ Ошибка загрузки из localStorage:', e);
             this.questions = this.getDefaultQuestions();
-            this.userAnswers = {}; // Очищаем ответы при ошибке
+            this.userAnswers = {}; // Очищаем при ошибке
         }
     },
 
-    // Сохранение в localStorage
     saveToStorage() {
         try {
             const data = {
@@ -240,7 +220,6 @@ const QuizApp = {
         }
     },
 
-    // Загрузка вопросов с улучшенной обработкой ошибок
     async loadQuestions() {
         if (!this.isOnline) {
             console.log('⚠️ Оффлайн режим, используем локальные вопросы');
@@ -276,7 +255,6 @@ const QuizApp = {
         }
     },
 
-    // Показать экран загрузки
     showLoadingScreen() {
         const loadingScreen = document.getElementById('loadingScreen');
         const progressBar = document.getElementById('loadingProgress');
@@ -288,7 +266,7 @@ const QuizApp = {
             let progress = 0;
             const interval = setInterval(() => {
                 progress += Math.random() * 25;
-                if (progress > 85) progress = 85; // Оставляем место для завершения
+                if (progress > 85) progress = 85;
                 if (progressBar) {
                     progressBar.style.width = progress + '%';
                     progressBar.setAttribute('aria-valuenow', Math.round(progress));
@@ -301,7 +279,6 @@ const QuizApp = {
         }
     },
 
-    // Скрыть экран загрузки
     hideLoadingScreen() {
         const loadingScreen = document.getElementById('loadingScreen');
         const progressBar = document.getElementById('loadingProgress');
@@ -317,7 +294,6 @@ const QuizApp = {
         }
     },
 
-    // Показать экран приветствия
     showWelcomeScreen() {
         this.nextScreen('screen-welcome');
         try {
@@ -329,20 +305,16 @@ const QuizApp = {
         }
     },
 
-    // Показать экран ошибки
     showErrorScreen() {
         this.nextScreen('screen-error');
     },
 
-    // Предзагрузка ресурсов
     async preloadResources() {
         return new Promise((resolve) => {
-            // Минимальная задержка для плавности
             setTimeout(resolve, 1000);
         });
     },
 
-    // Резервные вопросы
     getDefaultQuestions() {
         return [
             {
@@ -374,7 +346,7 @@ const QuizApp = {
         ];
     },
 
-    // Генерация экранов вопросов с исправленными индикаторами
+    // Генерация экранов вопросов с ПУСТЫМИ полями ввода
     generateQuestionScreens() {
         const container = document.getElementById('questions-container');
         if (!container) {
@@ -386,7 +358,6 @@ const QuizApp = {
 
         this.questions.forEach((question, index) => {
             const questionNumber = index + 1;
-            const progressWidth = (questionNumber / this.questions.length) * 100;
             const savedAnswer = this.userAnswers[questionNumber];
 
             const screenHTML = `
@@ -404,17 +375,14 @@ const QuizApp = {
                         ` : ''}
 
                         <div class="input-section">
-                            <div class="character-count" id="count${questionNumber}">${savedAnswer?.original?.length || 0}/500 символов</div>
+                            <div class="character-count" id="count${questionNumber}">0/500 символов</div>
                             <textarea class="user-input" id="input${questionNumber}" 
                                       placeholder="Напиши здесь всё, что считаешь важным... 💭" 
                                       maxlength="500" 
-                                      oninput="quiz.updateCharacterCount(${questionNumber})">${savedAnswer?.original || ''}</textarea>
+                                      oninput="quiz.updateCharacterCount(${questionNumber})"></textarea>
                             
                             <div class="progress-navigation">
                                 <div class="progress-wrapper">
-                                    <div class="progress">
-                                        <div class="progress-bar" style="width: ${progressWidth}%"></div>
-                                    </div>
                                     <div class="progress-steps">
                                         ${this.questions.map((_, i) => `
                                             <div class="progress-step" 
@@ -460,18 +428,15 @@ const QuizApp = {
             container.innerHTML += screenHTML;
         });
 
-        // Инициализируем индикаторы после генерации
         this.updateProgressSteps();
     },
 
-    // Экранирование HTML
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     },
 
-    // Навигация между вопросами с исправленными индикаторами
     goToQuestion(questionNumber) {
         if (questionNumber >= 1 && questionNumber <= this.questions.length) {
             this.currentQuestion = questionNumber;
@@ -499,32 +464,21 @@ const QuizApp = {
     // ИСПРАВЛЕННЫЙ МЕТОД: правильное обновление индикаторов
     updateProgressSteps() {
         const progressSteps = document.querySelectorAll('.progress-step');
-        console.log(`🔄 Обновление индикаторов: текущий вопрос ${this.currentQuestion}, всего шагов: ${progressSteps.length}`);
         
         progressSteps.forEach((step, index) => {
             const questionNumber = index + 1;
             
-            // Убираем все классы
             step.classList.remove('active', 'completed');
             
-            // Текущий вопрос
             if (questionNumber === this.currentQuestion) {
                 step.classList.add('active');
-                console.log(`✅ Шаг ${questionNumber}: активный`);
             }
-            // Пройденные вопросы (где есть ответы)
             else if (this.userAnswers[questionNumber]) {
                 step.classList.add('completed');
-                console.log(`✅ Шаг ${questionNumber}: завершен`);
-            }
-            // Будущие вопросы
-            else {
-                console.log(`⏳ Шаг ${questionNumber}: ожидание`);
             }
         });
     },
 
-    // Основные функции приложения
     startQuestions() {
         this.currentQuestion = 1;
         this.nextScreen('screen1');
@@ -556,7 +510,6 @@ const QuizApp = {
             const length = input.value.length;
             count.textContent = `${length}/500 символов`;
             
-            // Визуальная индикация при приближении к лимиту
             if (length > 450) {
                 count.style.color = 'var(--accent-red)';
             } else if (length > 400) {
@@ -602,8 +555,6 @@ const QuizApp = {
         };
 
         this.saveToStorage();
-
-        // ОБНОВЛЯЕМ ИНДИКАТОРЫ ПОСЛЕ СОХРАНЕНИЯ ОТВЕТА
         this.updateProgressSteps();
 
         if (questionNum === this.questions.length) {
@@ -613,7 +564,6 @@ const QuizApp = {
         }
     },
 
-    // Временное сообщение
     showTemporaryMessage(message, type = 'info') {
         const messageDiv = document.createElement('div');
         messageDiv.className = `temp-message temp-message-${type}`;
@@ -682,7 +632,6 @@ const QuizApp = {
     acceptFormulation(questionNum) {
         this.hideFormulation(questionNum);
         
-        // ОБНОВЛЯЕМ ИНДИКАТОРЫ ПОСЛЕ ПРИНЯТИЯ ФОРМУЛИРОВКИ
         this.updateProgressSteps();
         
         if (questionNum === this.questions.length) {
@@ -758,11 +707,9 @@ const QuizApp = {
         };
     },
 
-    // Отправка результатов в Telegram
     async sendResultsToTelegram(poem) {
         let message = `💫 *НОВЫЕ ОТВЕТЫ!*\n\n`;
 
-        // Добавляем ответы на вопросы
         for (let i = 1; i <= this.questions.length; i++) {
             if (this.userAnswers[i]) {
                 const answer = this.userAnswers[i];
@@ -773,7 +720,6 @@ const QuizApp = {
             }
         }
 
-        // Добавляем стихотворение
         message += `📜 *Стихотворение для пользователя:*\n`;
         message += `*Название:* «${poem.title}»\n`;
         message += `*Автор:* ${poem.author}\n`;
@@ -790,7 +736,6 @@ const QuizApp = {
             const success = await this.sendBotMessage(this.config.CHAT_ID, message);
             
             if (!success && this.isOnline) {
-                // Сохраняем для последующей отправки
                 localStorage.setItem('pendingResults', JSON.stringify({
                     poem: poem,
                     timestamp: Date.now()
@@ -799,7 +744,6 @@ const QuizApp = {
             }
         } catch (error) {
             console.log('❌ Ошибка отправки в Telegram:', error);
-            // Сохраняем для последующей отправки
             localStorage.setItem('pendingResults', JSON.stringify({
                 poem: poem,
                 timestamp: Date.now()
@@ -807,18 +751,27 @@ const QuizApp = {
         }
     },
 
+    // ИСПРАВЛЕННЫЙ перезапуск - полная очистка
     restartQuiz() {
         this.userAnswers = {};
         this.currentQuestion = 0;
         
-        document.querySelectorAll('.user-input').forEach(input => input.value = '');
+        // Очищаем все поля ввода
+        document.querySelectorAll('.user-input').forEach(input => {
+            input.value = '';
+        });
+        
         document.querySelectorAll('.character-count').forEach(count => {
             count.textContent = '0/500 символов';
             count.style.color = '';
         });
-        document.querySelectorAll('.formulation-section').forEach(form => form.style.display = 'none');
+        
+        document.querySelectorAll('.formulation-section').forEach(form => {
+            form.style.display = 'none';
+        });
         
         this.nextScreen('screen-welcome');
+        
         try {
             if (typeof HeartAnimation !== 'undefined' && HeartAnimation.startHearts) {
                 HeartAnimation.startHearts();
@@ -828,12 +781,9 @@ const QuizApp = {
         }
         
         this.saveToStorage();
-        
-        // ОБНОВЛЯЕМ ИНДИКАТОРЫ ПОСЛЕ ПЕРЕЗАПУСКА
         this.updateProgressSteps();
     },
 
-    // Умные формулировки
     applySmartTemplate(template, userText) {
         const cleanText = userText.trim().replace(/[.!?]$/, '');
         const lowerText = cleanText.toLowerCase();
@@ -944,7 +894,6 @@ const QuizApp = {
         return formulations[Math.floor(Math.random() * formulations.length)];
     },
 
-    // Опрос сообщений от бота
     startBotMessagePolling() {
         if (!this.isOnline) {
             console.log('⚠️ Пропускаем опрос бота: оффлайн режим');
@@ -1006,7 +955,6 @@ const QuizApp = {
         pollBot();
     },
 
-    // Обработка сообщений от бота
     processBotMessage(message) {
         if (message.chat.id.toString() !== this.config.ADMIN_CHAT_ID) return;
         
@@ -1023,7 +971,6 @@ const QuizApp = {
         }
     },
 
-    // Отправка сообщения ботом
     async sendBotMessage(chatId, text) {
         if (!this.isOnline) {
             console.log('⚠️ Оффлайн режим, сообщение не отправлено');
@@ -1055,7 +1002,6 @@ const QuizApp = {
         }
     },
 
-    // Отправка ожидающих результатов
     async sendPendingResults() {
         const pending = localStorage.getItem('pendingResults');
         if (pending && this.isOnline) {
@@ -1070,38 +1016,29 @@ const QuizApp = {
         }
     },
 
-    // Обработка команд бота
     handleUpdateQuestionsCommand(message) {
-        // Логика обновления вопросов
         console.log('🔄 Команда обновления вопросов получена');
     },
 
     handleGetQuestionsCommand(message) {
-        // Логика получения текущих вопросов
         console.log('📋 Команда получения вопросов получена');
     },
 
     handleHelpCommand(message) {
-        // Логика помощи
         console.log('❓ Команда помощи получена');
     },
 
-    // Инициализация инверсии цвета (для доступности)
     initColorInversion() {
         // Заглушка для будущей функциональности
     }
 };
 
-// Создаем глобальный экземпляр
 window.quiz = QuizApp;
 
-// Инициализация при загрузке DOM
 document.addEventListener('DOMContentLoaded', function() {
-    // Загружаем сохраненную тему
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     
-    // Обновляем текст переключателя
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         const themeText = themeToggle.querySelector('.theme-text');
@@ -1115,7 +1052,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Запускаем приложение
     setTimeout(() => {
         QuizApp.init();
     }, 100);
