@@ -2,9 +2,9 @@
 :root[data-theme="dark"] {
     --primary-bg: #0f0f23;
     --secondary-bg: #1a1a2e;
-    --surface-bg: rgba(30, 30, 46, 0.7);
-    --container-bg: rgba(30, 30, 46, 0.6);
-    --glass-effect: rgba(17, 17, 27, 0.5);
+    --surface-bg: rgba(30, 30, 46, 0.5); /* Более прозрачный */
+    --container-bg: rgba(30, 30, 46, 0.4); /* Более прозрачный */
+    --glass-effect: rgba(17, 17, 27, 0.4); /* Более прозрачный */
     --glass-border: rgba(255, 255, 255, 0.15);
     
     --text-primary: #e2e8f0;
@@ -18,7 +18,7 @@
     --accent-red: #f87171;
     --accent-yellow: #fbbf24;
     
-    --player-bg: rgba(30, 30, 46, 0.8);
+    --player-bg: rgba(30, 30, 46, 0.6); /* Более прозрачный */
     --player-text: rgba(255, 255, 255, 0.95);
     --player-secondary: rgba(255, 255, 255, 0.7);
     --player-accent: #c084fc;
@@ -29,11 +29,11 @@
 }
 
 :root[data-theme="light"] {
-    --primary-bg: #f8fafc;
-    --secondary-bg: #f1f5f9;
-    --surface-bg: rgba(255, 255, 255, 0.4);
-    --container-bg: rgba(255, 255, 255, 0.3);
-    --glass-effect: rgba(255, 255, 255, 0.3);
+    --primary-bg: #ffffff;
+    --secondary-bg: #f8fafc;
+    --surface-bg: rgba(255, 255, 255, 0.3); /* Более прозрачный */
+    --container-bg: rgba(255, 255, 255, 0.2); /* Более прозрачный */
+    --glass-effect: rgba(255, 255, 255, 0.2); /* Более прозрачный */
     --glass-border: rgba(0, 0, 0, 0.08);
     
     --text-primary: #1e293b;
@@ -47,7 +47,7 @@
     --accent-red: #dc2626;
     --accent-yellow: #d97706;
     
-    --player-bg: rgba(255, 255, 255, 0.6);
+    --player-bg: rgba(255, 255, 255, 0.4); /* Более прозрачный */
     --player-text: rgba(30, 41, 59, 0.9);
     --player-secondary: rgba(30, 41, 59, 0.6);
     --player-accent: #7c3aed;
@@ -76,7 +76,7 @@ body {
     position: relative;
 }
 
-/* Фоновый градиент для красоты */
+/* Фоновый градиент для красоты - ОБНОВЛЕННЫЙ */
 body::before {
     content: '';
     position: fixed;
@@ -92,7 +92,7 @@ body::before {
     z-index: -1;
 }
 
-/* Обновляем фон для светлой темы */
+/* ОБНОВЛЕННЫЙ фон для светлой темы */
 :root[data-theme="light"] body::before {
     content: '';
     position: fixed;
@@ -101,10 +101,10 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.03) 0%, transparent 50%),
-        linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.02) 0%, transparent 50%),
+        linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     pointer-events: none;
     z-index: -1;
 }
@@ -328,7 +328,7 @@ body::before {
 }
 
 .control-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent; /* Убрали фон */
     border: none;
     border-radius: 50%;
     width: 36px;
@@ -340,20 +340,19 @@ body::before {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: var(--shadow-small);
+    box-shadow: none; /* Убрали тень */
     flex-shrink: 0;
 }
 
 .control-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
-    box-shadow: var(--shadow);
 }
 
 .play-btn {
     width: 42px;
     height: 42px;
-    background: rgba(255, 255, 255, 0.15);
+    background: transparent; /* Убрали фон */
     font-size: 1em;
 }
 
@@ -480,7 +479,7 @@ body::before {
 .playlist-container {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--glass-effect);
     backdrop-filter: blur(20px) saturate(180%);
     display: none;
@@ -743,7 +742,7 @@ h1 {
     font-weight: 500;
 }
 
-/* ОКОШКО ФОРМУЛИРОВКИ */
+/* ОКОШКО ФОРМУЛИРОВКИ - УБРАЛИ СКРОЛЛ */
 .formulation-section {
     background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
     color: var(--text-primary);
@@ -757,7 +756,7 @@ h1 {
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
     max-height: min(200px, 30vh);
-    overflow-y: auto;
+    overflow: hidden; /* Убрали скролл */
 }
 
 .formulation-text {
@@ -769,7 +768,7 @@ h1 {
 
 /* Стихотворение - УБИРАЕМ ПОЛЗУНОК ПОЛНОСТЬЮ */
 .poem-container {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
+    background: var(--surface-bg); /* Используем общий фон */
     color: var(--text-primary);
     padding: clamp(20px, 3vw, 30px);
     border-radius: 20px;
@@ -778,8 +777,7 @@ h1 {
     box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
-    /* УБИРАЕМ ВСЕ СВОЙСТВА СКРОЛЛА */
-    overflow: hidden;
+    overflow: hidden; /* Убираем скролл */
     max-height: none;
 }
 
@@ -1007,10 +1005,10 @@ h1 {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 0; /* Сердечки ПОД всем контентом */
+    z-index: -1; /* Сердечки ПОД всем контентом */
 }
 
-/* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ */
+/* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ - УБРАЛИ ТЕГИ */
 .poem-card {
     background: var(--surface-bg);
     border-radius: 20px;
@@ -1056,31 +1054,6 @@ h1 {
 .poem-year {
     color: var(--text-muted);
     font-style: italic;
-}
-
-.poem-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.tag {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.8em;
-    color: var(--accent-purple);
-    border: 1px solid rgba(192, 132, 252, 0.2);
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.tag:hover {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.2), rgba(96, 165, 250, 0.2));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(192, 132, 252, 0.2);
 }
 
 /* Анимация печати */
