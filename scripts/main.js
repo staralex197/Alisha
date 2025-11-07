@@ -1,3 +1,10 @@
+// Временно добавьте в начало main.js для проверки
+console.log('=== ПРОВЕРКА БИБЛИОТЕКИ СТИХОВ ===');
+console.log('lovePoemsLibrary:', window.lovePoemsLibrary);
+console.log('poemsLibrary:', window.poemsLibrary);
+if (window.poemsLibrary) {
+  console.log('Стихов в библиотеке:', window.poemsLibrary.poems.length);
+}
 // Основная логика приложения
 const QuizApp = {
     // Конфигурация
@@ -674,4 +681,5 @@ window.quiz = QuizApp;
 // Инициализируем приложение после загрузки страницы
 window.addEventListener('DOMContentLoaded', () => {
     QuizApp.init();
+
 });
