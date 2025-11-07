@@ -6,7 +6,6 @@ const MusicPlayer = {
     updateInterval: null,
     isPlaylistOpen: false,
     audioInitialized: false,
-    colorAnalyzer: null,
 
     tracks: [
         {
@@ -56,132 +55,8 @@ const MusicPlayer = {
             this.audio.currentTime = percent * this.audio.duration;
         });
 
-        // Инициализируем анализатор цветов
-        this.initColorAnalyzer();
-
         this.audioInitialized = true;
         console.log('✅ Музыкальный плеер инициализирован');
-    },
-
-    // Анализатор цветов для динамической инверсии
-    initColorAnalyzer() {
-        this.colorAnalyzer = {
-            canvas: document.createElement('canvas'),
-            ctx: null,
-            isInitialized: false,
-            lastScrollY: 0,
-            debounceTimer: null,
-
-            init() {
-                this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
-                this.canvas.width = 1;
-                this.canvas.height = 1;
-                this.isInitialized = true;
-                
-                // Слушаем скролл и ресайз с дебаунсом
-                window.addEventListener('scroll', () => this.handleScroll());
-                window.addEventListener('resize', () => this.handleScroll());
-                
-                // Первоначальная проверка
-                this.updatePlayerColors();
-            },
-
-            handleScroll() {
-                const currentScrollY = window.scrollY;
-                
-                // Проверяем только если скролл заметный (больше 10px)
-                if (Math.abs(currentScrollY - this.lastScrollY) > 10) {
-                    this.lastScrollY = currentScrollY;
-                    
-                    // Дебаунс - проверяем не чаще чем раз в 50мс
-                    clearTimeout(this.debounceTimer);
-                    this.debounceTimer = setTimeout(() => {
-                        this.updatePlayerColors();
-                    }, 50);
-                }
-            },
-
-            updatePlayerColors() {
-                if (!this.isInitialized) return;
-
-                const player = document.getElementById('musicPlayer');
-                if (!player) return;
-
-                const rect = player.getBoundingClientRect();
-                
-                // Анализируем несколько точек под плеером
-                const samplePoints = [
-                    { x: rect.left + rect.width * 0.5, y: rect.top + rect.height * 0.5 }, // центр
-                    { x: rect.left + rect.width * 0.2, y: rect.top + rect.height * 0.5 }, // лево
-                    { x: rect.left + rect.width * 0.8, y: rect.top + rect.height * 0.5 }, // право
-                    { x: rect.left + rect.width * 0.5, y: rect.top + rect.height * 0.2 }, // верх
-                    { x: rect.left + rect.width * 0.5, y: rect.top + rect.height * 0.8 }  // низ
-                ];
-
-                let totalBrightness = 0;
-                let sampleCount = 0;
-
-                samplePoints.forEach(point => {
-                    const brightness = this.getPixelBrightness(point.x, point.y + window.scrollY);
-                    if (brightness !== null) {
-                        totalBrightness += brightness;
-                        sampleCount++;
-                    }
-                });
-
-                if (sampleCount > 0) {
-                    const averageBrightness = totalBrightness / sampleCount;
-                    this.applyColorScheme(player, averageBrightness);
-                }
-            },
-
-            getPixelBrightness(x, y) {
-                try {
-                    // Сохраняем текущее состояние canvas
-                    this.canvas.width = 1;
-                    this.canvas.height = 1;
-                    
-                    // Копируем пиксель с экрана
-                    this.ctx.drawWindow(window, x, y, 1, 1, "rgb(255,255,255)");
-                    
-                    // Получаем данные пикселя
-                    const imageData = this.ctx.getImageData(0, 0, 1, 1);
-                    const data = imageData.data;
-                    
-                    // Вычисляем яркость (формула восприятия)
-                    const brightness = (data[0] * 299 + data[1] * 587 + data[2] * 114) / 1000;
-                    return brightness;
-                } catch (error) {
-                    // Если нет доступа к пикселям (cross-origin), используем fallback
-                    return this.getFallbackBrightness();
-                }
-            },
-
-            getFallbackBrightness() {
-                // Fallback: определяем яркость по позиции скролла
-                const scrollY = window.scrollY;
-                const windowHeight = window.innerHeight;
-                
-                // Если плеер в верхней части экрана - темный фон, иначе светлый
-                return scrollY < windowHeight * 0.3 ? 30 : 200;
-            },
-
-            applyColorScheme(player, brightness) {
-                // Яркость от 0 (черный) до 255 (белый)
-                // Порог для переключения - 128
-                if (brightness > 128) {
-                    // Светлый фон - темный текст
-                    player.classList.remove('light-text');
-                    player.classList.add('dark-text');
-                } else {
-                    // Темный фон - светлый текст
-                    player.classList.remove('dark-text');
-                    player.classList.add('light-text');
-                }
-            }
-        };
-
-        this.colorAnalyzer.init();
     },
 
     formatTime(seconds) {
@@ -214,8 +89,23 @@ const MusicPlayer = {
                 this.startProgressUpdate();
             }).catch(error => {
                 console.log('Ошибка воспроизведения:', error);
+                // Показываем сообщение об ошибке
+                this.showPlaybackError();
             });
         }
+    },
+
+    showPlaybackError() {
+        const nowPlaying = document.getElementById('nowPlaying');
+        const originalText = nowPlaying.textContent;
+        
+        nowPlaying.textContent = 'Ошибка воспроизведения 😔';
+        nowPlaying.style.color = '#ff6b6b';
+        
+        setTimeout(() => {
+            nowPlaying.textContent = originalText;
+            nowPlaying.style.color = '';
+        }, 3000);
     },
 
     startProgressUpdate() {
@@ -266,6 +156,7 @@ const MusicPlayer = {
             this.renderPlaylist();
         }).catch(error => {
             console.log('Ошибка воспроизведения:', error);
+            this.showPlaybackError();
         });
     },
 
