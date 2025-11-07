@@ -25,7 +25,7 @@ const QuizApp = {
             // Загружаем вопросы
             await this.loadQuestions();
             
-            // Предзагрузка ресурсов (без ожидания стихов)
+            // Предзагрузка ресурсов
             await this.preloadResources();
             
             // Инициализация компонентов
@@ -107,7 +107,6 @@ const QuizApp = {
     // Предзагрузка ресурсов
     async preloadResources() {
         return new Promise((resolve) => {
-            // Быстрая загрузка без ожидания стихов
             setTimeout(resolve, 600);
         });
     },
@@ -143,11 +142,11 @@ const QuizApp = {
                 theme: "🌟 Твоя уникальность",
                 suggestions: ["Чувствительность", "Внимательность", "Забота", "Креативность", "Сила воли"],
                 templates: [
-                    "Моя сила проявляется в том, что {ответ}",
-                    "Я особенно ценю в себе: {ответ}",
-                    "Что делает меня особенным: {ответ}",
-                    "Моя уникальная черта - {ответ}",
-                    "Я горжусь своей способностью {ответ.союз}"
+                    "Моя сила проявляется в {ответ.предложный}",
+                    "Я особенно ценю в себе способность {ответ.союз}",
+                    "Что делает меня особенным - это {ответ.именительный}",
+                    "Моя уникальная черта - {ответ.именительный}",
+                    "Я горжусь тем, что могу {ответ.союз}"
                 ]
             },
             {
@@ -156,11 +155,11 @@ const QuizApp = {
                 theme: "🌈 Твои мечты",
                 suggestions: ["Путешествия", "Семья", "Творчество", "Помощь другим", "Личностный рост"],
                 templates: [
-                    "Я мечтаю о том, чтобы {ответ.союз}",
-                    "Мои самые сокровенные желания: {ответ}",
-                    "В своих фантазиях я вижу: {ответ}",
-                    "Я стремлюсь к: {ответ}",
-                    "Моя главная цель: {ответ}"
+                    "Я мечтаю о {ответ.предложный}",
+                    "Мои самые сокровенные желания связаны с {ответ.предложный}",
+                    "В своих фантазиях я вижу себя {ответ.союз}",
+                    "Я стремлюсь к {ответ.предложный}",
+                    "Моя главная цель - {ответ.именительный}"
                 ]
             }
         ];
@@ -295,7 +294,6 @@ const QuizApp = {
         const targetScreen = document.getElementById(screenId);
         if (targetScreen) {
             targetScreen.classList.add('active');
-            // Прокрутка к верху
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     },
@@ -410,18 +408,8 @@ const QuizApp = {
     async showFinalScreen() {
         this.nextScreen('screen-final');
         
-        // Получаем случайное стихотворение
-        let poem = this.getFallbackPoem();
-        
-        // Пытаемся получить стих из библиотеки, если она доступна
-        try {
-            if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
-                const libraryPoem = window.poemsLibrary.getRandomPoem();
-                if (libraryPoem) poem = libraryPoem;
-            }
-        } catch (error) {
-            console.log('Библиотека стихов не доступна, используем резервный вариант');
-        }
+        // Получаем случайное стихотворение из библиотеки
+        let poem = this.getRandomPoem();
         
         const finalPoemElement = document.getElementById('finalPoem');
         
@@ -437,15 +425,54 @@ const QuizApp = {
         await this.sendResultsToTelegram(poem);
     },
 
-    // Резервное стихотворение
+    // Получение случайного стиха из библиотеки
+    getRandomPoem() {
+        try {
+            // Пытаемся получить стих из библиотеки poemsLibrary
+            if (window.poemsLibrary && typeof window.poemsLibrary.getRandomPoem === 'function') {
+                const poem = window.poemsLibrary.getRandomPoem();
+                if (poem && poem.title && poem.text) {
+                    console.log('📚 Стих взят из библиотеки poemsLibrary');
+                    return poem;
+                }
+            }
+            
+            // Если библиотека не доступна, используем встроенные стихи
+            console.log('📚 Библиотека poemsLibrary не доступна, используем встроенные стихи');
+            return this.getFallbackPoem();
+            
+        } catch (error) {
+            console.error('Ошибка получения стиха:', error);
+            return this.getFallbackPoem();
+        }
+    },
+
+    // Резервные стихи (только если библиотека не работает)
     getFallbackPoem() {
-        return {
-            title: "Для тебя",
-            author: "С любовью", 
-            year: "2024",
-            text: "Ты - самое прекрасное, что случилось со мной...\nТвои глаза - как звёзды в ночи,\nТвоя улыбка - как солнце весной,\nИ в каждом твоём слове - музыка души.",
-            tags: ["любовь", "нежность"]
-        };
+        const fallbackPoems = [
+            {
+                title: "Ты - моё вдохновение",
+                author: "Для тебя",
+                year: "2024",
+                tags: ["любовь", "вдохновение"],
+                text: `Ты - утренний свет в моих окнах,
+Ты - шепот звезды в тишине,
+Ты - музыка неба высокого,
+Что льется так нежно во сне.`
+            },
+            {
+                title: "Улыбка твоя", 
+                author: "Для тебя",
+                year: "2024",
+                tags: ["улыбка", "свет"],
+                text: `Улыбка твоя - как солнце весеннее,
+Что тает зима в его светлых лучах,
+В твоих глазах - целая вселенная,
+Где счастье мое в самых ярких красках.`
+            }
+        ];
+        
+        return fallbackPoems[Math.floor(Math.random() * fallbackPoems.length)];
     },
 
     async sendResultsToTelegram(poem) {
@@ -511,7 +538,6 @@ const QuizApp = {
             entries.forEach(entry => {
                 const intersectionRatio = entry.intersectionRatio;
                 
-                // Если плеер больше чем на 30% пересекает белый контейнер - темный текст
                 if (intersectionRatio > 0.3) {
                     player.classList.remove('light-text');
                     player.classList.add('dark-text');
@@ -539,11 +565,6 @@ const QuizApp = {
             .replace(/{ответ\.союз}/g, this.formatConjunction(lowerText))
             .replace(/{ответ}/g, lowerText);
 
-        // Исправление двойных мягких знаков
-        result = result.replace(/тьсяь/g, 'ться');
-        result = result.replace(/стьь/g, 'сть');
-        result = result.replace(/тьь/g, 'ть');
-        
         return result;
     },
 
@@ -568,8 +589,21 @@ const QuizApp = {
         else if (lastWord.endsWith('ие')) {
             declinedWord = lastWord.slice(0, -2) + 'ии';
         }
-        else if (['забота', 'внимательность', 'творчество', 'путешествия', 'семья', 'сила воли', 'личный рост'].includes(lastWord)) {
-            declinedWord = lastWord;
+        
+        // Специальные случаи
+        const specialCases = {
+            'забота': 'заботе',
+            'внимательность': 'внимательности', 
+            'творчество': 'творчестве',
+            'путешествия': 'путешествиях',
+            'семья': 'семье',
+            'сила воли': 'силе воли',
+            'личный рост': 'личном росте',
+            'помощь другим': 'помощи другим'
+        };
+        
+        if (specialCases[lastWord]) {
+            declinedWord = specialCases[lastWord];
         }
         
         words[words.length - 1] = declinedWord;
@@ -577,7 +611,6 @@ const QuizApp = {
     },
 
     formatNominative(text) {
-        // Не делаем первую букву заглавной для текста в середине предложения
         return text;
     },
 
@@ -587,24 +620,23 @@ const QuizApp = {
         
         let conjugatedWord = lastWord;
         
-        if (lastWord.endsWith('ть') || lastWord.endsWith('ться')) {
-            conjugatedWord = lastWord;
+        // Специальные случаи
+        const specialCases = {
+            'забота': 'заботиться о других',
+            'внимательность': 'быть внимательным', 
+            'творчество': 'творить',
+            'путешествия': 'путешествовать',
+            'семья': 'создать семью',
+            'сила воли': 'проявлять силу воли',
+            'личный рост': 'развиваться личностно',
+            'помощь другим': 'помогать другим'
+        };
+        
+        if (specialCases[lastWord]) {
+            conjugatedWord = specialCases[lastWord];
         }
         else if (lastWord.endsWith('а') || lastWord.endsWith('я')) {
-            if (lastWord === 'семья') {
-                conjugatedWord = 'создать семью';
-            } else if (lastWord === 'забота') {
-                conjugatedWord = 'заботиться';
-            } else if (lastWord === 'внимательность') {
-                conjugatedWord = 'быть внимательным';
-            } else if (lastWord === 'творчество') {
-                conjugatedWord = 'творить';
-            } else {
-                conjugatedWord = lastWord.slice(0, -1) + 'ить';
-            }
-        }
-        else if (['путешествия', 'сила воли', 'личный рост', 'помощь другим'].includes(lastWord)) {
-            conjugatedWord = lastWord;
+            conjugatedWord = lastWord.slice(0, -1) + 'ить';
         }
         
         words[words.length - 1] = conjugatedWord;
@@ -635,78 +667,6 @@ const QuizApp = {
         return formulations[Math.floor(Math.random() * formulations.length)];
     }
 };
-
-// Функции для работы со стихами
-function showRandomPoemAnimated() {
-    try {
-        if (window.poemsLibrary && typeof window.poemsLibrary.displayRandomPoemWithAnimation === 'function') {
-            window.poemsLibrary.displayRandomPoemWithAnimation('poemsContainer', 40);
-        } else {
-            showFallbackPoem();
-        }
-    } catch (error) {
-        showFallbackPoem();
-    }
-}
-
-function showRandomPoem() {
-    try {
-        if (window.poemsLibrary && typeof window.poemsLibrary.displayRandomPoem === 'function') {
-            window.poemsLibrary.displayRandomPoem('poemsContainer');
-        } else {
-            showFallbackPoem();
-        }
-    } catch (error) {
-        showFallbackPoem();
-    }
-}
-
-function showAllPoems() {
-    try {
-        if (window.poemsLibrary && typeof window.poemsLibrary.displayAllPoems === 'function') {
-            window.poemsLibrary.displayAllPoems('poemsContainer');
-        } else {
-            showFallbackPoem();
-        }
-    } catch (error) {
-        showFallbackPoem();
-    }
-}
-
-function showFallbackPoem() {
-    document.getElementById('poemsContainer').innerHTML = `
-        <div class="poem-card">
-            <h3 class="poem-title">Для тебя</h3>
-            <div class="poem-meta">
-                <span class="poem-author">С любовью</span>
-                <span class="poem-year">2024</span>
-            </div>
-            <div class="poem-text">
-                Ты - самое прекрасное, что случилось со мной...<br>
-                Твои глаза - как звёзды в ночи,<br>
-                Твоя улыбка - как солнце весной,<br>
-                И в каждом твоём слове - музыка души.
-            </div>
-            <div class="poem-tags">
-                <span class="tag">любовь</span>
-                <span class="tag">нежность</span>
-            </div>
-        </div>
-    `;
-}
-
-function showPoemsScreen() {
-    document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
-    const poemsScreen = document.getElementById('screen-poems');
-    if (poemsScreen) {
-        poemsScreen.classList.add('active');
-        setTimeout(() => {
-            showRandomPoemAnimated();
-        }, 300);
-    }
-}
 
 // Создаем глобальную ссылку
 window.quiz = QuizApp;
