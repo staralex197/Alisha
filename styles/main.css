@@ -1,37 +1,113 @@
+/* CSS переменные для темной и светлой тем */
+:root[data-theme="dark"] {
+    --primary-bg: #1e1e2e;
+    --secondary-bg: #181825;
+    --surface-bg: rgba(30, 30, 46, 0.95);
+    --container-bg: rgba(30, 30, 46, 0.85);
+    --glass-effect: rgba(17, 17, 27, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    --text-primary: #cdd6f4;
+    --text-secondary: #a6adc8;
+    --text-muted: #7f849c;
+    
+    --accent-purple: #cba6f7;
+    --accent-pink: #f5c2e7;
+    --accent-blue: #89b4fa;
+    --accent-green: #a6e3a1;
+    --accent-red: #f38ba8;
+    --accent-yellow: #f9e2af;
+    
+    --player-bg: rgba(30, 30, 46, 0.95);
+    --player-text: rgba(255, 255, 255, 0.95);
+    --player-secondary: rgba(255, 255, 255, 0.7);
+    --player-accent: #cba6f7;
+    
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.4);
+    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] {
+    --primary-bg: #f5f5f7;
+    --secondary-bg: #ffffff;
+    --surface-bg: rgba(255, 255, 255, 0.95);
+    --container-bg: rgba(255, 255, 255, 0.85);
+    --glass-effect: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    
+    --text-primary: #1e1e2e;
+    --text-secondary: #4c4f69;
+    --text-muted: #6c6f85;
+    
+    --accent-purple: #8839ef;
+    --accent-pink: #ea76cb;
+    --accent-blue: #1e66f5;
+    --accent-green: #40a02b;
+    --accent-red: #d20f39;
+    --accent-yellow: #df8e1d;
+    
+    --player-bg: rgba(245, 245, 247, 0.95);
+    --player-text: rgba(30, 30, 46, 0.95);
+    --player-secondary: rgba(30, 30, 46, 0.7);
+    --player-accent: #8839ef;
+    
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.15);
+    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    --player-bg: rgba(30, 30, 46, 0.95);
-    --player-text: rgba(255, 255, 255, 0.95);
-    --player-secondary: rgba(255, 255, 255, 0.7);
-    --player-accent: #cba6f7;
-    --primary-gradient: linear-gradient(135deg, #1e1e2e 0%, #181825 100%);
-    --container-bg: rgba(30, 30, 46, 0.85);
-    --text-primary: #cdd6f4;
-    --text-secondary: #a6adc8;
-    --shadow: 0 20px 40px rgba(0,0,0,0.3);
-    --shadow-hover: 0 25px 50px rgba(0,0,0,0.4);
-    --glass-effect: rgba(17, 17, 27, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --accent-purple: #cba6f7;
-    --accent-pink: #f5c2e7;
-    --accent-blue: #89b4fa;
-    --accent-green: #a6e3a1;
-}
-
 body {
-    background: var(--primary-gradient);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
     margin: 0;
-    padding: 0;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     overflow-x: hidden;
     line-height: 1.6;
     color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
+.theme-toggle {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1001;
+    background: var(--surface-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+    font-size: 0.9em;
+    font-weight: 500;
+    box-shadow: var(--shadow-small);
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.theme-icon {
+    font-size: 1.1em;
+}
+
+.theme-text {
+    white-space: nowrap;
 }
 
 /* ЭКРАН ЗАГРУЗКИ */
@@ -41,7 +117,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--primary-gradient);
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,7 +140,7 @@ body {
 .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 4px solid rgba(205, 214, 244, 0.3);
+    border: 4px solid var(--text-muted);
     border-left: 4px solid var(--accent-purple);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -72,23 +148,22 @@ body {
 }
 
 .loading-content h1 {
-    font-size: 2.2em;
+    font-size: clamp(1.8em, 5vw, 2.2em);
     margin-bottom: 15px;
-    background: none;
-    -webkit-text-fill-color: var(--text-primary);
     color: var(--text-primary);
 }
 
 .loading-content p {
-    font-size: 1.1em;
+    font-size: clamp(1em, 3vw, 1.1em);
     opacity: 0.9;
     margin-bottom: 30px;
+    color: var(--text-secondary);
 }
 
 .loading-progress {
     width: 100%;
     height: 6px;
-    background: rgba(205, 214, 244, 0.2);
+    background: var(--text-muted);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -117,31 +192,21 @@ body {
     border-bottom: 1px solid var(--glass-border);
     z-index: 1000;
     transition: all 0.3s ease;
-}
-
-.music-player.dark-text {
-    --player-text: rgba(205, 214, 244, 0.95);
-    --player-secondary: rgba(205, 214, 244, 0.7);
-    --player-accent: var(--accent-purple);
-}
-
-.music-player.light-text {
-    --player-text: rgba(205, 214, 244, 0.95);
-    --player-secondary: rgba(205, 214, 244, 0.7);
-    --player-accent: var(--accent-purple);
+    padding: 8px 0;
 }
 
 .player-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 10px 20px;
+    padding: 0 20px;
 }
 
 .player-main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .player-track-info {
@@ -162,7 +227,8 @@ body {
     justify-content: center;
     font-size: 1em;
     color: var(--text-primary);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-small);
+    flex-shrink: 0;
 }
 
 .track-details {
@@ -190,7 +256,8 @@ body {
 .player-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .control-btn {
@@ -206,13 +273,14 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-small);
+    flex-shrink: 0;
 }
 
 .control-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow);
 }
 
 .play-btn {
@@ -232,6 +300,7 @@ body {
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .progress-container:hover {
@@ -249,7 +318,8 @@ body {
 .player-extra {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .time-display {
@@ -257,12 +327,14 @@ body {
     color: var(--player-secondary);
     white-space: nowrap;
     font-weight: 500;
+    flex-shrink: 0;
 }
 
 .volume-container {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .volume-slider {
@@ -286,7 +358,7 @@ body {
     border-radius: 50%;
     background: var(--player-accent);
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-small);
     transition: all 0.3s ease;
 }
 
@@ -294,6 +366,7 @@ body {
     transform: scale(1.2);
 }
 
+/* ИСПРАВЛЕННАЯ КНОПКА ПЛЕЙЛИСТА */
 .playlist-toggle {
     background: rgba(255, 255, 255, 0.1);
     border: none;
@@ -305,13 +378,25 @@ body {
     transition: all 0.3s ease;
     white-space: nowrap;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-small);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
 .playlist-toggle:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow);
+}
+
+.playlist-icon {
+    font-size: 1em;
+}
+
+.playlist-text {
+    font-weight: 500;
 }
 
 /* ВЫПАДАЮЩИЙ ПЛЕЙЛИСТ */
@@ -324,7 +409,7 @@ body {
 }
 
 .playlist-container.open {
-    max-height: 300px;
+    max-height: min(300px, 50vh);
 }
 
 .playlist {
@@ -355,7 +440,7 @@ body {
 .playlist-item.active {
     background: rgba(255, 255, 255, 0.15);
     border-left: 4px solid var(--player-accent);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
 }
 
 .playlist-item-icon {
@@ -363,6 +448,7 @@ body {
     font-size: 1em;
     opacity: 0.9;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .playlist-item:hover .playlist-item-icon {
@@ -371,6 +457,7 @@ body {
 
 .playlist-item-info {
     flex-grow: 1;
+    min-width: 0;
 }
 
 .playlist-item-title {
@@ -378,11 +465,17 @@ body {
     font-weight: 600;
     color: var(--player-text);
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .playlist-item-artist {
     font-size: 0.8em;
     color: var(--player-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .playlist-item-duration {
@@ -390,40 +483,21 @@ body {
     color: var(--player-secondary);
     margin-left: 15px;
     font-weight: 500;
+    flex-shrink: 0;
 }
 
-/* Стили для скроллбара плейлиста */
-.playlist::-webkit-scrollbar {
-    width: 6px;
-}
-
-.playlist::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
-
-.playlist::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-    transition: all 0.3s ease;
-}
-
-.playlist::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-/* ОСНОВНОЙ КОНТЕЙНЕР - ПОЛУПРОЗРАЧНЫЙ */
+/* ОСНОВНОЙ КОНТЕЙНЕР */
 .container {
     background: var(--container-bg);
     backdrop-filter: blur(20px) saturate(180%);
     border-radius: 25px;
-    padding: 40px;
+    padding: clamp(20px, 4vw, 40px);
     box-shadow: var(--shadow);
-    max-width: 800px;
+    max-width: min(800px, 90vw);
     width: 90%;
     position: relative;
-    min-height: 500px;
-    margin: 120px auto 40px; /* Увеличил отступ сверху */
+    min-height: min(500px, 80vh);
+    margin: clamp(100px, 12vh, 140px) auto 40px;
     transition: all 0.3s ease;
     border: 1px solid var(--glass-border);
     overflow: hidden;
@@ -439,7 +513,8 @@ body {
 }
 
 .welcome-content,
-.final-content {
+.final-content,
+.error-content {
     text-align: center;
     max-width: 600px;
     margin: 0 auto;
@@ -447,8 +522,8 @@ body {
 
 h1 {
     color: var(--text-primary);
-    margin-bottom: 25px;
-    font-size: 2.5em;
+    margin-bottom: clamp(20px, 3vh, 25px);
+    font-size: clamp(1.8em, 5vw, 2.5em);
     background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -458,70 +533,72 @@ h1 {
 }
 
 .question-text {
-    font-size: 1.3em;
+    font-size: clamp(1.1em, 3vw, 1.3em);
     color: var(--text-secondary);
-    margin-bottom: 35px;
+    margin-bottom: clamp(25px, 4vh, 35px);
     line-height: 1.7;
-    min-height: 60px;
+    min-height: clamp(40px, 6vh, 60px);
     text-align: center;
 }
 
 .input-section {
-    margin: 35px 0;
+    margin: clamp(25px, 4vh, 35px) 0;
 }
 
 .user-input {
     width: 100%;
-    min-height: 120px; /* Уменьшил высоту */
-    max-height: 150px; /* Ограничил максимальную высоту */
-    padding: 20px;
-    border: 2px solid rgba(205, 214, 244, 0.2);
+    min-height: clamp(80px, 15vh, 120px);
+    max-height: clamp(100px, 20vh, 150px);
+    padding: clamp(15px, 3vw, 20px);
+    border: 2px solid var(--glass-border);
     border-radius: 18px;
-    font-size: 1.1em;
+    font-size: clamp(1em, 2vw, 1.1em);
     font-family: inherit;
-    resize: none; /* Убрал возможность изменения размера */
+    resize: none;
     transition: all 0.3s ease;
     margin-bottom: 20px;
-    background: rgba(17, 17, 27, 0.6);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: var(--glass-effect);
+    box-shadow: var(--shadow-small);
     line-height: 1.6;
     color: var(--text-primary);
-    overflow-y: auto; /* Добавил скролл если нужно */
+    overflow-y: auto;
 }
 
 .user-input:focus {
     outline: none;
     border-color: var(--accent-purple);
-    box-shadow: 0 0 0 4px rgba(203, 166, 247, 0.1), 0 4px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 0 0 4px rgba(203, 166, 247, 0.1), var(--shadow);
     transform: translateY(-2px);
 }
 
 .user-input::placeholder {
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-style: italic;
 }
 
 .buttons {
     display: flex;
-    gap: 15px;
+    gap: clamp(10px, 2vw, 15px);
     justify-content: center;
     flex-wrap: wrap;
     margin-top: 10px;
 }
 
 .btn {
-    padding: 14px 30px;
+    padding: clamp(12px, 2vw, 14px) clamp(20px, 3vw, 30px);
     border: none;
     border-radius: 50px;
-    font-size: 1.1em;
+    font-size: clamp(1em, 2vw, 1.1em);
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 180px;
+    min-width: min(180px, 100%);
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(10px);
+    flex: 1;
+    max-width: 300px;
 }
 
 .btn::before {
@@ -542,19 +619,19 @@ h1 {
 .btn-primary {
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
     color: var(--text-primary);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--glass-border);
 }
 
 .btn-secondary {
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
     color: var(--text-primary);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--glass-border);
 }
 
 .btn-success {
-    background: linear-gradient(135deg, var(--accent-green), #94e2d5);
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
     color: var(--text-primary);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--glass-border);
 }
 
 .btn-outline {
@@ -572,6 +649,12 @@ h1 {
     transform: translateY(-1px);
 }
 
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
 .character-count {
     text-align: right;
     color: var(--text-secondary);
@@ -581,25 +664,25 @@ h1 {
     font-weight: 500;
 }
 
-/* ОКОШКО ФОРМУЛИРОВКИ - ПОЯВЛЯЕТСЯ СНИЗУ */
+/* ОКОШКО ФОРМУЛИРОВКИ */
 .formulation-section {
     background: linear-gradient(135deg, rgba(203, 166, 247, 0.1), rgba(137, 180, 250, 0.1));
     color: var(--text-primary);
-    padding: 25px;
+    padding: clamp(20px, 3vw, 25px);
     border-radius: 20px;
-    margin: 20px 0;
+    margin: clamp(15px, 2vh, 20px) 0;
     text-align: left;
     display: none;
     animation: slideInUp 0.5s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
-    max-height: 200px;
+    max-height: min(200px, 30vh);
     overflow-y: auto;
 }
 
 .formulation-text {
-    font-size: 1.1em;
+    font-size: clamp(1em, 2vw, 1.1em);
     line-height: 1.6;
     margin-bottom: 20px;
     font-weight: 500;
@@ -608,17 +691,19 @@ h1 {
 .poem-container {
     background: linear-gradient(135deg, rgba(245, 194, 231, 0.1), rgba(166, 227, 161, 0.1));
     color: var(--text-primary);
-    padding: 30px;
+    padding: clamp(20px, 3vw, 30px);
     border-radius: 20px;
-    margin: 30px 0;
+    margin: clamp(20px, 3vh, 30px) 0;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
+    max-height: min(400px, 50vh);
+    overflow-y: auto;
 }
 
 .poem-title {
-    font-size: 1.8em;
+    font-size: clamp(1.4em, 4vw, 1.8em);
     margin-bottom: 20px;
     font-style: italic;
     font-weight: 600;
@@ -626,7 +711,7 @@ h1 {
 }
 
 .poem-text {
-    font-size: 1.1em;
+    font-size: clamp(1em, 2vw, 1.1em);
     line-height: 1.8;
     font-style: italic;
     white-space: pre-line;
@@ -634,7 +719,7 @@ h1 {
 }
 
 .poem-author {
-    font-size: 1em;
+    font-size: clamp(0.9em, 2vw, 1em);
     margin-top: 20px;
     font-style: normal;
     opacity: 0.9;
@@ -647,8 +732,9 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 25px 0;
+    margin: clamp(20px, 3vh, 25px) 0;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .progress-wrapper {
@@ -656,12 +742,13 @@ h1 {
     display: flex;
     align-items: center;
     gap: 15px;
+    min-width: 0;
 }
 
 .progress {
     flex: 1;
     height: 8px;
-    background: rgba(205, 214, 244, 0.2);
+    background: var(--text-muted);
     border-radius: 4px;
     overflow: hidden;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
@@ -690,16 +777,18 @@ h1 {
     display: flex;
     gap: 8px;
     margin-top: 12px;
+    flex-wrap: wrap;
 }
 
 .progress-step {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: rgba(205, 214, 244, 0.3);
+    background: var(--text-muted);
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    flex-shrink: 0;
 }
 
 .progress-step.active {
@@ -718,20 +807,22 @@ h1 {
 
 .nav-buttons {
     display: flex;
-    gap: 12px;
+    gap: clamp(8px, 2vw, 12px);
+    flex-shrink: 0;
 }
 
 .nav-btn {
-    padding: 10px 20px;
+    padding: clamp(8px, 2vw, 10px) clamp(15px, 3vw, 20px);
     border: none;
     border-radius: 25px;
-    font-size: 0.95em;
+    font-size: clamp(0.9em, 2vw, 0.95em);
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 600;
-    min-width: 100px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    min-width: min(100px, 100%);
+    box-shadow: var(--shadow-small);
     backdrop-filter: blur(10px);
+    flex: 1;
 }
 
 .nav-btn:disabled {
@@ -742,27 +833,28 @@ h1 {
 
 .nav-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow);
 }
 
 .suggestion-buttons {
     display: flex;
-    gap: 10px;
+    gap: clamp(6px, 1vw, 10px);
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 15px;
 }
 
 .suggestion-btn {
-    padding: 8px 16px;
+    padding: clamp(6px, 1vw, 8px) clamp(12px, 2vw, 16px);
     background: rgba(203, 166, 247, 0.1);
     border: 2px solid rgba(203, 166, 247, 0.3);
     border-radius: 20px;
     color: var(--accent-purple);
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.9em;
+    font-size: clamp(0.85em, 2vw, 0.9em);
     font-weight: 500;
+    flex-shrink: 0;
 }
 
 .suggestion-btn:hover {
@@ -807,20 +899,15 @@ h1 {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 5; /* Поверх всего */
-}
-
-/* УБИРАЕМ КНОПКУ ПРОПУСТИТЬ АНИМАЦИЮ */
-.typing-controls {
-    display: none; /* Скрываем управление анимацией */
+    z-index: 5;
 }
 
 /* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ */
 .poem-card {
-    background: rgba(30, 30, 46, 0.8);
+    background: var(--surface-bg);
     border-radius: 20px;
-    padding: 30px;
-    margin: 20px 0;
+    padding: clamp(20px, 3vw, 30px);
+    margin: clamp(15px, 2vh, 20px) 0;
     box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
     transition: all 0.3s ease;
@@ -844,18 +931,6 @@ h1 {
     box-shadow: var(--shadow-hover);
 }
 
-.poem-title {
-    color: var(--text-primary);
-    margin-bottom: 15px;
-    font-size: 1.6em;
-    text-align: center;
-    font-weight: 700;
-    background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
 .poem-meta {
     display: flex;
     justify-content: space-between;
@@ -866,26 +941,13 @@ h1 {
     font-size: 0.9em;
     color: var(--text-secondary);
     font-weight: 500;
-}
-
-.poem-author {
-    color: var(--accent-blue);
-    font-weight: 600;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .poem-year {
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-style: italic;
-}
-
-.poem-text {
-    line-height: 1.7;
-    margin-bottom: 20px;
-    color: var(--text-primary);
-    font-size: 1.1em;
-    text-align: center;
-    white-space: pre-line;
-    font-weight: 500;
 }
 
 .poem-tags {
@@ -893,6 +955,7 @@ h1 {
     flex-wrap: wrap;
     gap: 6px;
     justify-content: center;
+    margin-top: 15px;
 }
 
 .tag {
@@ -914,13 +977,13 @@ h1 {
 
 /* Анимация печати */
 .typing-area {
-    min-height: 150px;
+    min-height: clamp(100px, 20vh, 150px);
     border-right: 3px solid var(--accent-pink);
     animation: blink 1s infinite;
     line-height: 1.7;
     margin-bottom: 20px;
     color: var(--text-primary);
-    font-size: 1.1em;
+    font-size: clamp(1em, 2vw, 1.1em);
     text-align: center;
     white-space: pre-line;
     font-weight: 500;
@@ -937,7 +1000,59 @@ h1 {
 .loading {
     text-align: center;
     padding: 20px;
-    font-size: 1.1em;
+    font-size: clamp(1em, 2vw, 1.1em);
     color: var(--text-secondary);
     font-weight: 500;
+}
+
+/* Временные сообщения */
+.temp-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    background: var(--accent-purple);
+    color: white;
+    border-radius: 25px;
+    z-index: 10000;
+    animation: fadeInOut 3s ease-in-out;
+    font-weight: 500;
+    box-shadow: var(--shadow);
+}
+
+.temp-message-warning {
+    background: var(--accent-red);
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+}
+
+/* Улучшенная поддержка тач-устройств */
+@media (hover: none) and (pointer: coarse) {
+    .btn, .nav-btn, .suggestion-btn, .control-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .progress-step {
+        min-width: 20px;
+        min-height: 20px;
+    }
+    
+    .user-input {
+        font-size: 16px; /* Предотвращает масштабирование в iOS */
+    }
+}
+
+/* Поддержка высокопиксельных дисплеев */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .container {
+        -webkit-font-smoothing: antialiased;
+        backdrop-filter: blur(30px) saturate(200%);
+    }
 }
