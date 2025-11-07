@@ -1,4 +1,4 @@
-// Умный музыкальный плеер с авто-загрузкой
+// Умный музыкальный плеер с полной адаптивностью
 const MusicPlayer = {
     audio: null,
     isPlaying: false,
@@ -10,17 +10,19 @@ const MusicPlayer = {
     volume: 0.2,
     fadeInterval: null,
     autoPlayEnabled: false,
+    isMobile: false,
 
     // Треки будут загружаться автоматически
     tracks: [],
 
     async init() {
         try {
+            this.detectDeviceType();
             this.audio = new Audio();
             this.audio.volume = 0;
             this.audio.preload = 'metadata';
             
-            // Загружаем треки из папки music
+            // Улучшенная обработка ошибок загрузки
             await this.loadTracksFromFolder();
             
             // События для обработки ошибок
@@ -32,20 +34,26 @@ const MusicPlayer = {
             this.audioInitialized = true;
             console.log('✅ Музыкальный плеер инициализирован, треков:', this.tracks.length);
             
-            // Автоматическое плавное воспроизведение
+            // Автоматическое плавное воспроизведение с задержкой
             setTimeout(() => {
                 this.autoPlayWithFade();
             }, 2000);
             
         } catch (error) {
             console.error('❌ Ошибка инициализации плеера:', error);
+            this.showFallbackPlayer();
         }
+    },
+
+    // Определение типа устройства
+    detectDeviceType() {
+        this.isMobile = window.innerWidth <= 768;
+        console.log(`🎵 Плеер: ${this.isMobile ? 'Мобильный режим' : 'Десктоп режим'}`);
     },
 
     // Автоматическая загрузка треков из папки music
     async loadTracksFromFolder() {
         try {
-            // Предполагаем, что треки лежат в папке music/
             const trackFiles = [
                 '2hug_-_Nasha_zhizn_79029104.mp3',
                 'Basta_-_Ty_ta_61892966.mp3', 
@@ -98,13 +106,20 @@ const MusicPlayer = {
             
             tempAudio.addEventListener('loadedmetadata', () => {
                 track.duration = this.formatTime(tempAudio.duration);
+                tempAudio.remove();
                 resolve();
             });
             
-            tempAudio.addEventListener('error', reject);
+            tempAudio.addEventListener('error', () => {
+                tempAudio.remove();
+                reject(new Error('Ошибка загрузки метаданных'));
+            });
             
             // Таймаут
-            setTimeout(() => reject(new Error('Таймаут загрузки')), 5000);
+            setTimeout(() => {
+                tempAudio.remove();
+                reject(new Error('Таймаут загрузки'));
+            }, 5000);
         });
     },
 
@@ -114,13 +129,21 @@ const MusicPlayer = {
             .replace(/\.mp3$/, '')
             .replace(/_/g, ' ')
             .replace(/\b\w/g, l => l.toUpperCase())
-            .replace(/([a-z])([A-Z])/g, '$1 $2');
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/^\d+/, '') // Убираем цифры в начале
+            .trim();
     },
 
     // Извлечение имени артиста из文件名
     getArtistFromFilename(filename) {
         const parts = filename.split('_-_');
-        return parts[0] ? parts[0].replace(/_/g, ' ') : 'Неизвестный артист';
+        if (parts[0]) {
+            return parts[0]
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase())
+                .trim();
+        }
+        return 'Неизвестный артист';
     },
 
     setupAudioEvents() {
@@ -148,6 +171,31 @@ const MusicPlayer = {
         this.audio.addEventListener('canplaythrough', () => {
             this.hideLoadingState();
         });
+
+        // Обработка ресайза для адаптивности
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+    },
+
+    // Обработка изменения размера
+    handleResize() {
+        this.detectDeviceType();
+        this.updatePlayerLayout();
+    },
+
+    // Обновление layout плеера в зависимости от устройства
+    updatePlayerLayout() {
+        const player = document.getElementById('musicPlayer');
+        if (!player) return;
+
+        if (this.isMobile) {
+            player.classList.add('mobile-layout');
+            player.classList.remove('desktop-layout');
+        } else {
+            player.classList.add('desktop-layout');
+            player.classList.remove('mobile-layout');
+        }
     },
 
     initializeUI() {
@@ -160,6 +208,11 @@ const MusicPlayer = {
             progressContainer.addEventListener('click', (e) => {
                 this.handleProgressClick(e);
             });
+
+            // Touch события для мобильных
+            progressContainer.addEventListener('touchstart', (e) => {
+                this.handleProgressClick(e);
+            });
         }
 
         // Инициализация громкости
@@ -167,15 +220,71 @@ const MusicPlayer = {
         if (volumeSlider) {
             volumeSlider.value = this.volume * 100;
             this.updateVolumeSlider(volumeSlider.value);
+
+            // Touch события для громкости
+            volumeSlider.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            });
         }
 
-        // Исправление: добавляем обработчик для кнопки плейлиста
-        const playlistToggle = document.querySelector('.playlist-toggle');
+        // ИСПРАВЛЕНИЕ: правильный обработчик для кнопки плейлиста
+        const playlistToggle = document.getElementById('playlistToggle');
         if (playlistToggle) {
-            playlistToggle.addEventListener('click', () => {
+            playlistToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.togglePlaylist();
+            });
+
+            // Touch события
+            playlistToggle.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
                 this.togglePlaylist();
             });
         }
+
+        // Обработка кликов вне плейлиста для закрытия
+        document.addEventListener('click', (e) => {
+            if (this.isPlaylistOpen && !e.target.closest('.music-player')) {
+                this.closePlaylist();
+            }
+        });
+
+        // Клавиатурные shortcuts
+        this.setupKeyboardShortcuts();
+
+        // Обновляем layout
+        this.updatePlayerLayout();
+    },
+
+    // Настройка клавиатурных shortcuts
+    setupKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Пропускаем если пользователь вводит текст
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+
+            switch(e.key) {
+                case ' ':
+                    e.preventDefault();
+                    this.togglePlay();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    this.nextTrack();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    this.previousTrack();
+                    break;
+                case 'p':
+                case 'P':
+                    e.preventDefault();
+                    this.togglePlaylist();
+                    break;
+                case 'Escape':
+                    this.closePlaylist();
+                    break;
+            }
+        });
     },
 
     // Плавное автовоспроизведение
@@ -203,6 +312,11 @@ const MusicPlayer = {
         } catch (error) {
             console.error('❌ Ошибка автовоспроизведения:', error);
             this.autoPlayEnabled = false;
+            
+            // Показываем сообщение об ошибке
+            if (error.name === 'NotAllowedError') {
+                this.showTemporaryMessage('Нажмите Play для начала воспроизведения 🎵', 'info');
+            }
         }
     },
 
@@ -297,6 +411,11 @@ const MusicPlayer = {
         } else {
             this.playWithFade();
         }
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(30);
+        }
     },
 
     // Воспроизведение с fade-in
@@ -346,6 +465,14 @@ const MusicPlayer = {
         if (playBtn) {
             playBtn.textContent = icon;
             playBtn.setAttribute('aria-label', icon === '▶' ? 'Воспроизвести' : 'Пауза');
+            
+            // Анимация нажатия на мобильных
+            if (this.isMobile) {
+                playBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    playBtn.style.transform = '';
+                }, 150);
+            }
         }
     },
 
@@ -377,7 +504,7 @@ const MusicPlayer = {
         const originalColor = nowPlaying.style.color;
         
         nowPlaying.textContent = message;
-        nowPlaying.style.color = '#ff6b6b';
+        nowPlaying.style.color = 'var(--accent-red)';
         
         setTimeout(() => {
             nowPlaying.textContent = originalText;
@@ -438,6 +565,11 @@ const MusicPlayer = {
             musicProgress.style.width = progress + '%';
             musicProgress.setAttribute('aria-valuenow', Math.round(progress));
         }
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(50);
+        }
     },
 
     setVolume(volume) {
@@ -451,6 +583,11 @@ const MusicPlayer = {
         }
         
         this.updateVolumeSlider(volume);
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(20);
+        }
     },
 
     updateVolumeSlider(volume) {
@@ -463,11 +600,21 @@ const MusicPlayer = {
     nextTrack() {
         this.currentTrack = (this.currentTrack + 1) % this.tracks.length;
         this.loadTrackWithFade(this.currentTrack);
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(50);
+        }
     },
 
     previousTrack() {
         this.currentTrack = (this.currentTrack - 1 + this.tracks.length) % this.tracks.length;
         this.loadTrackWithFade(this.currentTrack);
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(50);
+        }
     },
 
     // Загрузка трека с плавным переходом
@@ -560,12 +707,44 @@ const MusicPlayer = {
         this.isPlaylistOpen = !this.isPlaylistOpen;
         
         if (this.isPlaylistOpen) {
-            playlistContainer.style.maxHeight = '300px';
-            playlistContainer.classList.add('open');
+            this.openPlaylist();
         } else {
-            playlistContainer.style.maxHeight = '0';
-            playlistContainer.classList.remove('open');
+            this.closePlaylist();
         }
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(30);
+        }
+    },
+
+    openPlaylist() {
+        const playlistContainer = document.getElementById('playlistContainer');
+        if (!playlistContainer) return;
+
+        playlistContainer.style.maxHeight = this.isMobile ? '200px' : '300px';
+        playlistContainer.classList.add('open');
+        playlistContainer.hidden = false;
+        this.isPlaylistOpen = true;
+
+        // Фокус на плейлист для доступности
+        setTimeout(() => {
+            const firstItem = playlistContainer.querySelector('.playlist-item');
+            if (firstItem) firstItem.focus();
+        }, 100);
+    },
+
+    closePlaylist() {
+        const playlistContainer = document.getElementById('playlistContainer');
+        if (!playlistContainer) return;
+
+        playlistContainer.style.maxHeight = '0';
+        playlistContainer.classList.remove('open');
+        this.isPlaylistOpen = false;
+
+        setTimeout(() => {
+            playlistContainer.hidden = true;
+        }, 400);
     },
 
     renderPlaylist() {
@@ -586,6 +765,12 @@ const MusicPlayer = {
                     this.selectTrack(index);
                 }
             };
+
+            // Touch события
+            playlistItem.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.selectTrack(index);
+            });
             
             playlistItem.innerHTML = `
                 <div class="playlist-item-icon" aria-hidden="true">
@@ -612,8 +797,66 @@ const MusicPlayer = {
         this.renderPlaylist();
         
         // Автоматически закрываем плейлист на мобильных устройствах
-        if (window.innerWidth <= 767) {
-            setTimeout(() => this.togglePlaylist(), 500);
+        if (this.isMobile) {
+            setTimeout(() => this.closePlaylist(), 500);
+        }
+
+        // Вибрация на мобильных
+        if (this.isMobile && navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    },
+
+    // Временные сообщения
+    showTemporaryMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `player-message player-message-${type}`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 16px;
+            background: ${type === 'warning' ? 'var(--accent-red)' : 
+                        type === 'success' ? 'var(--accent-green)' : 'var(--accent-purple)'};
+            color: white;
+            border-radius: 20px;
+            z-index: 10001;
+            animation: fadeInOut 3s ease-in-out;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            font-size: 0.9em;
+            max-width: 300px;
+            text-align: center;
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 3000);
+    },
+
+    // Fallback плеер
+    showFallbackPlayer() {
+        const player = document.getElementById('musicPlayer');
+        if (player) {
+            player.innerHTML = `
+                <div class="player-container">
+                    <div class="player-main">
+                        <div class="player-track-info">
+                            <div class="track-cover" aria-hidden="true">🎵</div>
+                            <div class="track-details">
+                                <div class="track-title">Музыка временно недоступна</div>
+                                <div class="track-artist">Попробуйте позже</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
     },
 
@@ -651,8 +894,50 @@ const MusicPlayer = {
     }
 };
 
+// Добавляем CSS для сообщений плеера
+const playerStyle = document.createElement('style');
+playerStyle.textContent = `
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+    
+    .mobile-layout .player-main {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .mobile-layout .player-extra {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .desktop-layout .player-main {
+        flex-direction: row;
+        gap: 15px;
+    }
+`;
+document.head.appendChild(playerStyle);
+
 window.MusicPlayer = MusicPlayer;
 
 document.addEventListener('DOMContentLoaded', () => {
     MusicPlayer.init();
+});
+
+// Оптимизация для фоновых вкладок
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && MusicPlayer.audioInitialized) {
+        // Уменьшаем громкость в фоновой вкладке
+        if (MusicPlayer.isPlaying) {
+            MusicPlayer.audio.volume = Math.min(MusicPlayer.volume, 0.1);
+        }
+    } else if (MusicPlayer.audioInitialized) {
+        // Восстанавливаем громкость
+        if (MusicPlayer.isPlaying) {
+            MusicPlayer.audio.volume = MusicPlayer.volume;
+        }
+    }
 });
