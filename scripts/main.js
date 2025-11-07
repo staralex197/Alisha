@@ -25,7 +25,8 @@ const QuizApp = {
             // Параллельная загрузка всех ресурсов
             await Promise.all([
                 this.loadQuestions(),
-                this.preloadResources()
+                this.preloadResources(),
+                this.loadPoemsLibrary()
             ]);
             
             // Инициализация компонентов
@@ -44,6 +45,24 @@ const QuizApp = {
             console.error('Ошибка инициализации:', error);
             this.showErrorScreen();
         }
+    },
+
+    // Загрузка библиотеки стихов
+    async loadPoemsLibrary() {
+        return new Promise((resolve) => {
+            // Ждем загрузки poems-library.js
+            if (typeof poemsLibrary !== 'undefined') {
+                poemsLibrary.loadPoems().then(() => {
+                    console.log('📚 Библиотека стихов загружена');
+                    resolve();
+                });
+            } else {
+                // Если библиотека еще не загружена, ждем
+                setTimeout(() => {
+                    this.loadPoemsLibrary().then(resolve);
+                }, 100);
+            }
+        });
     },
 
     // Показать экран загрузки
@@ -411,12 +430,17 @@ const QuizApp = {
         this.nextScreen('screen-final');
         
         // Получаем случайное стихотворение
-        const poem = PoemsLibrary.getRandomPoem();
-        document.getElementById('finalPoem').innerHTML = `
-            <div class="poem-title">«${poem.title}»</div>
-            <div class="poem-text">${poem.text}</div>
-            <div class="poem-author">${poem.author}${poem.year ? ', ' + poem.year + ' год' : ''}</div>
-        `;
+        const poem = poemsLibrary.getRandomPoem();
+        const finalPoemElement = document.getElementById('finalPoem');
+        
+        if (poem && finalPoemElement) {
+            finalPoemElement.innerHTML = `
+                <div class="poem-title">«${poem.title}»</div>
+                <div class="poem-text">${poem.text.replace(/\n/g, '<br>')}</div>
+                <div class="poem-author">${poem.author}${poem.year ? ', ' + poem.year + ' год' : ''}</div>
+                ${poem.tags ? `<div class="poem-tags">${poem.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
+            `;
+        }
 
         await this.sendResultsToTelegram(poem);
     },
@@ -608,6 +632,38 @@ const QuizApp = {
         return formulations[Math.floor(Math.random() * formulations.length)];
     }
 };
+
+// Функции для работы со стихами (добавляем в глобальную область видимости)
+function showRandomPoemAnimated() {
+    if (typeof poemsLibrary !== 'undefined') {
+        poemsLibrary.displayRandomPoemWithAnimation('poemsContainer', 40);
+    }
+}
+
+function showRandomPoem() {
+    if (typeof poemsLibrary !== 'undefined') {
+        poemsLibrary.displayRandomPoem('poemsContainer');
+    }
+}
+
+function showAllPoems() {
+    if (typeof poemsLibrary !== 'undefined') {
+        poemsLibrary.displayAllPoems('poemsContainer');
+    }
+}
+
+function showPoemsScreen() {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    const poemsScreen = document.getElementById('screen-poems');
+    if (poemsScreen) {
+        poemsScreen.classList.add('active');
+        setTimeout(() => {
+            showRandomPoemAnimated();
+        }, 500);
+    }
+}
 
 // Создаем глобальную ссылку
 window.quiz = QuizApp;
