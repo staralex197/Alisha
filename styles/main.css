@@ -5,16 +5,22 @@
 }
 
 :root {
-    --player-bg: rgba(255, 255, 255, 0.15);
-    --player-text: rgba(255, 255, 255, 0.9);
+    --player-bg: rgba(30, 30, 46, 0.95);
+    --player-text: rgba(255, 255, 255, 0.95);
     --player-secondary: rgba(255, 255, 255, 0.7);
-    --player-accent: rgba(255, 255, 255, 0.8);
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --container-bg: rgba(255, 255, 255, 0.98);
-    --text-primary: #2d3748;
-    --text-secondary: #4a5568;
-    --shadow: 0 20px 40px rgba(0,0,0,0.1);
-    --shadow-hover: 0 25px 50px rgba(0,0,0,0.15);
+    --player-accent: #cba6f7;
+    --primary-gradient: linear-gradient(135deg, #1e1e2e 0%, #181825 100%);
+    --container-bg: rgba(30, 30, 46, 0.85);
+    --text-primary: #cdd6f4;
+    --text-secondary: #a6adc8;
+    --shadow: 0 20px 40px rgba(0,0,0,0.3);
+    --shadow-hover: 0 25px 50px rgba(0,0,0,0.4);
+    --glass-effect: rgba(17, 17, 27, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --accent-purple: #cba6f7;
+    --accent-pink: #f5c2e7;
+    --accent-blue: #89b4fa;
+    --accent-green: #a6e3a1;
 }
 
 body {
@@ -25,6 +31,7 @@ body {
     padding: 0;
     overflow-x: hidden;
     line-height: 1.6;
+    color: var(--text-primary);
 }
 
 /* ЭКРАН ЗАГРУЗКИ */
@@ -49,7 +56,7 @@ body {
 
 .loading-content {
     text-align: center;
-    color: white;
+    color: var(--text-primary);
     max-width: 400px;
     padding: 0 20px;
 }
@@ -57,8 +64,8 @@ body {
 .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 4px solid rgba(255,255,255,0.3);
-    border-left: 4px solid white;
+    border: 4px solid rgba(205, 214, 244, 0.3);
+    border-left: 4px solid var(--accent-purple);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 30px;
@@ -68,8 +75,8 @@ body {
     font-size: 2.2em;
     margin-bottom: 15px;
     background: none;
-    -webkit-text-fill-color: white;
-    color: white;
+    -webkit-text-fill-color: var(--text-primary);
+    color: var(--text-primary);
 }
 
 .loading-content p {
@@ -81,14 +88,14 @@ body {
 .loading-progress {
     width: 100%;
     height: 6px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(205, 214, 244, 0.2);
     border-radius: 3px;
     overflow: hidden;
 }
 
 .loading-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
     border-radius: 3px;
     width: 0%;
     transition: width 0.3s ease;
@@ -106,22 +113,22 @@ body {
     left: 0;
     right: 0;
     background: var(--player-bg);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
     z-index: 1000;
     transition: all 0.3s ease;
 }
 
 .music-player.dark-text {
-    --player-text: rgba(0, 0, 0, 0.9);
-    --player-secondary: rgba(0, 0, 0, 0.7);
-    --player-accent: rgba(0, 0, 0, 0.8);
+    --player-text: rgba(205, 214, 244, 0.95);
+    --player-secondary: rgba(205, 214, 244, 0.7);
+    --player-accent: var(--accent-purple);
 }
 
 .music-player.light-text {
-    --player-text: rgba(255, 255, 255, 0.9);
-    --player-secondary: rgba(255, 255, 255, 0.7);
-    --player-accent: rgba(255, 255, 255, 0.8);
+    --player-text: rgba(205, 214, 244, 0.95);
+    --player-secondary: rgba(205, 214, 244, 0.7);
+    --player-accent: var(--accent-purple);
 }
 
 .player-container {
@@ -149,13 +156,13 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1em;
-    color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .track-details {
@@ -187,7 +194,7 @@ body {
 }
 
 .control-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 50%;
     width: 36px;
@@ -199,19 +206,19 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .control-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .play-btn {
     width: 42px;
     height: 42px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
     font-size: 1em;
 }
 
@@ -219,7 +226,7 @@ body {
     flex: 2;
     max-width: 400px;
     height: 5px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
     overflow: hidden;
     position: relative;
@@ -233,7 +240,7 @@ body {
 
 .progress-bar-music {
     height: 100%;
-    background: linear-gradient(90deg, var(--player-accent), rgba(102, 126, 234, 0.8));
+    background: linear-gradient(90deg, var(--player-accent), var(--accent-blue));
     width: 0%;
     transition: width 0.1s linear;
     border-radius: 3px;
@@ -260,7 +267,7 @@ body {
 
 .volume-slider {
     width: 80px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     height: 4px;
     outline: none;
@@ -279,7 +286,7 @@ body {
     border-radius: 50%;
     background: var(--player-accent);
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
 }
 
@@ -288,7 +295,7 @@ body {
 }
 
 .playlist-toggle {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 10px;
     padding: 8px 16px;
@@ -298,13 +305,13 @@ body {
     transition: all 0.3s ease;
     white-space: nowrap;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .playlist-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 /* ВЫПАДАЮЩИЙ ПЛЕЙЛИСТ */
@@ -312,8 +319,8 @@ body {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(20px);
+    background: var(--glass-effect);
+    backdrop-filter: blur(20px) saturate(180%);
 }
 
 .playlist-container.open {
@@ -336,18 +343,19 @@ body {
     margin-bottom: 6px;
     color: var(--player-text);
     border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .playlist-item:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--glass-border);
     transform: translateX(5px);
 }
 
 .playlist-item.active {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     border-left: 4px solid var(--player-accent);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .playlist-item-icon {
@@ -404,9 +412,10 @@ body {
     background: rgba(255, 255, 255, 0.5);
 }
 
-/* ОСНОВНОЙ КОНТЕЙНЕР */
+/* ОСНОВНОЙ КОНТЕЙНЕР - ПОЛУПРОЗРАЧНЫЙ */
 .container {
     background: var(--container-bg);
+    backdrop-filter: blur(20px) saturate(180%);
     border-radius: 25px;
     padding: 40px;
     box-shadow: var(--shadow);
@@ -414,9 +423,10 @@ body {
     width: 90%;
     position: relative;
     min-height: 500px;
-    margin: 100px auto 40px;
+    margin: 120px auto 40px; /* Увеличил отступ сверху */
     transition: all 0.3s ease;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
 }
 
 .screen {
@@ -439,7 +449,7 @@ h1 {
     color: var(--text-primary);
     margin-bottom: 25px;
     font-size: 2.5em;
-    background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+    background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -462,52 +472,56 @@ h1 {
 
 .user-input {
     width: 100%;
-    min-height: 140px;
-    padding: 25px;
-    border: 2px solid #e2e8f0;
+    min-height: 120px; /* Уменьшил высоту */
+    max-height: 150px; /* Ограничил максимальную высоту */
+    padding: 20px;
+    border: 2px solid rgba(205, 214, 244, 0.2);
     border-radius: 18px;
     font-size: 1.1em;
     font-family: inherit;
-    resize: vertical;
+    resize: none; /* Убрал возможность изменения размера */
     transition: all 0.3s ease;
-    margin-bottom: 25px;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    background: rgba(17, 17, 27, 0.6);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     line-height: 1.6;
+    color: var(--text-primary);
+    overflow-y: auto; /* Добавил скролл если нужно */
 }
 
 .user-input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 20px rgba(0,0,0,0.1);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 4px rgba(203, 166, 247, 0.1), 0 4px 20px rgba(0,0,0,0.2);
     transform: translateY(-2px);
 }
 
 .user-input::placeholder {
-    color: #a0aec0;
+    color: var(--text-secondary);
     font-style: italic;
 }
 
 .buttons {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
     margin-top: 10px;
 }
 
 .btn {
-    padding: 16px 35px;
+    padding: 14px 30px;
     border: none;
     border-radius: 50px;
     font-size: 1.1em;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 200px;
+    min-width: 180px;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .btn::before {
@@ -526,24 +540,27 @@ h1 {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--accent-green), #94e2d5);
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .btn-outline {
     background: transparent;
-    border: 2px solid #667eea;
-    color: #667eea;
+    border: 2px solid var(--accent-purple);
+    color: var(--accent-purple);
 }
 
 .btn:hover {
@@ -557,65 +574,72 @@ h1 {
 
 .character-count {
     text-align: right;
-    color: #718096;
+    color: var(--text-secondary);
     font-size: 0.9em;
-    margin-top: -20px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* ОКОШКО ФОРМУЛИРОВКИ - ПОЯВЛЯЕТСЯ СНИЗУ */
+.formulation-section {
+    background: linear-gradient(135deg, rgba(203, 166, 247, 0.1), rgba(137, 180, 250, 0.1));
+    color: var(--text-primary);
+    padding: 25px;
+    border-radius: 20px;
+    margin: 20px 0;
+    text-align: left;
+    display: none;
+    animation: slideInUp 0.5s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.formulation-text {
+    font-size: 1.1em;
+    line-height: 1.6;
     margin-bottom: 20px;
     font-weight: 500;
 }
 
-.formulation-section {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+.poem-container {
+    background: linear-gradient(135deg, rgba(245, 194, 231, 0.1), rgba(166, 227, 161, 0.1));
+    color: var(--text-primary);
     padding: 30px;
     border-radius: 20px;
     margin: 30px 0;
-    text-align: left;
-    display: none;
-    animation: slideIn 0.5s ease;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.formulation-text {
-    font-size: 1.2em;
-    line-height: 1.7;
-    margin-bottom: 25px;
-    font-weight: 500;
-}
-
-.poem-container {
-    background: linear-gradient(135deg, #ff6b6b, #ffd93d);
-    color: white;
-    padding: 35px;
-    border-radius: 20px;
-    margin: 35px 0;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
 }
 
 .poem-title {
-    font-size: 2em;
-    margin-bottom: 25px;
+    font-size: 1.8em;
+    margin-bottom: 20px;
     font-style: italic;
     font-weight: 600;
+    color: var(--accent-purple);
 }
 
 .poem-text {
-    font-size: 1.2em;
-    line-height: 1.9;
+    font-size: 1.1em;
+    line-height: 1.8;
     font-style: italic;
     white-space: pre-line;
     font-weight: 500;
 }
 
 .poem-author {
-    font-size: 1.1em;
-    margin-top: 25px;
+    font-size: 1em;
+    margin-top: 20px;
     font-style: normal;
     opacity: 0.9;
     font-weight: 600;
+    color: var(--accent-blue);
 }
 
 /* ПРОГРЕСС БАР И НАВИГАЦИЯ */
@@ -623,8 +647,8 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 30px 0;
-    gap: 20px;
+    margin: 25px 0;
+    gap: 15px;
 }
 
 .progress-wrapper {
@@ -637,15 +661,15 @@ h1 {
 .progress {
     flex: 1;
     height: 8px;
-    background: #e2e8f0;
+    background: rgba(205, 214, 244, 0.2);
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-blue));
     border-radius: 4px;
     transition: width 0.5s ease;
     position: relative;
@@ -665,48 +689,49 @@ h1 {
 .progress-steps {
     display: flex;
     gap: 8px;
-    margin-top: 15px;
+    margin-top: 12px;
 }
 
 .progress-step {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #cbd5e0;
+    background: rgba(205, 214, 244, 0.3);
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
 }
 
 .progress-step.active {
-    background: #667eea;
+    background: var(--accent-purple);
     transform: scale(1.2);
 }
 
 .progress-step.completed {
-    background: #48bb78;
+    background: var(--accent-green);
 }
 
 .progress-step:hover {
     transform: scale(1.3);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 0 0 3px rgba(203, 166, 247, 0.2);
 }
 
 .nav-buttons {
     display: flex;
-    gap: 15px;
+    gap: 12px;
 }
 
 .nav-btn {
-    padding: 12px 25px;
+    padding: 10px 20px;
     border: none;
     border-radius: 25px;
-    font-size: 1em;
+    font-size: 0.95em;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 600;
-    min-width: 120px;
+    min-width: 100px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
 }
 
 .nav-btn:disabled {
@@ -722,73 +747,28 @@ h1 {
 
 .suggestion-buttons {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .suggestion-btn {
-    padding: 10px 20px;
-    background: rgba(102, 126, 234, 0.1);
-    border: 2px solid rgba(102, 126, 234, 0.3);
-    border-radius: 25px;
-    color: #667eea;
+    padding: 8px 16px;
+    background: rgba(203, 166, 247, 0.1);
+    border: 2px solid rgba(203, 166, 247, 0.3);
+    border-radius: 20px;
+    color: var(--accent-purple);
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.95em;
+    font-size: 0.9em;
     font-weight: 500;
 }
 
 .suggestion-btn:hover {
-    background: rgba(102, 126, 234, 0.2);
+    background: rgba(203, 166, 247, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-}
-
-/* АНИМАЦИИ СЕРДЕЧЕК */
-.hearts-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.heart {
-    position: absolute;
-    font-size: 24px;
-    opacity: 0;
-    animation: float 6s ease-in infinite;
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* Разные направления вращения */
-.heart.spin-left {
-    animation: floatLeft 6s ease-in infinite;
-}
-
-.heart.spin-right {
-    animation: floatRight 6s ease-in infinite;
-}
-
-.heart.spin-slow {
-    animation: floatSlow 8s ease-in-out infinite;
-}
-
-.heart.spin-fast {
-    animation: floatFast 4s ease-in infinite;
-}
-
-.loading {
-    text-align: center;
-    padding: 25px;
-    font-size: 1.2em;
-    color: #718096;
-    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(203, 166, 247, 0.2);
 }
 
 /* АНИМАЦИИ */
@@ -803,14 +783,14 @@ h1 {
     }
 }
 
-@keyframes slideIn {
+@keyframes slideInUp {
     from {
         opacity: 0;
-        transform: translateX(-40px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
@@ -819,168 +799,34 @@ h1 {
     100% { transform: translateX(100%); }
 }
 
-@keyframes float {
-    0% {
-        transform: translateY(100px) rotate(0deg) scale(0.8);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(80px) rotate(90deg) scale(1);
-    }
-    30% {
-        transform: translateY(40px) rotate(180deg) scale(1.1);
-    }
-    50% {
-        transform: translateY(0px) rotate(270deg) scale(1);
-    }
-    70% {
-        transform: translateY(-40px) rotate(360deg) scale(0.9);
-    }
-    90% {
-        opacity: 1;
-        transform: translateY(-80px) rotate(450deg) scale(0.8);
-    }
-    100% {
-        transform: translateY(-100px) rotate(540deg) scale(0.7);
-        opacity: 0;
-    }
+/* КОНТЕЙНЕР ДЛЯ СЕРДЕЧЕК */
+.hearts-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5; /* Поверх всего */
 }
 
-@keyframes floatLeft {
-    0% {
-        transform: translateY(100px) rotate(0deg) scale(0.8);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(80px) rotate(-45deg) scale(1);
-    }
-    30% {
-        transform: translateY(40px) rotate(-90deg) scale(1.1);
-    }
-    50% {
-        transform: translateY(0px) rotate(-135deg) scale(1);
-    }
-    70% {
-        transform: translateY(-40px) rotate(-180deg) scale(0.9);
-    }
-    90% {
-        opacity: 1;
-        transform: translateY(-80px) rotate(-225deg) scale(0.8);
-    }
-    100% {
-        transform: translateY(-100px) rotate(-270deg) scale(0.7);
-        opacity: 0;
-    }
+/* УБИРАЕМ КНОПКУ ПРОПУСТИТЬ АНИМАЦИЮ */
+.typing-controls {
+    display: none; /* Скрываем управление анимацией */
 }
 
-@keyframes floatRight {
-    0% {
-        transform: translateY(100px) rotate(0deg) scale(0.8);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(80px) rotate(45deg) scale(1);
-    }
-    30% {
-        transform: translateY(40px) rotate(90deg) scale(1.1);
-    }
-    50% {
-        transform: translateY(0px) rotate(135deg) scale(1);
-    }
-    70% {
-        transform: translateY(-40px) rotate(180deg) scale(0.9);
-    }
-    90% {
-        opacity: 1;
-        transform: translateY(-80px) rotate(225deg) scale(0.8);
-    }
-    100% {
-        transform: translateY(-100px) rotate(270deg) scale(0.7);
-        opacity: 0;
-    }
-}
-
-@keyframes floatSlow {
-    0% {
-        transform: translateY(120px) rotate(0deg) scale(0.7);
-        opacity: 0;
-    }
-    20% {
-        opacity: 0.8;
-        transform: translateY(90px) rotate(60deg) scale(0.9);
-    }
-    40% {
-        transform: translateY(60px) rotate(120deg) scale(1);
-    }
-    60% {
-        transform: translateY(30px) rotate(180deg) scale(1.1);
-    }
-    80% {
-        opacity: 0.6;
-        transform: translateY(0px) rotate(240deg) scale(1);
-    }
-    100% {
-        transform: translateY(-30px) rotate(300deg) scale(0.8);
-        opacity: 0;
-    }
-}
-
-@keyframes floatFast {
-    0% {
-        transform: translateY(100px) rotate(0deg) scale(0.9);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-        transform: translateY(70px) rotate(180deg) scale(1.1);
-    }
-    30% {
-        transform: translateY(30px) rotate(360deg) scale(1.2);
-    }
-    50% {
-        transform: translateY(-10px) rotate(540deg) scale(1.1);
-    }
-    70% {
-        transform: translateY(-50px) rotate(720deg) scale(0.9);
-    }
-    90% {
-        opacity: 1;
-        transform: translateY(-80px) rotate(900deg) scale(0.7);
-    }
-    100% {
-        transform: translateY(-100px) rotate(1080deg) scale(0.5);
-        opacity: 0;
-
-        /* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ - ДОБАВЛЯЕМ К СУЩЕСТВУЮЩИМ */
-
-.poems-controls {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 25px 0;
-}
-
-.poems-container {
-    max-width: 800px;
-    margin: 30px auto;
-    min-height: 400px;
-}
-
-/* Карточка стихотворения */
+/* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ */
 .poem-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+    background: rgba(30, 30, 46, 0.8);
     border-radius: 20px;
-    padding: 35px;
-    margin: 25px 0;
+    padding: 30px;
+    margin: 20px 0;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--glass-border);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .poem-card::before {
@@ -990,7 +836,7 @@ h1 {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
 }
 
 .poem-card:hover {
@@ -1000,11 +846,11 @@ h1 {
 
 .poem-title {
     color: var(--text-primary);
-    margin-bottom: 20px;
-    font-size: 1.8em;
+    margin-bottom: 15px;
+    font-size: 1.6em;
     text-align: center;
     font-weight: 700;
-    background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+    background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1014,29 +860,29 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
-    font-size: 0.95em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(203, 166, 247, 0.1);
+    font-size: 0.9em;
     color: var(--text-secondary);
     font-weight: 500;
 }
 
 .poem-author {
-    color: #667eea;
+    color: var(--accent-blue);
     font-weight: 600;
 }
 
 .poem-year {
-    color: #a0aec0;
+    color: var(--text-secondary);
     font-style: italic;
 }
 
 .poem-text {
-    line-height: 1.8;
-    margin-bottom: 25px;
+    line-height: 1.7;
+    margin-bottom: 20px;
     color: var(--text-primary);
-    font-size: 1.15em;
+    font-size: 1.1em;
     text-align: center;
     white-space: pre-line;
     font-weight: 500;
@@ -1045,135 +891,53 @@ h1 {
 .poem-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
 }
 
 .tag {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(255, 107, 107, 0.1));
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    color: #667eea;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: linear-gradient(135deg, rgba(203, 166, 247, 0.1), rgba(137, 180, 250, 0.1));
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    color: var(--accent-purple);
+    border: 1px solid rgba(203, 166, 247, 0.2);
     font-weight: 500;
     transition: all 0.3s ease;
 }
 
 .tag:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(255, 107, 107, 0.2));
+    background: linear-gradient(135deg, rgba(203, 166, 247, 0.2), rgba(137, 180, 250, 0.2));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 12px rgba(203, 166, 247, 0.2);
 }
 
 /* Анимация печати */
 .typing-area {
-    min-height: 200px;
-    border-right: 3px solid #ff6b6b;
+    min-height: 150px;
+    border-right: 3px solid var(--accent-pink);
     animation: blink 1s infinite;
-    line-height: 1.8;
-    margin-bottom: 25px;
+    line-height: 1.7;
+    margin-bottom: 20px;
     color: var(--text-primary);
-    font-size: 1.15em;
+    font-size: 1.1em;
     text-align: center;
     white-space: pre-line;
     font-weight: 500;
     padding: 15px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(17, 17, 27, 0.4);
 }
 
 @keyframes blink {
-    0%, 50% { border-color: #ff6b6b; }
+    0%, 50% { border-color: var(--accent-pink); }
     51%, 100% { border-color: transparent; }
 }
 
-.typing-controls {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.btn-small {
-    padding: 10px 20px;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(255, 107, 107, 0.1));
-    border: 2px solid rgba(102, 126, 234, 0.3);
-    border-radius: 25px;
-    color: #667eea;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9em;
-    font-weight: 600;
-    min-width: 140px;
-}
-
-.btn-small:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(255, 107, 107, 0.2));
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
-}
-
-/* Адаптивность для стихов */
-@media (max-width: 768px) {
-    .poems-controls {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .poem-card {
-        padding: 25px 20px;
-        margin: 20px 0;
-        border-radius: 15px;
-    }
-    
-    .poem-title {
-        font-size: 1.5em;
-    }
-    
-    .poem-meta {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-    }
-    
-    .poem-text {
-        font-size: 1.05em;
-        line-height: 1.7;
-    }
-    
-    .typing-area {
-        min-height: 150px;
-        font-size: 1.05em;
-    }
-    
-    .typing-controls {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .btn-small {
-        width: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    .poem-card {
-        padding: 20px 15px;
-        border-radius: 12px;
-    }
-    
-    .poem-title {
-        font-size: 1.3em;
-    }
-    
-    .poem-text {
-        font-size: 1em;
-    }
-    
-    .typing-area {
-        min-height: 120px;
-        font-size: 1em;
-    }
+.loading {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
