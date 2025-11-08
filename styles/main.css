@@ -5,7 +5,7 @@
     --surface-bg: rgba(28, 28, 30, 0.8);
     
     /* iOS Dark Glass Colors */
-    --glass-primary: rgba(44, 44, 46, 0.15);
+    --glass-primary: rgba(44, 44, 46, 0.8);
     --glass-secondary: rgba(58, 58, 60, 0.65);
     --glass-tertiary: rgba(72, 72, 74, 0.5);
     --glass-border: rgba(255, 255, 255, 0.1);
