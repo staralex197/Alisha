@@ -1,22 +1,25 @@
-/* Адаптивность для всех устройств с КОМПАКТНЫМ ДИЗАЙНОМ */
+/* Адаптивность для всех устройств с iOS GLASS ЭФФЕКТОМ */
 
-/* Мобильная версия - КОМПАКТНЫЙ ИНТЕРФЕЙС ТОЛЬКО ДЛЯ ТЕЛЕФОНОВ */
+/* Мобильная версия - КОМПАКТНЫЙ ИНТЕРФЕЙС */
 @media (max-width: 768px) {
     .music-player {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        background: var(--player-bg);
-        backdrop-filter: blur(20px) saturate(180%);
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-medium);
         border-bottom: 1px solid var(--glass-border);
-        padding: 3px 0;
+        padding: 8px 0;
         z-index: 1000;
-        height: 45px;
+        height: 50px;
+        border-radius: 0 0 20px 20px;
+        margin: 0 !important;
+        box-shadow: var(--glass-shadow);
     }
 
     .player-container {
-        padding: 0 8px;
+        padding: 0 12px;
     }
 
     .player-main {
@@ -29,6 +32,11 @@
     .player-track-info {
         flex: 1;
         min-width: 0;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: var(--glass-blur-weak);
+        border-radius: 10px;
+        padding: 4px 8px;
+        margin: 2px 0;
     }
 
     .player-controls {
@@ -55,8 +63,11 @@
     }
 
     .playlist-toggle {
-        padding: 4px 8px;
+        padding: 6px 10px;
         font-size: 0.65em;
+        background: var(--glass-secondary);
+        backdrop-filter: var(--glass-blur-weak);
+        border-radius: 8px;
     }
 
     .playlist-toggle .playlist-text {
@@ -66,15 +77,20 @@
     /* ИСПРАВЛЕННЫЙ ЗНАЧОК ПАУЗЫ */
     .play-btn {
         font-size: 0.9em;
-        background: transparent !important;
+        background: var(--glass-primary) !important;
+        backdrop-filter: var(--glass-blur-weak);
     }
 
-    /* ОПУСТИТЬ ВОПРОСЫ НИЖЕ */
+    /* ОСНОВНОЙ КОНТЕЙНЕР */
     .container {
-        margin: 70px auto 20px; /* Увеличил отступ сверху */
-        padding: 12px;
-        border-radius: 15px;
+        margin: 70px auto 20px;
+        padding: 15px;
+        border-radius: 20px;
         min-height: min(350px, 65vh);
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-medium);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
     }
 
     /* КОМПАКТНЫЕ ЗАГОЛОВКИ */
@@ -97,6 +113,10 @@
         padding: 10px;
         font-size: 0.85em;
         margin-bottom: 12px;
+        background: var(--glass-secondary);
+        backdrop-filter: var(--glass-blur-weak);
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
     }
 
     /* КОМПАКТНЫЕ КНОПКИ */
@@ -109,6 +129,7 @@
         padding: 8px 14px;
         font-size: 0.85em;
         min-width: min(140px, 100%);
+        backdrop-filter: var(--glass-blur-weak);
     }
 
     /* КОМПАКТНАЯ НАВИГАЦИЯ */
@@ -125,6 +146,7 @@
         padding: 6px 10px;
         font-size: 0.8em;
         min-width: min(80px, 100%);
+        backdrop-filter: var(--glass-blur-weak);
     }
 
     /* КОМПАКТНЫЕ КРУЖКИ ПРОГРЕССА */
@@ -146,6 +168,7 @@
     .suggestion-btn {
         padding: 3px 6px;
         font-size: 0.75em;
+        backdrop-filter: var(--glass-blur-weak);
     }
 
     /* ИСПРАВЛЕННОЕ ОКНО ФОРМУЛИРОВКИ */
@@ -154,6 +177,9 @@
         margin: 10px 0;
         max-height: 120px;
         overflow-y: auto;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-weak);
+        border-radius: 15px;
     }
 
     .formulation-text {
@@ -178,12 +204,16 @@
         font-size: 0.8em;
         padding: 6px 10px;
         white-space: nowrap;
+        backdrop-filter: var(--glass-blur-weak);
     }
 
     /* КОМПАКТНЫЕ СТИХИ */
     .poem-container {
         padding: 12px;
         margin: 12px 0;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-weak);
+        border-radius: 15px;
     }
 
     .poem-title {
@@ -205,6 +235,9 @@
         padding: 8px;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        background: var(--glass-secondary);
+        backdrop-filter: var(--glass-blur-weak);
+        border-radius: 10px;
     }
 
     .character-count {
@@ -216,19 +249,21 @@
     /* ИСПРАВЛЕННЫЙ ПЛЕЙЛИСТ ДЛЯ МОБИЛЬНЫХ */
     .playlist-container {
         position: fixed;
-        bottom: 45px;
+        bottom: 50px;
         left: 10px;
         right: 10px;
         max-height: 0;
         transform: translateY(100%);
         opacity: 0;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 15px 15px 0 0;
-        background: rgba(30, 30, 46, 0.95);
-        backdrop-filter: blur(30px) saturate(200%);
+        border-radius: 20px 20px 0 0;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-strong);
         border: 1px solid var(--glass-border);
         border-top: none;
         z-index: 1001;
+        box-shadow: var(--glass-shadow);
+        margin: 0 !important;
     }
 
     .playlist-container.open {
@@ -246,6 +281,9 @@
     .playlist-item {
         padding: 8px 10px;
         margin-bottom: 3px;
+        background: var(--glass-secondary);
+        backdrop-filter: var(--glass-blur-weak);
+        border-radius: 10px;
     }
 
     .playlist-item-title {
@@ -258,10 +296,13 @@
 
     /* КОМПАКТНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
     .theme-toggle {
-        top: 50px;
+        top: 55px;
         right: 8px;
-        padding: 5px 8px;
+        padding: 8px 12px;
         font-size: 0.8em;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-medium);
+        border-radius: 20px;
     }
 
     .theme-text {
@@ -272,12 +313,13 @@
 /* Для очень маленьких телефонов */
 @media (max-width: 360px) {
     .music-player {
-        height: 40px;
-        padding: 2px 0;
+        height: 45px;
+        padding: 6px 0;
+        border-radius: 0 0 15px 15px;
     }
 
     .player-container {
-        padding: 0 5px;
+        padding: 0 8px;
     }
 
     .track-cover {
@@ -307,8 +349,9 @@
     }
 
     .container {
-        margin: 65px auto 15px;
-        padding: 10px;
+        margin: 60px auto 15px;
+        padding: 12px;
+        border-radius: 15px;
     }
 
     h1 {
@@ -352,7 +395,8 @@
 /* Средние телефоны (375px - 427px) */
 @media (min-width: 375px) and (max-width: 427px) {
     .music-player {
-        height: 42px;
+        height: 48px;
+        border-radius: 0 0 18px 18px;
     }
 
     .track-cover {
@@ -369,12 +413,17 @@
         width: 28px;
         height: 28px;
     }
+
+    .container {
+        border-radius: 18px;
+    }
 }
 
 /* Большие телефоны (428px - 767px) */
 @media (min-width: 428px) and (max-width: 767px) {
     .music-player {
-        height: 44px;
+        height: 52px;
+        border-radius: 0 0 20px 20px;
     }
 
     .track-cover {
@@ -394,7 +443,186 @@
 
     .container {
         margin: 75px auto 25px;
-        padding: 14px;
+        padding: 16px;
+        border-radius: 20px;
+    }
+}
+
+/* Планшеты в портретной ориентации (768px - 1023px) - ДЕСКТОПНЫЙ ВИД */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+    .music-player {
+        padding: 10px 0;
+        height: auto;
+        border-radius: 0 0 25px 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .player-main {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .progress-container {
+        display: block;
+        max-width: 250px;
+        backdrop-filter: var(--glass-blur-weak);
+    }
+
+    .time-display {
+        display: block;
+        font-size: 0.8em;
+    }
+
+    .volume-container {
+        display: flex;
+    }
+
+    .playlist-toggle .playlist-text {
+        display: inline;
+    }
+
+    .container {
+        margin: 110px auto 30px;
+        padding: 25px;
+        border-radius: 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .theme-toggle {
+        top: 80px;
+        right: 20px;
+        padding: 10px 16px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .theme-text {
+        display: inline;
+    }
+}
+
+/* Планшеты в ландшафтной ориентации (768px - 1023px) - ДЕСКТОПНЫЙ ВИД */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+    .music-player {
+        padding: 8px 0;
+        height: auto;
+        border-radius: 0 0 25px 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .container {
+        margin: 100px auto 25px;
+        border-radius: 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .theme-toggle {
+        backdrop-filter: var(--glass-blur-strong);
+    }
+}
+
+/* Ноутбуки (1024px - 1439px) - ДЕСКТОПНЫЙ ВИД */
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .container {
+        max-width: 750px;
+        margin: 130px auto 35px;
+        padding: 30px;
+        border-radius: 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .theme-toggle {
+        top: 85px;
+        right: 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .player-main {
+        gap: 12px;
+    }
+    
+    .progress-container {
+        max-width: 300px;
+        backdrop-filter: var(--glass-blur-weak);
+    }
+
+    .music-player {
+        backdrop-filter: var(--glass-blur-strong);
+    }
+}
+
+/* Большие мониторы (1440px - 1919px) - ДЕСКТОПНЫЙ ВИД */
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .container {
+        max-width: 800px;
+        margin: 140px auto 40px;
+        padding: 35px;
+        border-radius: 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .theme-toggle {
+        top: 90px;
+        right: 30px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .music-player {
+        padding: 10px 0;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+}
+
+/* Очень большие мониторы (1920px+) - ДЕСКТОПНЫЙ ВИД */
+@media (min-width: 1920px) {
+    .container {
+        max-width: 900px;
+        margin: 160px auto 50px;
+        padding: 40px;
+        border-radius: 25px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .player-container {
+        max-width: 1600px;
+        padding: 0 40px;
+    }
+    
+    .theme-toggle {
+        top: 100px;
+        right: 40px;
+        padding: 12px 20px;
+        font-size: 1em;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .music-player {
+        backdrop-filter: var(--glass-blur-strong);
+    }
+}
+
+/* Очень широкие мониторы */
+@media (min-width: 2560px) {
+    .container {
+        max-width: 1000px;
+        margin: 180px auto 60px;
+        border-radius: 30px;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .player-container {
+        max-width: 2000px;
+    }
+    
+    .theme-toggle {
+        top: 120px;
+        right: 60px;
+        padding: 15px 25px;
+        font-size: 1.1em;
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .music-player {
+        backdrop-filter: var(--glass-blur-strong);
     }
 }
 
@@ -404,10 +632,13 @@
         margin: 45px auto 10px;
         padding: 10px;
         min-height: auto;
+        border-radius: 15px;
+        backdrop-filter: var(--glass-blur-medium);
     }
 
     .music-player {
-        height: 35px;
+        height: 40px;
+        border-radius: 0 0 15px 15px;
     }
 
     .user-input {
@@ -431,160 +662,26 @@
     }
 }
 
-/* Планшеты в портретной ориентации (768px - 1023px) - ДЕСКТОПНЫЙ ВИД */
-@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
-    .music-player {
-        padding: 8px 0;
-        height: auto;
-    }
-
-    .player-main {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    .progress-container {
-        display: block;
-        max-width: 250px;
-    }
-
-    .time-display {
-        display: block;
-        font-size: 0.8em;
-    }
-
-    .volume-container {
-        display: flex;
-    }
-
-    .playlist-toggle .playlist-text {
-        display: inline;
-    }
-
-    .container {
-        margin: 110px auto 30px;
-        padding: 25px;
-    }
-
-    .theme-toggle {
-        top: 80px;
-        right: 20px;
-        padding: 10px 16px;
-    }
-
-    .theme-text {
-        display: inline;
-    }
-}
-
-/* Планшеты в ландшафтной ориентации (768px - 1023px) - ДЕСКТОПНЫЙ ВИД */
-@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-    .music-player {
-        padding: 8px 0;
-        height: auto;
-    }
-
-    .container {
-        margin: 100px auto 25px;
-    }
-}
-
-/* Ноутбуки (1024px - 1439px) - ДЕСКТОПНЫЙ ВИД */
-@media (min-width: 1024px) and (max-width: 1439px) {
-    .container {
-        max-width: 750px;
-        margin: 130px auto 35px;
-        padding: 30px;
-    }
-    
-    .theme-toggle {
-        top: 85px;
-        right: 25px;
-    }
-    
-    .player-main {
-        gap: 12px;
-    }
-    
-    .progress-container {
-        max-width: 300px;
-    }
-}
-
-/* Большие мониторы (1440px - 1919px) - ДЕСКТОПНЫЙ ВИД */
-@media (min-width: 1440px) and (max-width: 1919px) {
-    .container {
-        max-width: 800px;
-        margin: 140px auto 40px;
-        padding: 35px;
-    }
-    
-    .theme-toggle {
-        top: 90px;
-        right: 30px;
-    }
-    
-    .music-player {
-        padding: 10px 0;
-    }
-}
-
-/* Очень большие мониторы (1920px+) - ДЕСКТОПНЫЙ ВИД */
-@media (min-width: 1920px) {
-    .container {
-        max-width: 900px;
-        margin: 160px auto 50px;
-        padding: 40px;
-    }
-    
-    .player-container {
-        max-width: 1600px;
-        padding: 0 40px;
-    }
-    
-    .theme-toggle {
-        top: 100px;
-        right: 40px;
-        padding: 12px 20px;
-        font-size: 1em;
-    }
-}
-
-/* Очень широкие мониторы */
-@media (min-width: 2560px) {
-    .container {
-        max-width: 1000px;
-        margin: 180px auto 60px;
-    }
-    
-    .player-container {
-        max-width: 2000px;
-    }
-    
-    .theme-toggle {
-        top: 120px;
-        right: 60px;
-        padding: 15px 25px;
-        font-size: 1.1em;
-    }
-}
-
 /* Складные телефоны и нестандартные соотношения */
 @media (max-width: 767px) and (max-height: 400px) {
     .container {
         margin: 40px auto 8px;
         min-height: auto;
+        border-radius: 15px;
+        backdrop-filter: var(--glass-blur-medium);
     }
     
     .music-player {
         padding: 2px 0;
         height: 35px;
+        border-radius: 0 0 12px 12px;
     }
     
     .theme-toggle {
         top: 40px;
         right: 8px;
-        padding: 4px 6px;
+        padding: 6px 10px;
+        backdrop-filter: var(--glass-blur-medium);
     }
     
     .user-input {
@@ -608,6 +705,8 @@
     .container {
         margin: 60px auto 12px;
         padding: 15px;
+        border-radius: 20px;
+        backdrop-filter: var(--glass-blur-medium);
     }
     
     .user-input {
@@ -628,15 +727,19 @@
 @media (max-height: 400px) {
     .container {
         margin: 35px auto 5px;
+        border-radius: 15px;
+        backdrop-filter: var(--glass-blur-medium);
     }
     
     .music-player {
         padding: 1px 0;
         height: 30px;
+        border-radius: 0 0 10px 10px;
     }
     
     .theme-toggle {
         top: 30px;
+        backdrop-filter: var(--glass-blur-medium);
     }
 }
 
@@ -651,16 +754,24 @@
         padding-left: env(safe-area-inset-left);
         padding-right: env(safe-area-inset-right);
     }
+
+    .theme-toggle {
+        right: max(20px, env(safe-area-inset-right));
+    }
 }
 
 /* Высокопиксельные дисплеи с поддержкой HDR */
 @media (min-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (dynamic-range: high) {
     .container {
-        backdrop-filter: blur(40px) saturate(200%);
+        backdrop-filter: var(--glass-blur-strong);
     }
     
     .music-player {
-        backdrop-filter: blur(30px) saturate(200%);
+        backdrop-filter: var(--glass-blur-strong);
+    }
+
+    .theme-toggle {
+        backdrop-filter: var(--glass-blur-strong);
     }
 }
 
@@ -689,6 +800,12 @@
     .playlist-item {
         min-height: 44px;
     }
+
+    /* Улучшаем feedback для тач-устройств */
+    .btn:active, .nav-btn:active, .control-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
 }
 
 /* Анимации для устройств с reduced-motion */
@@ -706,20 +823,24 @@
     .heart {
         animation: none !important;
     }
+
+    .music-player, .container, .theme-toggle {
+        transition: none !important;
+    }
 }
 
 /* Поддержка темной темы по умолчанию */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) {
-        --primary-bg: #1e1e2e;
-        --secondary-bg: #181825;
+        --primary-bg: #000000;
+        --secondary-bg: #1c1c1e;
     }
 }
 
 @media (prefers-color-scheme: light) {
     :root:not([data-theme]) {
-        --primary-bg: #ffffff;
-        --secondary-bg: #f0f4ff;
+        --primary-bg: #f2f2f7;
+        --secondary-bg: #ffffff;
     }
 }
 
@@ -730,17 +851,81 @@
     }
     
     .playlist::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--glass-tertiary);
         border-radius: 4px;
+        backdrop-filter: var(--glass-blur-weak);
     }
     
     .playlist::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
+        background: var(--glass-secondary);
         border-radius: 4px;
         transition: all 0.3s ease;
+        border: 1px solid var(--glass-border);
     }
     
     .playlist::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.5);
+        background: var(--glass-primary);
+    }
+}
+
+/* Поддержка устройств без backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+    .music-player, .container, .theme-toggle, .playlist-container,
+    .poem-card, .formulation-section, .btn, .control-btn,
+    .playlist-toggle, .user-input, .player-track-info {
+        background: var(--surface-bg) !important;
+    }
+    
+    .music-player {
+        background: var(--glass-primary) !important;
+    }
+    
+    .container {
+        background: var(--glass-primary) !important;
+    }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+    .music-player {
+        -webkit-backdrop-filter: var(--glass-blur-strong);
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .container {
+        -webkit-backdrop-filter: var(--glass-blur-strong);
+        backdrop-filter: var(--glass-blur-strong);
+    }
+    
+    .theme-toggle {
+        -webkit-backdrop-filter: var(--glass-blur-strong);
+        backdrop-filter: var(--glass-blur-strong);
+    }
+}
+
+/* Поддержка очень старых браузеров */
+@media not (backdrop-filter: blur(10px)) and not (-webkit-backdrop-filter: blur(10px)) {
+    .music-player {
+        background: rgba(44, 44, 46, 0.95) !important;
+    }
+    
+    .container {
+        background: rgba(44, 44, 46, 0.9) !important;
+    }
+    
+    .theme-toggle {
+        background: rgba(44, 44, 46, 0.9) !important;
+    }
+    
+    :root[data-theme="light"] .music-player {
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    :root[data-theme="light"] .container {
+        background: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    :root[data-theme="light"] .theme-toggle {
+        background: rgba(255, 255, 255, 0.9) !important;
     }
 }
