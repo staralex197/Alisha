@@ -287,6 +287,7 @@ body {
 .music-player.mobile-layout .player-track-info {
     flex: 1;
     min-width: 0;
+    max-width: 40%;
 }
 
 .music-player.mobile-layout .player-controls {
@@ -1181,6 +1182,10 @@ h1 {
     
     .player-container {
         padding: 0 15px;
+    }
+    
+    .player-track-info {
+        max-width: 35%;
     }
     
     .track-cover {
