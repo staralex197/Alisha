@@ -1,31 +1,29 @@
-/* CSS переменные для точного iOS glass эффекта */
+/* CSS переменные для МАКСИМАЛЬНОЙ ПРОЗРАЧНОСТИ и МИНИМАЛЬНОГО РАЗМЫТИЯ */
 :root[data-theme="dark"] {
     --primary-bg: #000000;
     --secondary-bg: #1c1c1e;
-    --surface-bg: rgba(28, 28, 30, 0.8);
+    --surface-bg: rgba(28, 28, 30, 0.3);
     
-    /* iOS Dark Glass Colors */
-    --glass-primary: rgba(44, 44, 46, 0.8);
-    --glass-secondary: rgba(58, 58, 60, 0.65);
-    --glass-tertiary: rgba(72, 72, 74, 0.5);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-highlight: rgba(255, 255, 255, 0.05);
+    /* МАКСИМАЛЬНАЯ ПРОЗРАЧНОСТЬ - почти невидимое стекло */
+    --glass-primary: rgba(44, 44, 46, 0.15);          /* Было 0.8 */
+    --glass-secondary: rgba(58, 58, 60, 0.1);         /* Было 0.65 */
+    --glass-tertiary: rgba(72, 72, 74, 0.08);         /* Было 0.5 */
+    --glass-border: rgba(255, 255, 255, 0.08);        /* Было 0.1 */
+    --glass-highlight: rgba(255, 255, 255, 0.03);     /* Было 0.05 */
     
-    /* iOS Glass Effects */
-    --glass-blur-strong: blur(12px) saturate(120%);
-    --glass-blur-medium: blur(15px) saturate(180%);
-    --glass-blur-weak: blur(10px) saturate(160%);
+    /* МИНИМАЛЬНОЕ РАЗМЫТИЕ - почти нет blur */
+    --glass-blur-strong: blur(3px) saturate(120%);    /* Было 20px 200% */
+    --glass-blur-medium: blur(2px) saturate(110%);    /* Было 15px 180% */
+    --glass-blur-weak: blur(1px) saturate(105%);      /* Было 10px 160% */
     
     --glass-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 2px 8px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 2px 8px rgba(0, 0, 0, 0.15),               /* Упрощенные тени */
+        0 1px 4px rgba(0, 0, 0, 0.1);
     
     --glass-shadow-hover: 
-        0 12px 40px rgba(0, 0, 0, 0.4),
-        0 4px 12px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 2px 6px rgba(0, 0, 0, 0.15);
+
     --text-primary: #ffffff;
     --text-secondary: #ebebf5;
     --text-muted: #98989f;
@@ -41,30 +39,28 @@
 :root[data-theme="light"] {
     --primary-bg: #f2f2f7;
     --secondary-bg: #ffffff;
-    --surface-bg: rgba(255, 255, 255, 0.8);
+    --surface-bg: rgba(255, 255, 255, 0.3);
     
-    /* iOS Light Glass Colors */
-    --glass-primary: rgba(255, 255, 255, 0.4);
-    --glass-secondary: rgba(255, 255, 255, 0.7);
-    --glass-tertiary: rgba(255, 255, 255, 0.6);
-    --glass-border: rgba(0, 0, 0, 0.1);
-    --glass-highlight: rgba(255, 255, 255, 0.4);
+    /* МАКСИМАЛЬНАЯ ПРОЗРАЧНОСТЬ */
+    --glass-primary: rgba(255, 255, 255, 0.12);       /* Было 0.8 */
+    --glass-secondary: rgba(255, 255, 255, 0.08);     /* Было 0.7 */
+    --glass-tertiary: rgba(255, 255, 255, 0.06);      /* Было 0.6 */
+    --glass-border: rgba(0, 0, 0, 0.06);              /* Было 0.1 */
+    --glass-highlight: rgba(255, 255, 255, 0.1);      /* Было 0.4 */
     
-    /* iOS Glass Effects */
-    --glass-blur-strong: blur(12px) saturate(120%);
-    --glass-blur-medium: blur(20px) saturate(160%);
-    --glass-blur-weak: blur(12px) saturate(140%);
+    /* МИНИМАЛЬНОЕ РАЗМЫТИЕ */
+    --glass-blur-strong: blur(4px) saturate(110%);    /* Было 25px 180% */
+    --glass-blur-medium: blur(3px) saturate(105%);    /* Было 20px 160% */
+    --glass-blur-weak: blur(2px) saturate(102%);      /* Было 12px 140% */
     
     --glass-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.08),
-        0 2px 8px rgba(0, 0, 0, 0.04),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        0 1px 4px rgba(0, 0, 0, 0.03);
     
     --glass-shadow-hover: 
-        0 12px 40px rgba(0, 0, 0, 0.12),
-        0 4px 12px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        0 2px 6px rgba(0, 0, 0, 0.06);
+
     --text-primary: #000000;
     --text-secondary: #3c3c43;
     --text-muted: #8e8e93;
@@ -96,7 +92,7 @@ body {
     position: relative;
 }
 
-/* iOS Background Textures */
+/* iOS Background Textures - более заметные из-за прозрачности */
 :root[data-theme="dark"] body::before {
     content: '';
     position: fixed;
@@ -105,9 +101,9 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(44, 44, 46, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(58, 58, 60, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(72, 72, 74, 0.15) 0%, transparent 50%);
+        radial-gradient(circle at 20% 80%, rgba(44, 44, 46, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(58, 58, 60, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(72, 72, 74, 0.2) 0%, transparent 50%);
     pointer-events: none;
     z-index: -2;
 }
@@ -120,14 +116,14 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.6) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
     pointer-events: none;
     z-index: -2;
 }
 
-/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ В СТИЛЕ iOS */
+/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ - почти прозрачный */
 .theme-toggle {
     position: fixed;
     top: 80px;
@@ -243,7 +239,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - ТОЧНЫЙ iOS STYLE */
+/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - МАКСИМАЛЬНО ПРОЗРАЧНЫЙ */
 .music-player {
     position: fixed;
     top: 0;
@@ -537,7 +533,7 @@ body {
     font-weight: 600;
 }
 
-/* ПЛЕЙЛИСТ - iOS STYLE */
+/* ПЛЕЙЛИСТ - МАКСИМАЛЬНО ПРОЗРАЧНЫЙ */
 .playlist-container {
     max-height: 0;
     overflow: hidden;
@@ -634,7 +630,7 @@ body {
     flex-shrink: 0;
 }
 
-/* ОСНОВНОЙ КОНТЕЙНЕР */
+/* ОСНОВНОЙ КОНТЕЙНЕР - МАКСИМАЛЬНО ПРОЗРАЧНЫЙ */
 .container {
     background: var(--glass-primary);
     backdrop-filter: var(--glass-blur-medium);
