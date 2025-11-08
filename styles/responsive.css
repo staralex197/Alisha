@@ -37,11 +37,42 @@
         border-radius: 10px;
         padding: 4px 8px;
         margin: 2px 0;
+        max-width: 40%;
+    }
+
+    .track-details {
+        min-width: 0;
+    }
+
+    .track-title {
+        font-size: 0.75em !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .track-artist {
+        font-size: 0.65em !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .player-controls {
         flex-shrink: 0;
         gap: 4px;
+    }
+
+    .control-btn {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.7em !important;
+    }
+
+    .play-btn {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 0.8em !important;
     }
 
     .progress-container {
@@ -63,11 +94,12 @@
     }
 
     .playlist-toggle {
-        padding: 6px 10px;
+        padding: 6px 8px;
         font-size: 0.65em;
         background: var(--glass-secondary);
         backdrop-filter: var(--glass-blur-weak);
         border-radius: 8px;
+        min-width: auto;
     }
 
     .playlist-toggle .playlist-text {
@@ -264,6 +296,7 @@
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
         top: auto;
+        display: block !important;
     }
 
     .playlist-container.open {
@@ -330,6 +363,10 @@
         padding: 0 8px;
     }
 
+    .player-track-info {
+        max-width: 35%;
+    }
+
     .track-cover {
         width: 20px;
         height: 20px;
@@ -337,23 +374,28 @@
     }
 
     .track-title {
-        font-size: 0.7em;
+        font-size: 0.7em !important;
     }
 
     .track-artist {
-        font-size: 0.65em;
+        font-size: 0.65em !important;
     }
 
     .control-btn {
-        width: 24px;
-        height: 24px;
-        font-size: 0.65em;
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.65em !important;
     }
 
     .play-btn {
-        width: 26px;
-        height: 26px;
-        font-size: 0.8em;
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.8em !important;
+    }
+
+    .playlist-toggle {
+        padding: 5px 8px;
+        font-size: 0.6em;
     }
 
     .container {
@@ -437,13 +479,13 @@
     }
 
     .control-btn {
-        width: 26px;
-        height: 26px;
+        width: 26px !important;
+        height: 26px !important;
     }
 
     .play-btn {
-        width: 28px;
-        height: 28px;
+        width: 28px !important;
+        height: 28px !important;
     }
 
     .container {
@@ -464,13 +506,13 @@
     }
 
     .control-btn {
-        width: 28px;
-        height: 28px;
+        width: 28px !important;
+        height: 28px !important;
     }
 
     .play-btn {
-        width: 30px;
-        height: 30px;
+        width: 30px !important;
+        height: 30px !important;
     }
 
     .container {
