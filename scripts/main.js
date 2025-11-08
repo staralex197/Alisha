@@ -1,4 +1,4 @@
-/* Основная логика приложения с ИСПРАВЛЕННЫМИ ИНДИКАТОРАМИ И ЧИСТЫМИ ОТВЕТАМИ */
+/* Основная логика приложения с ИСПРАВЛЕННЫМИ ИНДИКАТОРАМИ ПРОГРЕССА */
 const QuizApp = {
     config: {
         BOT_TOKEN: '8519621124:AAEtDBYSAeNW16UQiAGy0epAwwt989v9Tzs',
@@ -186,15 +186,13 @@ const QuizApp = {
         });
     },
 
-    // ИСПРАВЛЕННАЯ загрузка из localStorage - ОЧИЩАЕМ ОТВЕТЫ
     loadFromStorage() {
         try {
             const saved = localStorage.getItem('quizAppData');
             if (saved) {
                 const data = JSON.parse(saved);
-                // Загружаем только вопросы, ответы очищаем
                 this.questions = data.questions || this.getDefaultQuestions();
-                this.userAnswers = {}; // ВСЕГДА ОЧИЩАЕМ ОТВЕТЫ
+                this.userAnswers = {};
                 console.log('✅ Вопросы загружены из localStorage, ответы очищены');
             } else {
                 this.questions = this.getDefaultQuestions();
@@ -203,7 +201,7 @@ const QuizApp = {
         } catch (e) {
             console.log('❌ Ошибка загрузки из localStorage:', e);
             this.questions = this.getDefaultQuestions();
-            this.userAnswers = {}; // Очищаем при ошибке
+            this.userAnswers = {};
         }
     },
 
@@ -346,7 +344,7 @@ const QuizApp = {
         ];
     },
 
-    // Генерация экранов вопросов с ПУСТЫМИ полями ввода
+    // Генерация экранов вопросов
     generateQuestionScreens() {
         const container = document.getElementById('questions-container');
         if (!container) {
@@ -379,7 +377,7 @@ const QuizApp = {
                             <textarea class="user-input" id="input${questionNumber}" 
                                       placeholder="Напиши здесь всё, что считаешь важным... 💭" 
                                       maxlength="500" 
-                                      oninput="quiz.updateCharacterCount(${questionNumber})"></textarea>
+                                      oninput="quiz.updateCharacterCount(${questionNumber})">${savedAnswer ? savedAnswer.original : ''}</textarea>
                             
                             <div class="progress-navigation">
                                 <div class="progress-wrapper">
@@ -461,21 +459,25 @@ const QuizApp = {
         }
     },
 
-    // ИСПРАВЛЕННЫЙ МЕТОД: правильное обновление индикаторов
+    // ИСПРАВЛЕННЫЙ МЕТОД: правильное обновление индикаторов прогресса
     updateProgressSteps() {
         const progressSteps = document.querySelectorAll('.progress-step');
         
         progressSteps.forEach((step, index) => {
             const questionNumber = index + 1;
             
+            // Сбрасываем все классы
             step.classList.remove('active', 'completed');
             
+            // Текущий вопрос - активный
             if (questionNumber === this.currentQuestion) {
                 step.classList.add('active');
             }
+            // Пройденные вопросы - completed
             else if (this.userAnswers[questionNumber]) {
                 step.classList.add('completed');
             }
+            // Непройденные вопросы - без классов (по умолчанию)
         });
     },
 
@@ -751,12 +753,10 @@ const QuizApp = {
         }
     },
 
-    // ИСПРАВЛЕННЫЙ перезапуск - полная очистка
     restartQuiz() {
         this.userAnswers = {};
         this.currentQuestion = 0;
         
-        // Очищаем все поля ввода
         document.querySelectorAll('.user-input').forEach(input => {
             input.value = '';
         });
