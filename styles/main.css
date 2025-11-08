@@ -5,24 +5,25 @@
     --surface-bg: rgba(28, 28, 30, 0.3);
     
     /* МАКСИМАЛЬНАЯ ПРОЗРАЧНОСТЬ - почти невидимое стекло */
-    --glass-primary: rgba(44, 44, 46, 0.15);          /* Было 0.8 */
-    --glass-secondary: rgba(58, 58, 60, 0.1);         /* Было 0.65 */
-    --glass-tertiary: rgba(72, 72, 74, 0.08);         /* Было 0.5 */
-    --glass-border: rgba(255, 255, 255, 0.08);        /* Было 0.1 */
-    --glass-highlight: rgba(255, 255, 255, 0.03);     /* Было 0.05 */
+    --glass-primary: rgba(44, 44, 46, 0.15);
+    --glass-secondary: rgba(58, 58, 60, 0.1);
+    --glass-tertiary: rgba(72, 72, 74, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.03);
     
     /* МИНИМАЛЬНОЕ РАЗМЫТИЕ - почти нет blur */
-    --glass-blur-strong: blur(3px) saturate(120%);    /* Было 20px 200% */
-    --glass-blur-medium: blur(2px) saturate(110%);    /* Было 15px 180% */
-    --glass-blur-weak: blur(1px) saturate(105%);      /* Было 10px 160% */
+    --glass-blur-strong: blur(3px) saturate(120%);
+    --glass-blur-medium: blur(2px) saturate(110%);
+    --glass-blur-weak: blur(1px) saturate(105%);
     
+    /* ИСПРАВЛЕННЫЕ ТЕНИ - СВЕТЛЫЕ КАК В СВЕТЛОЙ ТЕМЕ */
     --glass-shadow: 
-        0 2px 8px rgba(0, 0, 0, 0.15),               /* Упрощенные тени */
-        0 1px 4px rgba(0, 0, 0, 0.1);
+        0 8px 32px rgba(120, 119, 198, 0.15),
+        0 2px 8px rgba(120, 119, 198, 0.1);
     
     --glass-shadow-hover: 
-        0 4px 12px rgba(0, 0, 0, 0.2),
-        0 2px 6px rgba(0, 0, 0, 0.15);
+        0 12px 40px rgba(120, 119, 198, 0.2),
+        0 4px 12px rgba(120, 119, 198, 0.15);
 
     --text-primary: #ffffff;
     --text-secondary: #ebebf5;
@@ -42,23 +43,24 @@
     --surface-bg: rgba(255, 255, 255, 0.3);
     
     /* МАКСИМАЛЬНАЯ ПРОЗРАЧНОСТЬ */
-    --glass-primary: rgba(255, 255, 255, 0.12);       /* Было 0.8 */
-    --glass-secondary: rgba(255, 255, 255, 0.08);     /* Было 0.7 */
-    --glass-tertiary: rgba(255, 255, 255, 0.06);      /* Было 0.6 */
-    --glass-border: rgba(0, 0, 0, 0.06);              /* Было 0.1 */
-    --glass-highlight: rgba(255, 255, 255, 0.1);      /* Было 0.4 */
+    --glass-primary: rgba(255, 255, 255, 0.12);
+    --glass-secondary: rgba(255, 255, 255, 0.08);
+    --glass-tertiary: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
     
     /* МИНИМАЛЬНОЕ РАЗМЫТИЕ */
-    --glass-blur-strong: blur(4px) saturate(110%);    /* Было 25px 180% */
-    --glass-blur-medium: blur(3px) saturate(105%);    /* Было 20px 160% */
-    --glass-blur-weak: blur(2px) saturate(102%);      /* Было 12px 140% */
+    --glass-blur-strong: blur(4px) saturate(110%);
+    --glass-blur-medium: blur(3px) saturate(105%);
+    --glass-blur-weak: blur(2px) saturate(102%);
     
+    /* ТЕНИ ДЛЯ СВЕТЛОЙ ТЕМЫ */
     --glass-shadow: 
-        0 2px 8px rgba(0, 0, 0, 0.06),
-        0 1px 4px rgba(0, 0, 0, 0.03);
+        0 8px 32px rgba(0, 0, 0, 0.06),
+        0 2px 8px rgba(0, 0, 0, 0.03);
     
     --glass-shadow-hover: 
-        0 4px 12px rgba(0, 0, 0, 0.1),
+        0 12px 40px rgba(0, 0, 0, 0.1),
         0 2px 6px rgba(0, 0, 0, 0.06);
 
     --text-primary: #000000;
@@ -92,7 +94,7 @@ body {
     position: relative;
 }
 
-/* iOS Background Textures - более заметные из-за прозрачности */
+/* iOS Background Textures */
 :root[data-theme="dark"] body::before {
     content: '';
     position: fixed;
@@ -123,7 +125,7 @@ body {
     z-index: -2;
 }
 
-/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ - почти прозрачный */
+/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
 .theme-toggle {
     position: fixed;
     top: 80px;
@@ -239,7 +241,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - МАКСИМАЛЬНО ПРОЗРАЧНЫЙ */
+/* МУЗЫКАЛЬНЫЙ ПЛЕЕР */
 .music-player {
     position: fixed;
     top: 0;
@@ -533,19 +535,23 @@ body {
     font-weight: 600;
 }
 
-/* ПЛЕЙЛИСТ - МАКСИМАЛЬНО ПРОЗРАЧНЫЙ */
+/* ИСПРАВЛЕННЫЙ ПЛЕЙЛИСТ - ОСТРОВ СО СКРУГЛЕНИЯМИ */
 .playlist-container {
     max-height: 0;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--glass-primary);
     backdrop-filter: var(--glass-blur-strong);
-    border-radius: 0 0 25px 25px;
+    border-radius: 25px;
     display: none;
     border: 1px solid var(--glass-border);
-    border-top: none;
     box-shadow: var(--glass-shadow);
-    margin: 0;
+    margin: 10px 15px 0 15px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1002;
 }
 
 .playlist-container.open {
@@ -557,6 +563,7 @@ body {
     padding: 20px;
     max-height: 350px;
     overflow-y: auto;
+    border-radius: 25px;
 }
 
 .playlist-item {
@@ -630,7 +637,27 @@ body {
     flex-shrink: 0;
 }
 
-/* ОСНОВНОЙ КОНТЕЙНЕР - МАКСИМАЛЬНО ПРОЗРАЧНЫЙ */
+/* Улучшаем скроллбар */
+.playlist::-webkit-scrollbar {
+    width: 6px;
+}
+
+.playlist::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.playlist::-webkit-scrollbar-thumb {
+    background: var(--glass-secondary);
+    border-radius: 3px;
+    border: 1px solid var(--glass-border);
+}
+
+.playlist::-webkit-scrollbar-thumb:hover {
+    background: var(--glass-tertiary);
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
 .container {
     background: var(--glass-primary);
     backdrop-filter: var(--glass-blur-medium);
