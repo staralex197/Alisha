@@ -5,14 +5,14 @@
     --surface-bg: rgba(28, 28, 30, 0.8);
     
     /* iOS Dark Glass Colors */
-    --glass-primary: rgba(44, 44, 46, 0.8);
+    --glass-primary: rgba(44, 44, 46, 0.15);
     --glass-secondary: rgba(58, 58, 60, 0.65);
     --glass-tertiary: rgba(72, 72, 74, 0.5);
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-highlight: rgba(255, 255, 255, 0.05);
     
     /* iOS Glass Effects */
-    --glass-blur-strong: blur(5px) saturate(200%);
+    --glass-blur-strong: blur(12px) saturate(120%);
     --glass-blur-medium: blur(15px) saturate(180%);
     --glass-blur-weak: blur(10px) saturate(160%);
     
