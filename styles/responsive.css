@@ -1,4 +1,4 @@
-/* Адаптивность для МАКСИМАЛЬНОЙ ПРОЗРАЧНОСТИ */
+/* Адаптивность для всех устройств с iOS GLASS ЭФФЕКТОМ */
 
 /* Мобильная версия - КОМПАКТНЫЙ ИНТЕРФЕЙС */
 @media (max-width: 768px) {
@@ -246,44 +246,52 @@
         margin-bottom: 8px;
     }
 
-    /* ИСПРАВЛЕННЫЙ ПЛЕЙЛИСТ ДЛЯ МОБИЛЬНЫХ */
+    /* ИСПРАВЛЕННЫЙ ПЛЕЙЛИСТ ДЛЯ МОБИЛЬНЫХ - ОСТРОВ */
     .playlist-container {
         position: fixed;
-        bottom: 50px;
+        bottom: 60px;
         left: 10px;
         right: 10px;
         max-height: 0;
         transform: translateY(100%);
         opacity: 0;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 20px 20px 0 0;
+        border-radius: 20px;
         background: var(--glass-primary);
         backdrop-filter: var(--glass-blur-strong);
         border: 1px solid var(--glass-border);
-        border-top: none;
         z-index: 1001;
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
+        top: auto;
     }
 
     .playlist-container.open {
-        max-height: 60vh;
+        max-height: min(500px, 70vh);
         transform: translateY(0);
         opacity: 1;
         display: block !important;
     }
 
     .playlist {
-        max-height: 55vh;
-        padding: 15px 12px;
+        max-height: calc(70vh - 40px);
+        padding: 20px 15px;
+        border-radius: 20px;
     }
 
+    /* Убедимся, что последняя песня не обрезается */
+    .playlist-item:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Улучшаем отступы для элементов плейлиста */
     .playlist-item {
-        padding: 8px 10px;
-        margin-bottom: 3px;
+        padding: 12px 14px;
+        margin-bottom: 6px;
         background: var(--glass-secondary);
         backdrop-filter: var(--glass-blur-weak);
-        border-radius: 10px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
     }
 
     .playlist-item-title {
@@ -389,6 +397,30 @@
         min-width: 100px;
         font-size: 0.75em;
         padding: 5px 8px;
+    }
+
+    /* Плейлист для очень маленьких телефонов */
+    .playlist-container {
+        bottom: 50px;
+        left: 5px;
+        right: 5px;
+        border-radius: 15px;
+    }
+
+    .playlist-container.open {
+        max-height: min(450px, 65vh);
+    }
+
+    .playlist {
+        max-height: calc(65vh - 30px);
+        padding: 15px 10px;
+        border-radius: 15px;
+    }
+
+    .playlist-item {
+        padding: 10px 12px;
+        margin-bottom: 4px;
+        border-radius: 10px;
     }
 }
 
@@ -847,18 +879,18 @@
 /* Улучшенная поддержка скроллбаров */
 @media (min-width: 768px) {
     .playlist::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
     }
     
     .playlist::-webkit-scrollbar-track {
         background: var(--glass-tertiary);
-        border-radius: 4px;
+        border-radius: 3px;
         backdrop-filter: var(--glass-blur-weak);
     }
     
     .playlist::-webkit-scrollbar-thumb {
         background: var(--glass-secondary);
-        border-radius: 4px;
+        border-radius: 3px;
         transition: all 0.3s ease;
         border: 1px solid var(--glass-border);
     }
