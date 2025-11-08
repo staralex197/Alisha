@@ -44,7 +44,7 @@
     --surface-bg: rgba(255, 255, 255, 0.8);
     
     /* iOS Light Glass Colors */
-    --glass-primary: rgba(255, 255, 255, 0.8);
+    --glass-primary: rgba(255, 255, 255, 0.4);
     --glass-secondary: rgba(255, 255, 255, 0.7);
     --glass-tertiary: rgba(255, 255, 255, 0.6);
     --glass-border: rgba(0, 0, 0, 0.1);
