@@ -2,10 +2,10 @@
 :root[data-theme="dark"] {
     --primary-bg: #0f0f23;
     --secondary-bg: #1a1a2e;
-    --surface-bg: rgba(30, 30, 46, 0.5);
-    --container-bg: rgba(30, 30, 46, 0.4);
-    --glass-effect: rgba(17, 17, 27, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.15);
+    --surface-bg: rgba(40, 40, 60, 0.6); /* Светлее и прозрачнее */
+    --container-bg: rgba(40, 40, 60, 0.5); /* Светлее */
+    --glass-effect: rgba(25, 25, 40, 0.5); /* Светлее */
+    --glass-border: rgba(255, 255, 255, 0.2); /* Более видимый */
     
     --text-primary: #e2e8f0;
     --text-secondary: #a0aec0;
@@ -18,39 +18,39 @@
     --accent-red: #f87171;
     --accent-yellow: #fbbf24;
     
-    --player-bg: rgba(30, 30, 46, 0.6);
+    --player-bg: rgba(40, 40, 60, 0.7); /* Светлее */
     --player-text: rgba(255, 255, 255, 0.95);
     --player-secondary: rgba(255, 255, 255, 0.7);
     --player-accent: #c084fc;
     
-    --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.5);
-    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Легче */
+    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.4);
+    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 :root[data-theme="light"] {
     --primary-bg: #ffffff;
-    --secondary-bg: #f0f4ff; /* Более красочный фон */
-    --surface-bg: rgba(255, 255, 255, 0.7);
-    --container-bg: rgba(255, 255, 255, 0.6);
-    --glass-effect: rgba(255, 255, 255, 0.5);
-    --glass-border: rgba(120, 119, 198, 0.2);
+    --secondary-bg: #f0f4ff;
+    --surface-bg: rgba(255, 255, 255, 0.8);
+    --container-bg: rgba(255, 255, 255, 0.7);
+    --glass-effect: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(120, 119, 198, 0.25);
     
     --text-primary: #2d3748;
     --text-secondary: #4a5568;
     --text-muted: #718096;
     
-    --accent-purple: #7c3aed;
-    --accent-pink: #db2777;
-    --accent-blue: #2563eb;
-    --accent-green: #059669;
-    --accent-red: #dc2626;
-    --accent-yellow: #d97706;
+    --accent-purple: #8b5cf6; /* Более светлый */
+    --accent-pink: #ec4899; /* Более светлый */
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-red: #ef4444;
+    --accent-yellow: #f59e0b;
     
-    --player-bg: rgba(255, 255, 255, 0.8);
+    --player-bg: rgba(255, 255, 255, 0.9); /* Более тонированный */
     --player-text: #2d3748;
     --player-secondary: #4a5568;
-    --player-accent: #7c3aed;
+    --player-accent: #8b5cf6; /* Более светлый */
     
     --shadow: 0 20px 40px rgba(120, 119, 198, 0.15);
     --shadow-hover: 0 25px 50px rgba(120, 119, 198, 0.2);
@@ -85,9 +85,9 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 10% 20%, rgba(120, 119, 198, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(255, 119, 198, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(120, 219, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 10% 20%, rgba(120, 119, 198, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 119, 198, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
         linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #faf5ff 100%);
     pointer-events: none;
     z-index: -1;
@@ -194,6 +194,11 @@ body {
     transition: width 0.3s ease;
 }
 
+/* Осветлить полосу загрузки в светлой теме */
+:root[data-theme="light"] .loading-progress-bar {
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -210,7 +215,7 @@ body {
     border-bottom: 1px solid var(--glass-border);
     z-index: 1000;
     transition: all 0.3s ease;
-    padding: 6px 0; /* Более тонкий */
+    padding: 6px 0;
 }
 
 .player-container {
@@ -227,14 +232,14 @@ body {
     flex-wrap: wrap;
 }
 
-/* Мобильная версия плеера - ТОНКИЙ СВЕРХУ */
+/* Мобильная версия плеера */
 .music-player.mobile-layout {
-    padding: 4px 0; /* Еще тоньше на мобильных */
-    height: 50px; /* Фиксированная высота */
+    padding: 4px 0;
+    height: 50px;
 }
 
 .music-player.mobile-layout .player-main {
-    flex-direction: row; /* Горизонтально на мобильных */
+    flex-direction: row;
     gap: 8px;
     height: 100%;
 }
@@ -249,7 +254,7 @@ body {
 }
 
 .music-player.mobile-layout .progress-container {
-    display: none; /* Скрываем прогресс бар на мобильных */
+    display: none;
 }
 
 .music-player.mobile-layout .player-extra {
@@ -270,7 +275,7 @@ body {
 }
 
 .track-cover {
-    width: 35px; /* Меньше */
+    width: 35px;
     height: 35px;
     border-radius: 8px;
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
@@ -278,7 +283,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 0.9em;
-    color: white; /* Белый текст на цветном фоне */
+    color: white;
     box-shadow: var(--shadow-small);
     flex-shrink: 0;
 }
@@ -316,7 +321,7 @@ body {
     background: transparent;
     border: none;
     border-radius: 50%;
-    width: 32px; /* Меньше */
+    width: 32px;
     height: 32px;
     font-size: 0.85em;
     cursor: pointer;
@@ -334,16 +339,22 @@ body {
 }
 
 .play-btn {
-    width: 36px; /* Меньше */
+    width: 36px;
     height: 36px;
     background: transparent;
+    font-size: 0.9em;
+}
+
+/* Исправить значок паузы на мобильных */
+.music-player.mobile-layout .play-btn {
+    background: transparent !important;
     font-size: 0.9em;
 }
 
 .progress-container {
     flex: 2;
     max-width: 400px;
-    height: 4px; /* Тоньше */
+    height: 4px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
     overflow: hidden;
@@ -368,7 +379,7 @@ body {
 .player-extra {
     display: flex;
     align-items: center;
-    gap: 12px; /* Меньше */
+    gap: 12px;
     flex-shrink: 0;
 }
 
@@ -383,7 +394,7 @@ body {
 .volume-container {
     display: flex;
     align-items: center;
-    gap: 6px; /* Меньше */
+    gap: 6px;
     flex-shrink: 0;
 }
 
@@ -399,7 +410,7 @@ body {
 }
 
 .volume-slider {
-    width: 70px; /* Уже */
+    width: 70px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     height: 4px;
@@ -414,7 +425,7 @@ body {
 
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px; /* Меньше */
+    width: 12px;
     height: 12px;
     border-radius: 50%;
     background: var(--player-accent);
@@ -460,14 +471,17 @@ body {
     font-weight: 500;
 }
 
-/* Плейлист */
+/* Плейлист с закругленными углами и тонированием */
 .playlist-container {
     max-height: 0;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--glass-effect);
-    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(30, 30, 46, 0.95);
+    backdrop-filter: blur(30px) saturate(200%);
+    border-radius: 0 0 15px 15px;
     display: none;
+    border: 1px solid var(--glass-border);
+    border-top: none;
 }
 
 .playlist-container.open {
@@ -484,7 +498,7 @@ body {
 .playlist-item {
     display: flex;
     align-items: center;
-    padding: 10px 14px; /* Компактнее */
+    padding: 10px 14px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -549,18 +563,18 @@ body {
     flex-shrink: 0;
 }
 
-/* ОСНОВНОЙ КОНТЕЙНЕР - КОМПАКТНЫЙ */
+/* ОСНОВНОЙ КОНТЕЙНЕР */
 .container {
     background: var(--container-bg);
     backdrop-filter: blur(20px) saturate(180%);
     border-radius: 20px;
-    padding: clamp(15px, 3vw, 30px); /* Меньше паддинг */
+    padding: clamp(15px, 3vw, 30px);
     box-shadow: var(--shadow);
     max-width: min(800px, 90vw);
     width: 90%;
     position: relative;
-    min-height: min(400px, 70vh); /* Компактнее */
-    margin: clamp(60px, 8vh, 100px) auto 30px; /* Меньше отступ сверху */
+    min-height: min(400px, 70vh);
+    margin: clamp(60px, 8vh, 100px) auto 30px;
     transition: all 0.3s ease;
     border: 1px solid var(--glass-border);
     overflow: hidden;
@@ -583,10 +597,11 @@ body {
     margin: 0 auto;
 }
 
+/* Осветлить цветной текст в светлой теме */
 h1 {
     color: var(--text-primary);
-    margin-bottom: clamp(15px, 2vh, 20px); /* Меньше */
-    font-size: clamp(1.6em, 4vw, 2.2em); /* Меньше */
+    margin-bottom: clamp(15px, 2vh, 20px);
+    font-size: clamp(1.6em, 4vw, 2.2em);
     background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -595,31 +610,39 @@ h1 {
     line-height: 1.2;
 }
 
+/* Еще более светлый градиент для светлой темы */
+:root[data-theme="light"] h1 {
+    background: linear-gradient(45deg, #ec4899, #8b5cf6, #3b82f6, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 .question-text {
-    font-size: clamp(1em, 2.5vw, 1.2em); /* Меньше */
+    font-size: clamp(1em, 2.5vw, 1.2em);
     color: var(--text-secondary);
-    margin-bottom: clamp(20px, 3vh, 25px); /* Меньше */
+    margin-bottom: clamp(20px, 3vh, 25px);
     line-height: 1.6;
-    min-height: clamp(30px, 4vh, 40px); /* Меньше */
+    min-height: clamp(30px, 4vh, 40px);
     text-align: center;
 }
 
 .input-section {
-    margin: clamp(20px, 3vh, 25px) 0; /* Меньше */
+    margin: clamp(20px, 3vh, 25px) 0;
 }
 
 .user-input {
     width: 100%;
-    min-height: clamp(60px, 12vh, 100px); /* Компактнее */
+    min-height: clamp(60px, 12vh, 100px);
     max-height: clamp(80px, 15vh, 120px);
-    padding: clamp(12px, 2vw, 16px); /* Меньше */
+    padding: clamp(12px, 2vw, 16px);
     border: 2px solid var(--glass-border);
     border-radius: 15px;
-    font-size: clamp(0.9em, 1.8vw, 1em); /* Меньше */
+    font-size: clamp(0.9em, 1.8vw, 1em);
     font-family: inherit;
     resize: none;
     transition: all 0.3s ease;
-    margin-bottom: 15px; /* Меньше */
+    margin-bottom: 15px;
     background: var(--glass-effect);
     box-shadow: var(--shadow-small);
     line-height: 1.5;
@@ -641,28 +664,28 @@ h1 {
 
 .buttons {
     display: flex;
-    gap: clamp(8px, 1.5vw, 12px); /* Меньше */
+    gap: clamp(8px, 1.5vw, 12px);
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 8px; /* Меньше */
+    margin-top: 8px;
 }
 
 .btn {
-    padding: clamp(10px, 1.8vw, 12px) clamp(16px, 2.5vw, 24px); /* Компактнее */
+    padding: clamp(10px, 1.8vw, 12px) clamp(16px, 2.5vw, 24px);
     border: none;
     border-radius: 40px;
-    font-size: clamp(0.9em, 1.8vw, 1em); /* Меньше */
+    font-size: clamp(0.9em, 1.8vw, 1em);
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: min(160px, 100%); /* Уже */
+    min-width: min(160px, 100%);
     font-weight: 600;
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(10px);
     flex: 1;
-    max-width: 280px; /* Уже */
-    color: white; /* БЕЛЫЙ ТЕКСТ на цветных кнопках */
+    max-width: 280px;
+    color: white;
 }
 
 .btn::before {
@@ -698,7 +721,7 @@ h1 {
 .btn-outline {
     background: transparent;
     border: 2px solid var(--accent-purple);
-    color: var(--accent-purple); /* Цветной текст для outline */
+    color: var(--accent-purple);
 }
 
 .btn:hover {
@@ -719,9 +742,9 @@ h1 {
 .character-count {
     text-align: right;
     color: var(--text-secondary);
-    font-size: 0.85em; /* Меньше */
-    margin-top: -12px; /* Меньше */
-    margin-bottom: 12px; /* Меньше */
+    font-size: 0.85em;
+    margin-top: -12px;
+    margin-bottom: 12px;
     font-weight: 500;
 }
 
@@ -729,34 +752,34 @@ h1 {
 .formulation-section {
     background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
     color: var(--text-primary);
-    padding: clamp(15px, 2.5vw, 20px); /* Меньше */
+    padding: clamp(15px, 2.5vw, 20px);
     border-radius: 15px;
-    margin: clamp(12px, 1.5vh, 15px) 0; /* Меньше */
+    margin: clamp(12px, 1.5vh, 15px) 0;
     text-align: left;
     display: none;
     animation: slideInUp 0.5s ease;
     box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
-    max-height: min(150px, 25vh); /* Компактнее */
+    max-height: min(150px, 25vh);
     overflow: hidden;
 }
 
 .formulation-text {
-    font-size: clamp(0.9em, 1.8vw, 1em); /* Меньше */
+    font-size: clamp(0.9em, 1.8vw, 1em);
     line-height: 1.5;
-    margin-bottom: 15px; /* Меньше */
+    margin-bottom: 15px;
     font-weight: 500;
-    word-wrap: break-word; /* Перенос длинных слов */
+    word-wrap: break-word;
 }
 
 /* Стихотворение - ИСПРАВЛЕН ПЕРЕНОС ТЕКСТА */
 .poem-container {
     background: var(--surface-bg);
     color: var(--text-primary);
-    padding: clamp(15px, 2.5vw, 25px); /* Меньше */
+    padding: clamp(15px, 2.5vw, 25px);
     border-radius: 15px;
-    margin: clamp(15px, 2vh, 20px) 0; /* Меньше */
+    margin: clamp(15px, 2vh, 20px) 0;
     text-align: center;
     box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
@@ -765,40 +788,45 @@ h1 {
     max-height: none;
 }
 
+/* Светлый фон стиха в светлой теме */
+:root[data-theme="light"] .poem-container {
+    background: rgba(255, 255, 255, 0.95);
+}
+
 .poem-title {
-    font-size: clamp(1.2em, 3vw, 1.6em); /* Меньше */
-    margin-bottom: 15px; /* Меньше */
+    font-size: clamp(1.2em, 3vw, 1.6em);
+    margin-bottom: 15px;
     font-style: italic;
     font-weight: 600;
     color: var(--accent-purple);
 }
 
 .poem-text {
-    font-size: clamp(0.9em, 1.8vw, 1em); /* Меньше */
+    font-size: clamp(0.9em, 1.8vw, 1em);
     line-height: 1.6;
     font-style: italic;
     white-space: pre-line;
     font-weight: 500;
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Перенос длинных слов */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .poem-author {
-    font-size: clamp(0.85em, 1.8vw, 0.95em); /* Меньше */
-    margin-top: 15px; /* Меньше */
+    font-size: clamp(0.85em, 1.8vw, 0.95em);
+    margin-top: 15px;
     font-style: normal;
     opacity: 0.9;
     font-weight: 600;
     color: var(--accent-blue);
 }
 
-/* ПРОГРЕСС НАВИГАЦИЯ - ТОЛЬКО КРУЖКИ */
+/* ПРОГРЕСС НАВИГАЦИЯ - ВЫРОВНЕННЫЕ КНОПКИ */
 .progress-navigation {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: clamp(15px, 2vh, 20px) 0; /* Меньше */
-    gap: 12px; /* Меньше */
+    margin: clamp(15px, 2vh, 20px) 0;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
@@ -806,27 +834,26 @@ h1 {
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 12px; /* Меньше */
+    gap: 12px;
     min-width: 0;
-    justify-content: center; /* Центрируем кружки */
+    justify-content: center;
 }
 
-/* УБИРАЕМ ПОЛОСКУ ПРОГРЕССА */
 .progress {
-    display: none; /* Скрываем полоску */
+    display: none;
 }
 
-/* Индикаторы вопросов - ТОЛЬКО КРУЖКИ */
+/* Индикаторы вопросов */
 .progress-steps {
     display: flex;
-    gap: 6px; /* Меньше */
-    margin-top: 0; /* Убираем отступ */
+    gap: 6px;
+    margin-top: 0;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .progress-step {
-    width: 10px; /* Меньше */
+    width: 10px;
     height: 10px;
     border-radius: 50%;
     background: var(--text-muted);
@@ -853,23 +880,31 @@ h1 {
 
 .nav-buttons {
     display: flex;
-    gap: clamp(6px, 1.5vw, 10px); /* Меньше */
+    gap: clamp(6px, 1.5vw, 10px);
     flex-shrink: 0;
 }
 
+/* ВЫРОВНЕННЫЕ КНОПКИ НАВИГАЦИИ */
 .nav-btn {
-    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 2.5vw, 16px); /* Компактнее */
+    padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2.5vw, 20px);
     border: none;
-    border-radius: 20px;
-    font-size: clamp(0.85em, 1.8vw, 0.9em); /* Меньше */
+    border-radius: 25px;
+    font-size: clamp(0.85em, 1.8vw, 0.95em);
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 600;
-    min-width: min(90px, 100%); /* Уже */
+    min-width: min(100px, 100%);
     box-shadow: var(--shadow-small);
     backdrop-filter: blur(10px);
     flex: 1;
-    color: white; /* Белый текст */
+    color: white;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+}
+
+.nav-btn.btn-outline {
+    background: transparent;
+    border: 2px solid var(--accent-purple);
+    color: var(--accent-purple);
 }
 
 .nav-btn:disabled {
@@ -885,21 +920,21 @@ h1 {
 
 .suggestion-buttons {
     display: flex;
-    gap: clamp(4px, 1vw, 6px); /* Меньше */
+    gap: clamp(4px, 1vw, 6px);
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 12px; /* Меньше */
+    margin-bottom: 12px;
 }
 
 .suggestion-btn {
-    padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 12px); /* Компактнее */
+    padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 12px);
     background: rgba(192, 132, 252, 0.1);
     border: 1px solid rgba(192, 132, 252, 0.3);
     border-radius: 15px;
     color: var(--accent-purple);
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: clamp(0.8em, 1.6vw, 0.85em); /* Меньше */
+    font-size: clamp(0.8em, 1.6vw, 0.85em);
     font-weight: 500;
     flex-shrink: 0;
 }
@@ -948,8 +983,8 @@ h1 {
 .poem-card {
     background: var(--surface-bg);
     border-radius: 15px;
-    padding: clamp(15px, 2.5vw, 25px); /* Меньше */
-    margin: clamp(12px, 1.5vh, 15px) 0; /* Меньше */
+    padding: clamp(15px, 2.5vw, 25px);
+    margin: clamp(12px, 1.5vh, 15px) 0;
     box-shadow: var(--shadow);
     border: 1px solid var(--glass-border);
     transition: all 0.3s ease;
@@ -964,7 +999,7 @@ h1 {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px; /* Тоньше */
+    height: 3px;
     background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
 }
 
@@ -977,14 +1012,14 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px; /* Меньше */
-    padding-bottom: 10px; /* Меньше */
+    margin-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 1px solid rgba(192, 132, 252, 0.1);
-    font-size: 0.85em; /* Меньше */
+    font-size: 0.85em;
     color: var(--text-secondary);
     font-weight: 500;
     flex-wrap: wrap;
-    gap: 8px; /* Меньше */
+    gap: 8px;
 }
 
 .poem-year {
@@ -994,21 +1029,21 @@ h1 {
 
 /* Анимация печати */
 .typing-area {
-    min-height: clamp(80px, 15vh, 120px); /* Компактнее */
+    min-height: clamp(80px, 15vh, 120px);
     border-right: 2px solid var(--accent-pink);
     animation: blink 1s infinite;
     line-height: 1.6;
-    margin-bottom: 15px; /* Меньше */
+    margin-bottom: 15px;
     color: var(--text-primary);
-    font-size: clamp(0.9em, 1.8vw, 1em); /* Меньше */
+    font-size: clamp(0.9em, 1.8vw, 1em);
     text-align: center;
     white-space: pre-line;
     font-weight: 500;
-    padding: 12px; /* Меньше */
+    padding: 12px;
     border-radius: 8px;
     background: rgba(17, 17, 27, 0.4);
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Перенос длинных слов */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 @keyframes blink {
@@ -1018,8 +1053,8 @@ h1 {
 
 .loading {
     text-align: center;
-    padding: 15px; /* Меньше */
-    font-size: clamp(0.9em, 1.8vw, 1em); /* Меньше */
+    padding: 15px;
+    font-size: clamp(0.9em, 1.8vw, 1em);
     color: var(--text-secondary);
     font-weight: 500;
 }
@@ -1027,10 +1062,10 @@ h1 {
 /* Временные сообщения */
 .temp-message {
     position: fixed;
-    top: 15px; /* Меньше */
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px 16px; /* Меньше */
+    padding: 10px 16px;
     background: var(--accent-purple);
     color: white;
     border-radius: 20px;
@@ -1038,7 +1073,7 @@ h1 {
     animation: fadeInOut 3s ease-in-out;
     font-weight: 500;
     box-shadow: var(--shadow);
-    font-size: 0.9em; /* Меньше */
+    font-size: 0.9em;
 }
 
 .temp-message-warning {
