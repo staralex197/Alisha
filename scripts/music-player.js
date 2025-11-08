@@ -241,7 +241,7 @@ const MusicPlayer = {
         this.updatePlayerLayout();
     },
 
-    // ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ФУНКЦИЯ: Переключение звука
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Переключение звука
     toggleMute() {
         if (!this.audioInitialized) return;
         
@@ -251,7 +251,7 @@ const MusicPlayer = {
             // Сохраняем текущую громкость и выключаем звук
             this.previousVolume = this.audio.volume;
             this.audio.volume = 0;
-            this.updateVolumeIcon('🔇'); // Перечеркнутый значок
+            this.updateVolumeIcon('🔇');
             
             // Обновляем слайдер
             const volumeSlider = document.getElementById('volumeSlider');
@@ -263,7 +263,7 @@ const MusicPlayer = {
             // Включаем звук на предыдущую громкость
             this.audio.volume = this.previousVolume;
             this.volume = this.previousVolume;
-            this.updateVolumeIcon('🔊'); // Обычный значок
+            this.updateVolumeIcon('🔊');
             
             // Обновляем слайдер
             const volumeSlider = document.getElementById('volumeSlider');
