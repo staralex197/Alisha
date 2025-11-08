@@ -1,4 +1,4 @@
-/* Адаптивность для всех устройств с iOS GLASS ЭФФЕКТОМ */
+/* Адаптивность для МАКСИМАЛЬНОЙ ПРОЗРАЧНОСТИ */
 
 /* Мобильная версия - КОМПАКТНЫЙ ИНТЕРФЕЙС */
 @media (max-width: 768px) {
@@ -32,7 +32,7 @@
     .player-track-info {
         flex: 1;
         min-width: 0;
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--glass-secondary);
         backdrop-filter: var(--glass-blur-weak);
         border-radius: 10px;
         padding: 4px 8px;
@@ -448,7 +448,7 @@
     }
 }
 
-/* Планшеты в портретной ориентации (768px - 1023px) - ДЕСКТОПНЫЙ ВИД */
+/* Планшеты в портретной ориентации (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
     .music-player {
         padding: 10px 0;
@@ -500,7 +500,7 @@
     }
 }
 
-/* Планшеты в ландшафтной ориентации (768px - 1023px) - ДЕСКТОПНЫЙ ВИД */
+/* Планшеты в ландшафтной ориентации (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
     .music-player {
         padding: 8px 0;
@@ -520,7 +520,7 @@
     }
 }
 
-/* Ноутбуки (1024px - 1439px) - ДЕСКТОПНЫЙ ВИД */
+/* Ноутбуки (1024px - 1439px) */
 @media (min-width: 1024px) and (max-width: 1439px) {
     .container {
         max-width: 750px;
@@ -550,7 +550,7 @@
     }
 }
 
-/* Большие мониторы (1440px - 1919px) - ДЕСКТОПНЫЙ ВИД */
+/* Большие мониторы (1440px - 1919px) */
 @media (min-width: 1440px) and (max-width: 1919px) {
     .container {
         max-width: 800px;
@@ -572,7 +572,7 @@
     }
 }
 
-/* Очень большие мониторы (1920px+) - ДЕСКТОПНЫЙ ВИД */
+/* Очень большие мониторы (1920px+) */
 @media (min-width: 1920px) {
     .container {
         max-width: 900px;
