@@ -1,4 +1,4 @@
-// Умный музыкальный плеер с ИСПРАВЛЕННЫМ ЗВУКОМ
+// Умный музыкальный плеер с ИСПРАВЛЕННОЙ ГРОМКОСТЬЮ
 const MusicPlayer = {
     audio: null,
     isPlaying: false,
@@ -7,7 +7,7 @@ const MusicPlayer = {
     isPlaylistOpen: false,
     audioInitialized: false,
     isLoading: false,
-    volume: 0.2, // Начинаем с 20% громкости
+    volume: 0.2,
     fadeInterval: null,
     autoPlayEnabled: false,
     isMobile: false,
@@ -210,7 +210,6 @@ const MusicPlayer = {
             volumeSlider.value = this.volume * 100;
             this.updateVolumeSlider(volumeSlider.value);
             
-            // Добавляем обработчик изменения громкости
             volumeSlider.addEventListener('input', (e) => {
                 this.setVolume(e.target.value);
             });
@@ -242,7 +241,7 @@ const MusicPlayer = {
         this.updatePlayerLayout();
     },
 
-    // ПОЛНОСТЬЮ ПЕРЕПИСАННАЯ ФУНКЦИЯ: Переключение звука
+    // ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ФУНКЦИЯ: Переключение звука
     toggleMute() {
         if (!this.audioInitialized) return;
         
@@ -252,7 +251,7 @@ const MusicPlayer = {
             // Сохраняем текущую громкость и выключаем звук
             this.previousVolume = this.audio.volume;
             this.audio.volume = 0;
-            this.updateVolumeIcon('🔇');
+            this.updateVolumeIcon('🔇'); // Перечеркнутый значок
             
             // Обновляем слайдер
             const volumeSlider = document.getElementById('volumeSlider');
@@ -264,7 +263,7 @@ const MusicPlayer = {
             // Включаем звук на предыдущую громкость
             this.audio.volume = this.previousVolume;
             this.volume = this.previousVolume;
-            this.updateVolumeIcon('🔊');
+            this.updateVolumeIcon('🔊'); // Обычный значок
             
             // Обновляем слайдер
             const volumeSlider = document.getElementById('volumeSlider');
@@ -538,7 +537,6 @@ const MusicPlayer = {
     setVolume(volume) {
         const newVolume = volume / 100;
         this.volume = newVolume;
-        this.audio.volume = newVolume;
         
         // Обновляем состояние mute
         if (newVolume > 0) {
@@ -550,6 +548,7 @@ const MusicPlayer = {
             this.updateVolumeIcon('🔇');
         }
         
+        this.audio.volume = newVolume;
         this.updateVolumeSlider(volume);
         console.log(`🔊 Громкость установлена: ${newVolume}`);
     },
@@ -652,6 +651,7 @@ const MusicPlayer = {
         if (!playlistContainer) return;
 
         playlistContainer.style.display = 'block';
+        playlistContainer.removeAttribute('hidden');
         
         if (this.isMobile) {
             playlistContainer.style.transform = 'translateY(0)';
@@ -681,6 +681,7 @@ const MusicPlayer = {
         setTimeout(() => {
             if (!playlistContainer.classList.contains('open')) {
                 playlistContainer.style.display = 'none';
+                playlistContainer.setAttribute('hidden', 'true');
             }
         }, 400);
         
