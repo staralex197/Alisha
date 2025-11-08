@@ -214,6 +214,17 @@ const MusicPlayer = {
         window.addEventListener('resize', () => {
             this.handleResize();
         });
+
+        // Закрытие плейлиста при клике вне его
+        document.addEventListener('click', (e) => {
+            if (this.isPlaylistOpen && 
+                !e.target.closest('.playlist-container') && 
+                !e.target.closest('.playlist-toggle') &&
+                !e.target.closest('.playlist-icon') &&
+                !e.target.closest('.playlist-text')) {
+                this.closePlaylist();
+            }
+        });
     },
 
     handleResize() {
@@ -271,12 +282,6 @@ const MusicPlayer = {
                 this.toggleMute();
             });
         }
-
-        document.addEventListener('click', (e) => {
-            if (this.isPlaylistOpen && !e.target.closest('.music-player') && !e.target.closest('.playlist-container')) {
-                this.closePlaylist();
-            }
-        });
 
         this.updatePlayerLayout();
     },
@@ -596,7 +601,7 @@ const MusicPlayer = {
     updateVolumeSlider(volume) {
         const volumeSlider = document.getElementById('volumeSlider');
         if (volumeSlider) {
-            volumeSlider.style.background = `linear-gradient(90deg, var(--player-accent) ${volume}%, rgba(255, 255, 255, 0.2) ${volume}%)`;
+            volumeSlider.style.background = `linear-gradient(90deg, var(--accent-purple) ${volume}%, rgba(255, 255, 255, 0.2) ${volume}%)`;
         }
     },
 
