@@ -1,4 +1,4 @@
-/* CSS переменные для темной и светлой тем с УЛУЧШЕННЫМ ДИЗАЙНОМ */
+/* CSS переменные для темной и светлой тем с ТОНИРОВАННЫМ СТЕКЛОМ */
 :root[data-theme="dark"] {
     --primary-bg: #0f0f23;
     --secondary-bg: #1a1a2e;
@@ -18,14 +18,15 @@
     --accent-red: #f87171;
     --accent-yellow: #fbbf24;
     
-    --player-bg: rgba(40, 40, 60, 0.15);
+    /* ТОНИРОВАННОЕ СТЕКЛО - темный прозрачный фон */
+    --player-bg: rgba(15, 15, 25, 0.85);
     --player-text: rgba(255, 255, 255, 0.95);
     --player-secondary: rgba(255, 255, 255, 0.7);
     --player-accent: #c084fc;
     
-    --shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.4);
-    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.2);
+    --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.5);
+    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 :root[data-theme="light"] {
@@ -47,14 +48,15 @@
     --accent-red: #dc2626;
     --accent-yellow: #d97706;
     
-    --player-bg: rgba(245, 245, 255, 0.15);
-    --player-text: #1a1a2e;
-    --player-secondary: #4a5568;
-    --player-accent: #7c3aed;
+    /* ТОНИРОВАННОЕ СТЕКЛО - для светлой темы тоже темный прозрачный фон */
+    --player-bg: rgba(20, 20, 35, 0.85);
+    --player-text: rgba(255, 255, 255, 0.95);
+    --player-secondary: rgba(255, 255, 255, 0.7);
+    --player-accent: #8b5cf6;
     
-    --shadow: 0 20px 40px rgba(120, 119, 198, 0.08);
-    --shadow-hover: 0 25px 50px rgba(120, 119, 198, 0.12);
-    --shadow-small: 0 4px 12px rgba(120, 119, 198, 0.05);
+    --shadow: 0 20px 40px rgba(120, 119, 198, 0.15);
+    --shadow-hover: 0 25px 50px rgba(120, 119, 198, 0.2);
+    --shadow-small: 0 4px 12px rgba(120, 119, 198, 0.1);
 }
 
 * {
@@ -204,18 +206,19 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - ОЧЕНЬ ПРОЗРАЧНЫЙ С ЛЕГКИМ ЗАТЕМНЕНИЕМ */
+/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - ТОНИРОВАННОЕ СТЕКЛО */
 .music-player {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     background: var(--player-bg);
-    backdrop-filter: blur(25px) saturate(200%);
-    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(30px) saturate(200%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1000;
     transition: all 0.3s ease;
     padding: 6px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .player-container {
@@ -300,7 +303,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .track-artist {
@@ -309,7 +312,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .player-controls {
@@ -320,7 +323,7 @@ body {
 }
 
 .control-btn {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 50%;
     width: 32px;
@@ -333,41 +336,48 @@ body {
     justify-content: center;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .control-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .play-btn {
     width: 36px;
     height: 36px;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.15);
     font-size: 0.9em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Исправить значок паузы на мобильных */
 .music-player.mobile-layout .play-btn {
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.15) !important;
     font-size: 0.9em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .progress-container {
     flex: 2;
     max-width: 400px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 2px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    backdrop-filter: blur(10px);
 }
 
 .progress-container:hover {
     height: 5px;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .progress-bar-music {
@@ -376,6 +386,7 @@ body {
     width: 0%;
     transition: width 0.1s linear;
     border-radius: 2px;
+    box-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
 }
 
 .player-extra {
@@ -391,6 +402,7 @@ body {
     white-space: nowrap;
     font-weight: 500;
     flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .volume-container {
@@ -405,6 +417,7 @@ body {
     transition: transform 0.2s ease;
     font-size: 1em;
     min-width: 24px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .volume-icon:hover {
@@ -413,16 +426,18 @@ body {
 
 .volume-slider {
     width: 70px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     height: 4px;
     outline: none;
     -webkit-appearance: none;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .volume-slider:hover {
     height: 5px;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -432,18 +447,20 @@ body {
     border-radius: 50%;
     background: var(--player-accent);
     cursor: pointer;
-    box-shadow: var(--shadow-small);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .volume-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+    box-shadow: 0 0 15px var(--player-accent);
 }
 
 /* Кнопка плейлиста */
 .playlist-toggle {
     background: rgba(255, 255, 255, 0.1);
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     padding: 6px 12px;
     font-size: 0.75em;
@@ -457,12 +474,14 @@ body {
     align-items: center;
     gap: 5px;
     flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-toggle:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .playlist-icon {
@@ -473,17 +492,18 @@ body {
     font-weight: 500;
 }
 
-/* ПЛЕЙЛИСТ - ТАКОГО ЖЕ ЦВЕТА КАК ПЛЕЕР */
+/* ПЛЕЙЛИСТ - ТОНИРОВАННОЕ СТЕКЛО ТАКОГО ЖЕ ЦВЕТА */
 .playlist-container {
     max-height: 0;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--player-bg);
-    backdrop-filter: blur(30px) saturate(200%);
+    backdrop-filter: blur(35px) saturate(200%);
     border-radius: 0 0 15px 15px;
     display: none;
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .playlist-container.open {
@@ -506,20 +526,23 @@ body {
     transition: all 0.3s ease;
     margin-bottom: 4px;
     color: var(--player-text);
-    border: 1px solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
 .playlist-item:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: var(--glass-border);
+    border-color: rgba(255, 255, 255, 0.1);
     transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-item.active {
     background: rgba(255, 255, 255, 0.15);
     border-left: 3px solid var(--player-accent);
     box-shadow: var(--shadow);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .playlist-item-icon {
@@ -528,6 +551,7 @@ body {
     opacity: 0.9;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-item:hover .playlist-item-icon {
@@ -547,6 +571,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-item-artist {
@@ -555,6 +580,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .playlist-item-duration {
@@ -563,6 +589,7 @@ body {
     margin-left: 12px;
     font-weight: 500;
     flex-shrink: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* ОСНОВНОЙ КОНТЕЙНЕР */
