@@ -1,14 +1,13 @@
-// Анимация сердечек с правильным z-index и светлой темой
+// Анимация сердечек с увеличенным количеством
 const HeartAnimation = {
     heartsContainer: null,
     animationInterval: null,
     isRunning: false,
     heartCount: 0,
-    maxHearts: 15, // Меньше сердечек
+    maxHearts: 25, // УВЕЛИЧЕНО количество сердечек
     isMobile: false,
     resizeTimeout: null,
 
-    // Более светлые сердечки для светлой темы
     heartTypes: [
         '💖', '💗', '💓', '💘', '💝', '💕', '💞', '❤️', '🧡', '💛', '💚', '💙', '💜'
     ],
@@ -36,7 +35,7 @@ const HeartAnimation = {
 
     detectDeviceType() {
         this.isMobile = window.innerWidth <= 768;
-        this.maxHearts = this.isMobile ? 8 : 15; // Еще меньше сердечек на мобильных
+        this.maxHearts = this.isMobile ? 15 : 25; // УВЕЛИЧЕНО на мобильных
         console.log(`💖 Сердечки: ${this.isMobile ? 'Мобильный режим' : 'Десктоп режим'}`);
     },
 
@@ -50,20 +49,17 @@ const HeartAnimation = {
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: -1; /* Сердечки ПОД всем контентом */
+            z-index: -1;
             overflow: hidden;
         `;
         document.body.appendChild(this.heartsContainer);
     },
 
-    // Настройка слушателей событий
     setupEventListeners() {
-        // Оптимизированный ресайз с debounce
         window.addEventListener('resize', () => {
             this.handleResize();
         });
 
-        // Остановка анимации при скрытии страницы
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 this.stopHearts();
@@ -73,11 +69,9 @@ const HeartAnimation = {
         });
     },
 
-    // Обработка ресайза с оптимизацией
     handleResize() {
         const now = Date.now();
         
-        // Очищаем предыдущий таймаут
         if (this.resizeTimeout) {
             clearTimeout(this.resizeTimeout);
         }
@@ -92,7 +86,6 @@ const HeartAnimation = {
         }, 250);
     },
 
-    // Добавляем CSS стили для анимаций
     addHeartStyles() {
         if (document.getElementById('heart-styles')) return;
 
@@ -102,20 +95,19 @@ const HeartAnimation = {
                     position: absolute;
                     pointer-events: none;
                     user-select: none;
-                    z-index: -1; /* Сердечки под всем контентом */
+                    z-index: -1;
                     animation-timing-function: ease-in-out;
                     will-change: transform, opacity;
                     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
                 }
 
-                /* СВЕТЛЫЕ сердечки для светлой темы */
                 [data-theme="light"] .heart {
-                    opacity: 0.15; /* Еще более прозрачные */
+                    opacity: 0.2; /* УВЕЛИЧЕНА прозрачность */
                     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));
                 }
 
                 [data-theme="dark"] .heart {
-                    opacity: 0.25;
+                    opacity: 0.3; /* УВЕЛИЧЕНА прозрачность */
                     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
                 }
 
@@ -150,7 +142,7 @@ const HeartAnimation = {
                     }
                     50% {
                         transform: translateY(-200px) rotate(180deg) scale(0.9);
-                        opacity: 0.2;
+                        opacity: 0.3; /* УВЕЛИЧЕНА видимость */
                     }
                     100% {
                         transform: translateY(-400px) rotate(360deg) scale(0.5);
@@ -176,7 +168,7 @@ const HeartAnimation = {
                     }
                     50% {
                         transform: translateY(-250px);
-                        opacity: 0.2;
+                        opacity: 0.3; /* УВЕЛИЧЕНА видимость */
                     }
                     100% {
                         transform: translateY(-400px);
@@ -195,10 +187,9 @@ const HeartAnimation = {
                     }
                 }
 
-                /* Адаптивность для мобильных */
                 @media (max-width: 768px) {
                     .heart {
-                        font-size: 12px !important;
+                        font-size: 14px !important; /* УВЕЛИЧЕН размер на мобильных */
                     }
                     
                     @keyframes floatUp {
@@ -226,8 +217,8 @@ const HeartAnimation = {
         this.isRunning = true;
         this.clearHearts();
         
-        const creationInterval = this.isMobile ? 2000 : 1500;
-        const heartsPerInterval = this.isMobile ? 1 : 1;
+        const creationInterval = this.isMobile ? 1500 : 1000; // УВЕЛИЧЕНА частота создания
+        const heartsPerInterval = this.isMobile ? 2 : 3; // УВЕЛИЧЕНО количество за раз
         
         this.animationInterval = setInterval(() => {
             if (this.heartCount < this.maxHearts) {
@@ -247,7 +238,6 @@ const HeartAnimation = {
         console.log('💖 Анимация сердечек остановлена');
     },
 
-    // Создание группы случайных сердечек
     createRandomHearts(count) {
         for (let i = 0; i < count; i++) {
             requestAnimationFrame(() => {
@@ -258,48 +248,40 @@ const HeartAnimation = {
         }
     },
 
-    // Создание одного сердечка - генерируем по всей площади экрана
     createHeart() {
         if (!this.heartsContainer || this.heartCount >= this.maxHearts) return;
 
         const heart = document.createElement('div');
         heart.className = 'heart';
         
-        // Случайное сердечко
         const randomHeart = this.heartTypes[Math.floor(Math.random() * this.heartTypes.length)];
         heart.innerHTML = randomHeart;
         
-        // Случайная позиция по ВСЕЙ ПЛОЩАДИ ЭКРАНА
         const x = Math.random() * window.innerWidth;
-        const y = window.innerHeight + 50; // Начинаем ниже экрана
+        const y = window.innerHeight + 50;
         
         heart.style.left = x + 'px';
         heart.style.top = y + 'px';
         
-        // Меньший размер
-        const baseSize = this.isMobile ? 10 : 12;
-        const size = baseSize + Math.random() * 8;
+        const baseSize = this.isMobile ? 14 : 16; // УВЕЛИЧЕН размер
+        const size = baseSize + Math.random() * 10;
         heart.style.fontSize = size + 'px';
         
-        // Случайная анимация
         const randomAnim = this.animationTypes[Math.floor(Math.random() * this.animationTypes.length)];
         heart.classList.add(randomAnim);
         
-        // Случайные параметры анимации
-        const baseDuration = this.isMobile ? 5 : 7;
-        const duration = baseDuration + Math.random() * 5;
+        const baseDuration = this.isMobile ? 6 : 8; // УВЕЛИЧЕНА длительность
+        const duration = baseDuration + Math.random() * 6;
         heart.style.animationDuration = duration + 's';
         
-        const delay = Math.random() * 2;
+        const delay = Math.random() * 3; // УВЕЛИЧЕНА задержка
         heart.style.animationDelay = delay + 's';
         
-        // Еще более прозрачные сердечки
         const theme = document.documentElement.getAttribute('data-theme');
-        heart.style.opacity = theme === 'light' ? '0.08' : '0.12';
+        heart.style.opacity = theme === 'light' ? '0.15' : '0.25';
 
         this.heartCount++;
         
-        // Удаляем после анимации
         const removeHeart = () => {
             if (heart.parentNode) {
                 heart.parentNode.removeChild(heart);
@@ -332,9 +314,8 @@ const HeartAnimation = {
         }
     },
 
-    // Плавное изменение интенсивности
     setIntensity(intensity) {
-        this.maxHearts = Math.max(8, Math.min(30, intensity));
+        this.maxHearts = Math.max(15, Math.min(40, intensity)); // УВЕЛИЧЕН диапазон
         
         if (this.isRunning) {
             this.stopHearts();
@@ -342,7 +323,6 @@ const HeartAnimation = {
         }
     },
 
-    // Получение статистики
     getStats() {
         return {
             isRunning: this.isRunning,
@@ -352,7 +332,6 @@ const HeartAnimation = {
         };
     },
 
-    // Перезапуск анимации
     restart() {
         this.stopHearts();
         this.clearHearts();
@@ -360,7 +339,6 @@ const HeartAnimation = {
     }
 };
 
-// Оптимизированный слушатель ресайза
 window.addEventListener('resize', () => {
     clearTimeout(HeartAnimation.resizeTimeout);
     HeartAnimation.resizeTimeout = setTimeout(() => {
@@ -368,14 +346,11 @@ window.addEventListener('resize', () => {
     }, 250);
 });
 
-// Автоматическая инициализация
 document.addEventListener('DOMContentLoaded', () => {
-    // Задержка для параллельной загрузки ресурсов
     setTimeout(() => {
         HeartAnimation.init();
         HeartAnimation.startHearts();
     }, 1000);
 });
 
-// Глобальные методы для отладки
 window.HeartAnimation = HeartAnimation;
