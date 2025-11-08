@@ -1,62 +1,80 @@
-/* CSS переменные для темной и светлой тем с ТОНИРОВАННЫМ СТЕКЛОМ */
+/* CSS переменные для точного iOS glass эффекта */
 :root[data-theme="dark"] {
-    --primary-bg: #0f0f23;
-    --secondary-bg: #1a1a2e;
-    --surface-bg: rgba(45, 45, 65, 0.7);
-    --container-bg: rgba(45, 45, 65, 0.6);
-    --glass-effect: rgba(30, 30, 46, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --primary-bg: #000000;
+    --secondary-bg: #1c1c1e;
+    --surface-bg: rgba(28, 28, 30, 0.8);
     
-    --text-primary: #e2e8f0;
-    --text-secondary: #a0aec0;
-    --text-muted: #718096;
+    /* iOS Dark Glass Colors */
+    --glass-primary: rgba(44, 44, 46, 0.8);
+    --glass-secondary: rgba(58, 58, 60, 0.65);
+    --glass-tertiary: rgba(72, 72, 74, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.05);
     
-    --accent-purple: #c084fc;
-    --accent-pink: #f472b6;
-    --accent-blue: #60a5fa;
-    --accent-green: #34d399;
-    --accent-red: #f87171;
-    --accent-yellow: #fbbf24;
+    /* iOS Glass Effects */
+    --glass-blur-strong: blur(20px) saturate(200%);
+    --glass-blur-medium: blur(15px) saturate(180%);
+    --glass-blur-weak: blur(10px) saturate(160%);
     
-    /* ТОНИРОВАННОЕ СТЕКЛО - темный прозрачный фон */
-    --player-bg: rgba(15, 15, 25, 0.2);
-    --player-text: rgba(255, 255, 255, 0.95);
-    --player-secondary: rgba(255, 255, 255, 0.7);
-    --player-accent: #c084fc;
+    --glass-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     
-    --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.5);
-    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --glass-shadow-hover: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    
+    --text-primary: #ffffff;
+    --text-secondary: #ebebf5;
+    --text-muted: #98989f;
+    
+    --accent-purple: #bf5af2;
+    --accent-pink: #ff375f;
+    --accent-blue: #0a84ff;
+    --accent-green: #30d158;
+    --accent-red: #ff453a;
+    --accent-yellow: #ffd60a;
 }
 
 :root[data-theme="light"] {
-    --primary-bg: #ffffff;
-    --secondary-bg: #f8faff;
-    --surface-bg: rgba(255, 255, 255, 0.9);
-    --container-bg: rgba(255, 255, 255, 0.85);
-    --glass-effect: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(120, 119, 198, 0.15);
+    --primary-bg: #f2f2f7;
+    --secondary-bg: #ffffff;
+    --surface-bg: rgba(255, 255, 255, 0.8);
     
-    --text-primary: #1a1a2e;
-    --text-secondary: #4a5568;
-    --text-muted: #718096;
+    /* iOS Light Glass Colors */
+    --glass-primary: rgba(255, 255, 255, 0.8);
+    --glass-secondary: rgba(255, 255, 255, 0.7);
+    --glass-tertiary: rgba(255, 255, 255, 0.6);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.4);
     
-    --accent-purple: #7c3aed;
-    --accent-pink: #db2777;
-    --accent-blue: #2563eb;
-    --accent-green: #059669;
-    --accent-red: #dc2626;
-    --accent-yellow: #d97706;
+    /* iOS Glass Effects */
+    --glass-blur-strong: blur(25px) saturate(180%);
+    --glass-blur-medium: blur(20px) saturate(160%);
+    --glass-blur-weak: blur(12px) saturate(140%);
     
-    /* ТОНИРОВАННОЕ СТЕКЛО - для светлой темы тоже темный прозрачный фон */
-    --player-bg: rgba(20, 20, 35, 0.2);
-    --player-text: rgba(255, 255, 255, 0.95);
-    --player-secondary: rgba(255, 255, 255, 0.7);
-    --player-accent: #8b5cf6;
+    --glass-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
     
-    --shadow: 0 20px 40px rgba(120, 119, 198, 0.15);
-    --shadow-hover: 0 25px 50px rgba(120, 119, 198, 0.2);
-    --shadow-small: 0 4px 12px rgba(120, 119, 198, 0.1);
+    --glass-shadow-hover: 
+        0 12px 40px rgba(0, 0, 0, 0.12),
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    
+    --text-primary: #000000;
+    --text-secondary: #3c3c43;
+    --text-muted: #8e8e93;
+    
+    --accent-purple: #5e5ce6;
+    --accent-pink: #ff2d55;
+    --accent-blue: #007aff;
+    --accent-green: #34c759;
+    --accent-red: #ff3b30;
+    --accent-yellow: #ffcc00;
 }
 
 * {
@@ -66,19 +84,34 @@
 }
 
 body {
-    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--primary-bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
     margin: 0;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     overflow-x: hidden;
     line-height: 1.6;
     color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
-/* УЛУЧШЕННЫЙ фон для светлой темы */
+/* iOS Background Textures */
+:root[data-theme="dark"] body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(44, 44, 46, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(58, 58, 60, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(72, 72, 74, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -2;
+}
+
 :root[data-theme="light"] body::before {
     content: '';
     position: fixed;
@@ -87,47 +120,54 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 10% 20%, rgba(120, 119, 198, 0.03) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(255, 119, 198, 0.03) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(120, 219, 255, 0.02) 0%, transparent 50%),
-        linear-gradient(135deg, #ffffff 0%, #f8faff 50%, #f5f7ff 100%);
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
     pointer-events: none;
-    z-index: -1;
+    z-index: -2;
 }
 
-/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
+/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ В СТИЛЕ iOS */
 .theme-toggle {
     position: fixed;
     top: 80px;
     right: 20px;
     z-index: 1001;
-    background: var(--surface-bg);
-    backdrop-filter: blur(20px) saturate(180%);
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
     border: 1px solid var(--glass-border);
     border-radius: 50px;
-    padding: 10px 16px;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--text-primary);
     font-size: 0.9em;
-    font-weight: 500;
-    box-shadow: var(--shadow-small);
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .theme-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--glass-shadow-hover);
+    background: var(--glass-secondary);
 }
 
 .theme-icon {
     font-size: 1.1em;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: scale(1.1);
 }
 
 .theme-text {
     white-space: nowrap;
+    font-weight: 600;
 }
 
 /* ЭКРАН ЗАГРУЗКИ */
@@ -137,7 +177,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+    background: var(--primary-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -160,8 +200,8 @@ body {
 .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 4px solid var(--text-muted);
-    border-left: 4px solid var(--accent-purple);
+    border: 3px solid var(--text-muted);
+    border-left: 3px solid var(--accent-purple);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 30px;
@@ -171,6 +211,7 @@ body {
     font-size: clamp(1.8em, 5vw, 2.2em);
     margin-bottom: 15px;
     color: var(--text-primary);
+    font-weight: 700;
 }
 
 .loading-content p {
@@ -183,9 +224,10 @@ body {
 .loading-progress {
     width: 100%;
     height: 6px;
-    background: var(--text-muted);
+    background: var(--glass-tertiary);
     border-radius: 3px;
     overflow: hidden;
+    backdrop-filter: var(--glass-blur-weak);
 }
 
 .loading-progress-bar {
@@ -196,29 +238,26 @@ body {
     transition: width 0.3s ease;
 }
 
-/* Осветлить полосу загрузки в светлой теме */
-:root[data-theme="light"] .loading-progress-bar {
-    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
-}
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - ТОНИРОВАННОЕ СТЕКЛО */
+/* МУЗЫКАЛЬНЫЙ ПЛЕЕР - ТОЧНЫЙ iOS STYLE */
 .music-player {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: var(--player-bg);
-    backdrop-filter: blur(30px) saturate(200%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-strong);
+    border-bottom: 1px solid var(--glass-border);
     z-index: 1000;
-    transition: all 0.3s ease;
-    padding: 6px 0;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 12px 0;
+    box-shadow: var(--glass-shadow);
+    border-radius: 0 0 25px 25px;
+    margin: 0;
 }
 
 .player-container {
@@ -237,8 +276,8 @@ body {
 
 /* Мобильная версия плеера */
 .music-player.mobile-layout {
-    padding: 4px 0;
-    height: 50px;
+    padding: 10px 0;
+    border-radius: 0 0 20px 20px;
 }
 
 .music-player.mobile-layout .player-main {
@@ -278,17 +317,19 @@ body {
 }
 
 .track-cover {
-    width: 35px;
-    height: 35px;
-    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9em;
+    font-size: 1em;
     color: white;
-    box-shadow: var(--shadow-small);
+    box-shadow: var(--glass-shadow);
     flex-shrink: 0;
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
 }
 
 .track-details {
@@ -297,22 +338,20 @@ body {
 }
 
 .track-title {
-    font-size: 0.85em;
-    color: var(--player-text);
+    font-size: 0.9em;
+    color: var(--text-primary);
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .track-artist {
-    font-size: 0.75em;
-    color: var(--player-secondary);
+    font-size: 0.8em;
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .player-controls {
@@ -323,70 +362,75 @@ body {
 }
 
 .control-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    font-size: 0.85em;
+    width: 36px;
+    height: 36px;
+    font-size: 0.9em;
     cursor: pointer;
-    color: var(--player-text);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--glass-shadow);
 }
 
 .control-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: var(--glass-tertiary);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--glass-shadow-hover);
 }
 
 .play-btn {
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.15);
-    font-size: 0.9em;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Исправить значок паузы на мобильных */
-.music-player.mobile-layout .play-btn {
-    background: rgba(255, 255, 255, 0.15) !important;
-    font-size: 0.9em;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 40px;
+    height: 40px;
+    background: var(--glass-primary);
+    font-size: 1em;
+    border: 1px solid var(--glass-border);
 }
 
 .progress-container {
     flex: 2;
     max-width: 400px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 2px;
+    height: 5px;
+    background: var(--glass-tertiary);
+    border-radius: 3px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
     flex-shrink: 0;
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
 }
 
 .progress-container:hover {
-    height: 5px;
-    background: rgba(255, 255, 255, 0.2);
+    height: 6px;
+    background: var(--glass-secondary);
 }
 
 .progress-bar-music {
     height: 100%;
-    background: linear-gradient(90deg, var(--player-accent), var(--accent-blue));
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
     width: 0%;
     transition: width 0.1s linear;
-    border-radius: 2px;
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+    border-radius: 3px;
+    position: relative;
+}
+
+.progress-bar-music::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight));
+    border-radius: 0 3px 3px 0;
 }
 
 .player-extra {
@@ -397,12 +441,11 @@ body {
 }
 
 .time-display {
-    font-size: 0.75em;
-    color: var(--player-secondary);
+    font-size: 0.8em;
+    color: var(--text-secondary);
     white-space: nowrap;
     font-weight: 500;
     flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .volume-container {
@@ -414,74 +457,76 @@ body {
 
 .volume-icon {
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.3s ease;
     font-size: 1em;
     min-width: 24px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 4px;
 }
 
 .volume-icon:hover {
     transform: scale(1.1);
+    background: var(--glass-highlight);
 }
 
 .volume-slider {
     width: 70px;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--glass-tertiary);
     border-radius: 10px;
     height: 4px;
     outline: none;
     -webkit-appearance: none;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
 }
 
 .volume-slider:hover {
     height: 5px;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--glass-secondary);
 }
 
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background: var(--player-accent);
+    background: var(--accent-purple);
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--glass-shadow);
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid white;
 }
 
 .volume-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
-    box-shadow: 0 0 15px var(--player-accent);
+    box-shadow: 0 0 15px var(--accent-purple);
 }
 
 /* Кнопка плейлиста */
 .playlist-toggle {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.75em;
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 0.8em;
     cursor: pointer;
-    color: var(--player-text);
-    transition: all 0.3s ease;
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    font-weight: 500;
-    box-shadow: var(--shadow-small);
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     flex-shrink: 0;
-    backdrop-filter: blur(10px);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    background: var(--glass-tertiary);
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-hover);
 }
 
 .playlist-icon {
@@ -489,60 +534,61 @@ body {
 }
 
 .playlist-text {
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* ПЛЕЙЛИСТ - ТОНИРОВАННОЕ СТЕКЛО ТАКОГО ЖЕ ЦВЕТА */
+/* ПЛЕЙЛИСТ - iOS STYLE */
 .playlist-container {
     max-height: 0;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--player-bg);
-    backdrop-filter: blur(35px) saturate(200%);
-    border-radius: 0 0 15px 15px;
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-strong);
+    border-radius: 0 0 25px 25px;
     display: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
     border-top: none;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--glass-shadow);
+    margin: 0;
 }
 
 .playlist-container.open {
-    max-height: min(300px, 50vh);
+    max-height: min(400px, 60vh);
     display: block;
 }
 
 .playlist {
-    padding: 15px 20px;
-    max-height: 280px;
+    padding: 20px;
+    max-height: 350px;
     overflow-y: auto;
 }
 
 .playlist-item {
     display: flex;
     align-items: center;
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 4px;
-    color: var(--player-text);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 6px;
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-weak);
 }
 
 .playlist-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--glass-tertiary);
+    border-color: var(--glass-highlight);
     transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--glass-shadow);
 }
 
 .playlist-item.active {
-    background: rgba(255, 255, 255, 0.15);
-    border-left: 3px solid var(--player-accent);
-    box-shadow: var(--shadow);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--glass-primary);
+    border-left: 4px solid var(--accent-purple);
+    box-shadow: var(--glass-shadow);
+    border-color: var(--glass-highlight);
 }
 
 .playlist-item-icon {
@@ -551,7 +597,6 @@ body {
     opacity: 0.9;
     transition: all 0.3s ease;
     flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-item:hover .playlist-item-icon {
@@ -566,52 +611,49 @@ body {
 .playlist-item-title {
     font-size: 0.85em;
     font-weight: 600;
-    color: var(--player-text);
+    color: var(--text-primary);
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .playlist-item-artist {
     font-size: 0.75em;
-    color: var(--player-secondary);
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .playlist-item-duration {
     font-size: 0.75em;
-    color: var(--player-secondary);
+    color: var(--text-secondary);
     margin-left: 12px;
     font-weight: 500;
     flex-shrink: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* ОСНОВНОЙ КОНТЕЙНЕР */
 .container {
-    background: var(--container-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 20px;
-    padding: clamp(15px, 3vw, 30px);
-    box-shadow: var(--shadow);
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    border-radius: 25px;
+    padding: clamp(20px, 3vw, 35px);
+    box-shadow: var(--glass-shadow);
     max-width: min(800px, 90vw);
     width: 90%;
     position: relative;
     min-height: min(400px, 70vh);
-    margin: clamp(60px, 8vh, 100px) auto 30px;
-    transition: all 0.3s ease;
+    margin: clamp(80px, 8vh, 120px) auto 30px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--glass-border);
     overflow: hidden;
 }
 
 .screen {
     display: none;
-    animation: fadeInUp 0.6s ease;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .screen.active {
@@ -626,7 +668,6 @@ body {
     margin: 0 auto;
 }
 
-/* Осветлить цветной текст в светлой теме */
 h1 {
     color: var(--text-primary);
     margin-bottom: clamp(15px, 2vh, 20px);
@@ -637,14 +678,6 @@ h1 {
     background-clip: text;
     font-weight: 700;
     line-height: 1.2;
-}
-
-/* Еще более светлый градиент для светлой темы */
-:root[data-theme="light"] h1 {
-    background: linear-gradient(45deg, #ec4899, #8b5cf6, #3b82f6, #10b981);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .question-text {
@@ -666,14 +699,15 @@ h1 {
     max-height: clamp(80px, 15vh, 120px);
     padding: clamp(12px, 2vw, 16px);
     border: 2px solid var(--glass-border);
-    border-radius: 15px;
+    border-radius: 18px;
     font-size: clamp(0.9em, 1.8vw, 1em);
     font-family: inherit;
     resize: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 15px;
-    background: var(--glass-effect);
-    box-shadow: var(--shadow-small);
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-weak);
+    box-shadow: var(--glass-shadow);
     line-height: 1.5;
     color: var(--text-primary);
     overflow-y: auto;
@@ -682,8 +716,11 @@ h1 {
 .user-input:focus {
     outline: none;
     border-color: var(--accent-purple);
-    box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.1), var(--shadow);
+    box-shadow: 
+        0 0 0 3px rgba(192, 132, 252, 0.1),
+        var(--glass-shadow);
     transform: translateY(-2px);
+    background: var(--glass-primary);
 }
 
 .user-input::placeholder {
@@ -702,19 +739,20 @@ h1 {
 .btn {
     padding: clamp(10px, 1.8vw, 12px) clamp(16px, 2.5vw, 24px);
     border: none;
-    border-radius: 40px;
+    border-radius: 50px;
     font-size: clamp(0.9em, 1.8vw, 1em);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-width: min(160px, 100%);
     font-weight: 600;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: var(--glass-blur-medium);
     flex: 1;
     max-width: 280px;
     color: white;
+    border: 1px solid var(--glass-border);
 }
 
 .btn::before {
@@ -724,7 +762,7 @@ h1 {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
     transition: left 0.5s ease;
 }
 
@@ -734,28 +772,25 @@ h1 {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-    border: 1px solid var(--glass-border);
 }
 
 .btn-secondary {
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-    border: 1px solid var(--glass-border);
 }
 
 .btn-success {
     background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-    border: 1px solid var(--glass-border);
 }
 
 .btn-outline {
-    background: transparent;
+    background: var(--glass-secondary);
     border: 2px solid var(--accent-purple);
     color: var(--accent-purple);
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+    box-shadow: var(--glass-shadow-hover);
 }
 
 .btn:active {
@@ -779,17 +814,17 @@ h1 {
 
 /* ОКОШКО ФОРМУЛИРОВКИ */
 .formulation-section {
-    background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(96, 165, 250, 0.1));
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
     color: var(--text-primary);
     padding: clamp(15px, 2.5vw, 20px);
-    border-radius: 15px;
+    border-radius: 18px;
     margin: clamp(12px, 1.5vh, 15px) 0;
     text-align: left;
     display: none;
-    animation: slideInUp 0.5s ease;
-    box-shadow: var(--shadow);
+    animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--glass-shadow);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
     max-height: min(150px, 25vh);
     overflow: hidden;
 }
@@ -804,22 +839,17 @@ h1 {
 
 /* Стихотворение */
 .poem-container {
-    background: var(--surface-bg);
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
     color: var(--text-primary);
     padding: clamp(15px, 2.5vw, 25px);
-    border-radius: 15px;
+    border-radius: 18px;
     margin: clamp(15px, 2vh, 20px) 0;
     text-align: center;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
     overflow: hidden;
     max-height: none;
-}
-
-/* Светлый фон стиха в светлой теме */
-:root[data-theme="light"] .poem-container {
-    background: rgba(255, 255, 255, 0.95);
 }
 
 .poem-title {
@@ -849,7 +879,7 @@ h1 {
     color: var(--accent-blue);
 }
 
-/* ПРОГРЕСС НАВИГАЦИЯ - ВЫРОВНЕННЫЕ КНОПКИ */
+/* ПРОГРЕСС НАВИГАЦИЯ */
 .progress-navigation {
     display: flex;
     align-items: center;
@@ -887,7 +917,7 @@ h1 {
     border-radius: 50%;
     background: var(--text-muted);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid transparent;
     flex-shrink: 0;
 }
@@ -913,25 +943,25 @@ h1 {
     flex-shrink: 0;
 }
 
-/* ВЫРОВНЕННЫЕ КНОПКИ НАВИГАЦИИ */
 .nav-btn {
     padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2.5vw, 20px);
     border: none;
     border-radius: 25px;
     font-size: clamp(0.85em, 1.8vw, 0.95em);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
     min-width: min(100px, 100%);
-    box-shadow: var(--shadow-small);
-    backdrop-filter: blur(10px);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur-medium);
     flex: 1;
     color: white;
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border: 1px solid var(--glass-border);
 }
 
 .nav-btn.btn-outline {
-    background: transparent;
+    background: var(--glass-secondary);
     border: 2px solid var(--accent-purple);
     color: var(--accent-purple);
 }
@@ -944,7 +974,7 @@ h1 {
 
 .nav-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow-hover);
 }
 
 .suggestion-buttons {
@@ -957,21 +987,22 @@ h1 {
 
 .suggestion-btn {
     padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 12px);
-    background: rgba(192, 132, 252, 0.1);
-    border: 1px solid rgba(192, 132, 252, 0.3);
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
     border-radius: 15px;
     color: var(--accent-purple);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: clamp(0.8em, 1.6vw, 0.85em);
     font-weight: 500;
     flex-shrink: 0;
 }
 
 .suggestion-btn:hover {
-    background: rgba(192, 132, 252, 0.2);
+    background: var(--glass-tertiary);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(192, 132, 252, 0.2);
+    box-shadow: var(--glass-shadow);
 }
 
 /* АНИМАЦИИ */
@@ -1010,16 +1041,16 @@ h1 {
 
 /* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ */
 .poem-card {
-    background: var(--surface-bg);
-    border-radius: 15px;
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    border-radius: 18px;
     padding: clamp(15px, 2.5vw, 25px);
     margin: clamp(12px, 1.5vh, 15px) 0;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
     border: 1px solid var(--glass-border);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
 }
 
 .poem-card::before {
@@ -1034,7 +1065,7 @@ h1 {
 
 .poem-card:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
+    box-shadow: var(--glass-shadow-hover);
 }
 
 .poem-meta {
@@ -1043,7 +1074,7 @@ h1 {
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(192, 132, 252, 0.1);
+    border-bottom: 1px solid var(--glass-border);
     font-size: 0.85em;
     color: var(--text-secondary);
     font-weight: 500;
@@ -1069,8 +1100,8 @@ h1 {
     white-space: pre-line;
     font-weight: 500;
     padding: 12px;
-    border-radius: 8px;
-    background: rgba(17, 17, 27, 0.4);
+    border-radius: 12px;
+    background: var(--glass-secondary);
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
@@ -1094,15 +1125,17 @@ h1 {
     top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px 16px;
+    padding: 12px 20px;
     background: var(--accent-purple);
     color: white;
-    border-radius: 20px;
+    border-radius: 25px;
     z-index: 10000;
     animation: fadeInOut 3s ease-in-out;
-    font-weight: 500;
-    box-shadow: var(--shadow);
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
     font-size: 0.9em;
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
 }
 
 .temp-message-warning {
@@ -1119,34 +1152,35 @@ h1 {
 /* Адаптивность для очень маленьких экранов */
 @media (max-width: 480px) {
     .music-player {
-        padding: 3px 0;
+        padding: 8px 0;
+        border-radius: 0 0 20px 20px;
     }
     
     .player-container {
-        padding: 0 10px;
+        padding: 0 15px;
     }
     
     .track-cover {
-        width: 25px;
-        height: 25px;
+        width: 32px;
+        height: 32px;
     }
     
     .track-title {
-        font-size: 0.75em;
+        font-size: 0.8em;
     }
     
     .track-artist {
-        font-size: 0.7em;
+        font-size: 0.75em;
     }
     
     .control-btn {
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
     }
     
     .play-btn {
-        width: 30px;
-        height: 30px;
+        width: 36px;
+        height: 36px;
     }
     
     .volume-container {
@@ -1156,7 +1190,7 @@ h1 {
     }
     
     .volume-slider {
-        width: 40px;
+        width: 50px;
     }
     
     .playlist-toggle .playlist-text {
@@ -1165,8 +1199,8 @@ h1 {
     
     .theme-toggle {
         top: 60px;
-        right: 10px;
-        padding: 6px 10px;
+        right: 15px;
+        padding: 10px 15px;
     }
     
     .theme-text {
@@ -1181,7 +1215,7 @@ h1 {
     }
     
     .music-player .progress-container {
-        max-width: 200px;
+        max-width: 250px;
     }
 }
 
@@ -1210,5 +1244,13 @@ h1 {
     
     .user-input {
         font-size: 16px;
+    }
+}
+
+/* Поддержка устройств без backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+    .music-player, .container, .theme-toggle, .poem-card,
+    .playlist-container, .btn, .control-btn, .playlist-toggle {
+        background: var(--surface-bg) !important;
     }
 }
