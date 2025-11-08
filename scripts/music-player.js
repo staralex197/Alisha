@@ -1,4 +1,4 @@
-// Умный музыкальный плеер с ИСПРАВЛЕННОЙ ГРОМКОСТЬЮ
+// Умный музыкальный плеер с ИСПРАВЛЕННОЙ ГРОМКОСТЬЮ и ПЛЕЙЛИСТОМ
 const MusicPlayer = {
     audio: null,
     isPlaying: false,
@@ -14,11 +14,21 @@ const MusicPlayer = {
     isMuted: false,
     previousVolume: 0.2,
     loadedTracks: new Set(),
+    initialized: false,
 
     tracks: [],
 
     async init() {
+        // Защита от множественной инициализации
+        if (this.initialized) {
+            console.log('⚠️ Плеер уже инициализирован');
+            return;
+        }
+        
         try {
+            this.initialized = true;
+            console.log('🎵 Инициализируем музыкальный плеер...');
+            
             this.detectDeviceType();
             this.audio = new Audio();
             this.audio.volume = this.volume;
@@ -31,7 +41,7 @@ const MusicPlayer = {
             this.initializeUI();
             
             this.audioInitialized = true;
-            console.log('✅ Музыкальный плеер инициализирован');
+            console.log('✅ Музыкальный плеер успешно инициализирован');
             
             setTimeout(() => {
                 this.autoPlayWithFade();
@@ -39,6 +49,7 @@ const MusicPlayer = {
             
         } catch (error) {
             console.error('❌ Ошибка инициализации плеера:', error);
+            this.initialized = false;
         }
     },
 
@@ -56,16 +67,22 @@ const MusicPlayer = {
                 'PHARAOH_Caxttx_-_Bojjsbjend_64493563.mp3'
             ];
 
+            // Очищаем предыдущие данные
             this.tracks = [];
             this.loadedTracks.clear();
             
+            console.log('🎵 Начинаем загрузку треков...');
+            
             for (const filename of trackFiles) {
-                if (this.loadedTracks.has(filename)) {
+                // Проверяем дубликаты более тщательно
+                const normalizedFilename = filename.toLowerCase().trim();
+                
+                if (this.loadedTracks.has(normalizedFilename)) {
                     console.log(`⚠️ Пропускаем дубликат: ${filename}`);
                     continue;
                 }
                 
-                this.loadedTracks.add(filename);
+                this.loadedTracks.add(normalizedFilename);
                 
                 const track = {
                     name: this.formatTrackName(filename),
@@ -77,8 +94,10 @@ const MusicPlayer = {
                 
                 try {
                     await this.loadTrackDuration(track);
+                    console.log(`✅ Загружен: ${track.name} - ${track.artist}`);
                 } catch (e) {
-                    console.warn(`Не удалось загрузить длительность для ${filename}`);
+                    console.warn(`⚠️ Не удалось загрузить длительность для ${filename}:`, e);
+                    track.duration = '3:00';
                 }
                 
                 this.tracks.push(track);
@@ -88,17 +107,38 @@ const MusicPlayer = {
                 throw new Error('Треки не найдены');
             }
 
-            console.log(`✅ Загружено ${this.tracks.length} треков`);
+            console.log(`✅ Успешно загружено ${this.tracks.length} треков:`);
+            this.tracks.forEach((track, index) => {
+                console.log(`   ${index + 1}. ${track.name} - ${track.artist}`);
+            });
 
         } catch (error) {
             console.error('❌ Ошибка загрузки треков:', error);
-            this.tracks = [{
-                name: "Демо трек",
-                artist: "Музыкальный плеер",
-                url: "#",
-                duration: "3:00"
-            }];
+            if (this.tracks.length === 0) {
+                this.tracks = [{
+                    name: "Демо трек",
+                    artist: "Музыкальный плеер",
+                    url: "#",
+                    duration: "3:00",
+                    filename: "demo.mp3"
+                }];
+            }
         }
+    },
+
+    // Новая функция для удаления дубликатов
+    removeDuplicateTracks(tracks) {
+        const seen = new Set();
+        return tracks.filter(track => {
+            if (!track || !track.filename) return false;
+            
+            const identifier = track.filename.toLowerCase().trim();
+            if (seen.has(identifier)) {
+                return false;
+            }
+            seen.add(identifier);
+            return true;
+        });
     },
 
     loadTrackDuration(track) {
@@ -648,36 +688,31 @@ const MusicPlayer = {
 
     openPlaylist() {
         const playlistContainer = document.getElementById('playlistContainer');
-        if (!playlistContainer) return;
+        if (!playlistContainer) {
+            console.error('❌ Контейнер плейлиста не найден');
+            return;
+        }
 
+        // Сначала показываем, потом анимируем
         playlistContainer.style.display = 'block';
         playlistContainer.removeAttribute('hidden');
         
-        if (this.isMobile) {
-            playlistContainer.style.transform = 'translateY(0)';
-            playlistContainer.style.opacity = '1';
-        } else {
-            playlistContainer.style.maxHeight = '300px';
-        }
-        
-        playlistContainer.classList.add('open');
-        this.isPlaylistOpen = true;
-        console.log('📋 Плейлист открыт');
+        // Небольшая задержка для начала анимации
+        requestAnimationFrame(() => {
+            playlistContainer.classList.add('open');
+            this.isPlaylistOpen = true;
+            console.log('📋 Плейлист открыт');
+        });
     },
 
     closePlaylist() {
         const playlistContainer = document.getElementById('playlistContainer');
         if (!playlistContainer) return;
 
-        if (this.isMobile) {
-            playlistContainer.style.transform = 'translateY(100%)';
-            playlistContainer.style.opacity = '0';
-        } else {
-            playlistContainer.style.maxHeight = '0';
-        }
-        
         playlistContainer.classList.remove('open');
+        this.isPlaylistOpen = false;
         
+        // Ждем окончания анимации перед скрытием
         setTimeout(() => {
             if (!playlistContainer.classList.contains('open')) {
                 playlistContainer.style.display = 'none';
@@ -685,17 +720,36 @@ const MusicPlayer = {
             }
         }, 400);
         
-        this.isPlaylistOpen = false;
         console.log('📋 Плейлист закрыт');
     },
 
     renderPlaylist() {
         const playlist = document.getElementById('playlist');
-        if (!playlist) return;
+        if (!playlist) {
+            console.error('❌ Элемент плейлиста не найден');
+            return;
+        }
         
+        // Очищаем плейлист
         playlist.innerHTML = '';
         
-        this.tracks.forEach((track, index) => {
+        console.log(`🎵 Рендерим плейлист с ${this.tracks.length} треками`);
+        
+        // Убедимся, что нет дубликатов перед рендерингом
+        const uniqueTracks = this.removeDuplicateTracks(this.tracks);
+        
+        if (uniqueTracks.length !== this.tracks.length) {
+            console.warn(`⚠️ Обнаружены дубликаты! Было: ${this.tracks.length}, Стало: ${uniqueTracks.length}`);
+            this.tracks = uniqueTracks;
+        }
+        
+        uniqueTracks.forEach((track, index) => {
+            // Проверяем, что трек валидный
+            if (!track || !track.name || !track.artist) {
+                console.warn(`⚠️ Пропускаем невалидный трек:`, track);
+                return;
+            }
+            
             const playlistItem = document.createElement('div');
             playlistItem.className = `playlist-item ${index === this.currentTrack ? 'active' : ''}`;
             playlistItem.setAttribute('role', 'button');
@@ -721,6 +775,8 @@ const MusicPlayer = {
             
             playlist.appendChild(playlistItem);
         });
+        
+        console.log('✅ Плейлист отрендерен');
     },
 
     selectTrack(index) {
@@ -766,6 +822,7 @@ const MusicPlayer = {
         }
         this.audioInitialized = false;
         this.autoPlayEnabled = false;
+        this.initialized = false;
     }
 };
 
