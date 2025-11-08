@@ -1,10 +1,10 @@
-// Анимация сердечек с увеличенным количеством
+// Анимация сердечек с увеличенной высотой полета
 const HeartAnimation = {
     heartsContainer: null,
     animationInterval: null,
     isRunning: false,
     heartCount: 0,
-    maxHearts: 25, // УВЕЛИЧЕНО количество сердечек
+    maxHearts: 25,
     isMobile: false,
     resizeTimeout: null,
 
@@ -35,7 +35,7 @@ const HeartAnimation = {
 
     detectDeviceType() {
         this.isMobile = window.innerWidth <= 768;
-        this.maxHearts = this.isMobile ? 15 : 25; // УВЕЛИЧЕНО на мобильных
+        this.maxHearts = this.isMobile ? 15 : 25;
         console.log(`💖 Сердечки: ${this.isMobile ? 'Мобильный режим' : 'Десктоп режим'}`);
     },
 
@@ -102,99 +102,126 @@ const HeartAnimation = {
                 }
 
                 [data-theme="light"] .heart {
-                    opacity: 0.2; /* УВЕЛИЧЕНА прозрачность */
-                    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));
+                    opacity: 0.25;
+                    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.03));
                 }
 
                 [data-theme="dark"] .heart {
-                    opacity: 0.3; /* УВЕЛИЧЕНА прозрачность */
+                    opacity: 0.3;
                     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
                 }
 
                 .heart.float {
-                    animation: floatUp 8s ease-in-out forwards;
-                }
-
-                .heart.float-slow {
                     animation: floatUp 12s ease-in-out forwards;
                 }
 
+                .heart.float-slow {
+                    animation: floatUp 16s ease-in-out forwards;
+                }
+
                 .heart.float-fast {
-                    animation: floatUp 5s ease-in-out forwards;
+                    animation: floatUp 8s ease-in-out forwards;
                 }
 
                 .heart.spin {
-                    animation: floatUpSpin 10s ease-in-out forwards;
+                    animation: floatUpSpin 14s ease-in-out forwards;
                 }
 
                 .heart.bounce {
-                    animation: floatUpBounce 7s ease-in-out forwards;
+                    animation: floatUpBounce 10s ease-in-out forwards;
                 }
 
                 .heart.drift {
-                    animation: floatUpDrift 9s ease-in-out forwards;
+                    animation: floatUpDrift 13s ease-in-out forwards;
                 }
 
+                /* СЕРДЕЧКИ ПРОЛЕТАЮТ ДО САМОГО ВЕРХА */
                 @keyframes floatUp {
                     0% {
-                        transform: translateY(0) rotate(0deg) scale(0.7);
+                        transform: translateY(100vh) rotate(0deg) scale(0.7);
                         opacity: 0.1;
                     }
+                    20% {
+                        transform: translateY(70vh) rotate(90deg) scale(0.8);
+                        opacity: 0.3;
+                    }
                     50% {
-                        transform: translateY(-200px) rotate(180deg) scale(0.9);
-                        opacity: 0.3; /* УВЕЛИЧЕНА видимость */
+                        transform: translateY(30vh) rotate(180deg) scale(0.9);
+                        opacity: 0.4;
+                    }
+                    80% {
+                        transform: translateY(-20vh) rotate(270deg) scale(0.8);
+                        opacity: 0.3;
                     }
                     100% {
-                        transform: translateY(-400px) rotate(360deg) scale(0.5);
+                        transform: translateY(-100vh) rotate(360deg) scale(0.7);
                         opacity: 0;
                     }
                 }
 
                 @keyframes floatUpSpin {
                     0% {
-                        transform: translateY(0) rotate(0deg) scale(0.7);
+                        transform: translateY(100vh) rotate(0deg) scale(0.7);
                         opacity: 0.1;
                     }
                     100% {
-                        transform: translateY(-350px) rotate(360deg) scale(0.5);
+                        transform: translateY(-100vh) rotate(720deg) scale(0.7);
                         opacity: 0;
                     }
                 }
 
                 @keyframes floatUpBounce {
                     0%, 100% {
-                        transform: translateY(0);
+                        transform: translateY(100vh);
                         opacity: 0.1;
                     }
+                    25% {
+                        transform: translateY(70vh);
+                        opacity: 0.3;
+                    }
                     50% {
-                        transform: translateY(-250px);
-                        opacity: 0.3; /* УВЕЛИЧЕНА видимость */
+                        transform: translateY(40vh);
+                        opacity: 0.4;
+                    }
+                    75% {
+                        transform: translateY(10vh);
+                        opacity: 0.3;
                     }
                     100% {
-                        transform: translateY(-400px);
+                        transform: translateY(-100vh);
                         opacity: 0;
                     }
                 }
 
                 @keyframes floatUpDrift {
                     0% {
-                        transform: translateY(0) translateX(0) rotate(0deg);
+                        transform: translateY(100vh) translateX(0) rotate(0deg);
                         opacity: 0.1;
                     }
+                    50% {
+                        transform: translateY(30vh) translateX(50px) rotate(180deg);
+                        opacity: 0.4;
+                    }
                     100% {
-                        transform: translateY(-380px) translateX(50px) rotate(360deg);
+                        transform: translateY(-100vh) translateX(100px) rotate(360deg);
                         opacity: 0;
                     }
                 }
 
+                /* Адаптивность для мобильных */
                 @media (max-width: 768px) {
                     .heart {
-                        font-size: 14px !important; /* УВЕЛИЧЕН размер на мобильных */
+                        font-size: 14px !important;
                     }
                     
                     @keyframes floatUp {
+                        0% {
+                            transform: translateY(100vh) rotate(0deg) scale(0.7);
+                            opacity: 0.1;
+                        }
                         100% {
-                            transform: translateY(-200px) rotate(360deg);
+                            transform: translateY(-80vh) rotate(360deg) scale(0.7);
+                            opacity: 0;
                         }
                     }
                 }
@@ -217,8 +244,8 @@ const HeartAnimation = {
         this.isRunning = true;
         this.clearHearts();
         
-        const creationInterval = this.isMobile ? 1500 : 1000; // УВЕЛИЧЕНА частота создания
-        const heartsPerInterval = this.isMobile ? 2 : 3; // УВЕЛИЧЕНО количество за раз
+        const creationInterval = this.isMobile ? 1200 : 800;
+        const heartsPerInterval = this.isMobile ? 2 : 3;
         
         this.animationInterval = setInterval(() => {
             if (this.heartCount < this.maxHearts) {
@@ -258,27 +285,27 @@ const HeartAnimation = {
         heart.innerHTML = randomHeart;
         
         const x = Math.random() * window.innerWidth;
-        const y = window.innerHeight + 50;
+        const y = window.innerHeight + 20;
         
         heart.style.left = x + 'px';
         heart.style.top = y + 'px';
         
-        const baseSize = this.isMobile ? 14 : 16; // УВЕЛИЧЕН размер
-        const size = baseSize + Math.random() * 10;
+        const baseSize = this.isMobile ? 14 : 16;
+        const size = baseSize + Math.random() * 12;
         heart.style.fontSize = size + 'px';
         
         const randomAnim = this.animationTypes[Math.floor(Math.random() * this.animationTypes.length)];
         heart.classList.add(randomAnim);
         
-        const baseDuration = this.isMobile ? 6 : 8; // УВЕЛИЧЕНА длительность
-        const duration = baseDuration + Math.random() * 6;
+        const baseDuration = this.isMobile ? 8 : 10;
+        const duration = baseDuration + Math.random() * 8;
         heart.style.animationDuration = duration + 's';
         
-        const delay = Math.random() * 3; // УВЕЛИЧЕНА задержка
+        const delay = Math.random() * 4;
         heart.style.animationDelay = delay + 's';
         
         const theme = document.documentElement.getAttribute('data-theme');
-        heart.style.opacity = theme === 'light' ? '0.15' : '0.25';
+        heart.style.opacity = theme === 'light' ? '0.2' : '0.25';
 
         this.heartCount++;
         
@@ -315,7 +342,7 @@ const HeartAnimation = {
     },
 
     setIntensity(intensity) {
-        this.maxHearts = Math.max(15, Math.min(40, intensity)); // УВЕЛИЧЕН диапазон
+        this.maxHearts = Math.max(15, Math.min(40, intensity));
         
         if (this.isRunning) {
             this.stopHearts();
