@@ -51,7 +51,7 @@
     --glass-highlight: rgba(255, 255, 255, 0.4);
     
     /* iOS Glass Effects */
-    --glass-blur-strong: blur(25px) saturate(180%);
+    --glass-blur-strong: blur(12px) saturate(120%);
     --glass-blur-medium: blur(20px) saturate(160%);
     --glass-blur-weak: blur(12px) saturate(140%);
     
