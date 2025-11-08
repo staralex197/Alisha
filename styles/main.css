@@ -19,7 +19,7 @@
     --accent-yellow: #fbbf24;
     
     /* ТОНИРОВАННОЕ СТЕКЛО - темный прозрачный фон */
-    --player-bg: rgba(15, 15, 25, 0.4);
+    --player-bg: rgba(15, 15, 25, 0.2);
     --player-text: rgba(255, 255, 255, 0.95);
     --player-secondary: rgba(255, 255, 255, 0.7);
     --player-accent: #c084fc;
@@ -49,7 +49,7 @@
     --accent-yellow: #d97706;
     
     /* ТОНИРОВАННОЕ СТЕКЛО - для светлой темы тоже темный прозрачный фон */
-    --player-bg: rgba(20, 20, 35, 0.4);
+    --player-bg: rgba(20, 20, 35, 0.2);
     --player-text: rgba(255, 255, 255, 0.95);
     --player-secondary: rgba(255, 255, 255, 0.7);
     --player-accent: #8b5cf6;
