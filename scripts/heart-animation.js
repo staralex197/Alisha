@@ -101,13 +101,15 @@ const HeartAnimation = {
                     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
                 }
 
+                /* ИСПРАВЛЕНО: Сердца сделаны ярче */
                 [data-theme="light"] .heart {
-                    opacity: 0.25;
+                    opacity: 0.5; /* Было 0.25 */
                     filter: drop-shadow(0 1px 2px rgba(0,0,0,0.03));
                 }
 
+                /* ИСПРАВЛЕНО: Сердца сделаны ярче */
                 [data-theme="dark"] .heart {
-                    opacity: 0.3;
+                    opacity: 0.6; /* Было 0.3 */
                     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
                 }
 
@@ -135,30 +137,20 @@ const HeartAnimation = {
                     animation: floatUpDrift 13s ease-in-out forwards;
                 }
 
-                /* СЕРДЕЧКИ ПРОЛЕТАЮТ ДО САМОГО ВЕРХА */
+                /* ИСПРАВЛЕНО: убраны промежуточные изменения прозрачности */
                 @keyframes floatUp {
                     0% {
                         transform: translateY(100vh) rotate(0deg) scale(0.7);
-                        opacity: 0.1;
+                        opacity: 0.1; /* Плавное появление */
                     }
-                    20% {
-                        transform: translateY(70vh) rotate(90deg) scale(0.8);
-                        opacity: 0.3;
-                    }
-                    50% {
-                        transform: translateY(30vh) rotate(180deg) scale(0.9);
-                        opacity: 0.4;
-                    }
-                    80% {
-                        transform: translateY(-20vh) rotate(270deg) scale(0.8);
-                        opacity: 0.3;
-                    }
+                    /* Промежуточные кадры удалены, используется базовая opacity */
                     100% {
                         transform: translateY(-100vh) rotate(360deg) scale(0.7);
-                        opacity: 0;
+                        opacity: 0; /* Плавное исчезновение в конце */
                     }
                 }
 
+                /* ИСПРАВЛЕНО: убраны промежуточные изменения прозрачности */
                 @keyframes floatUpSpin {
                     0% {
                         transform: translateY(100vh) rotate(0deg) scale(0.7);
@@ -170,22 +162,11 @@ const HeartAnimation = {
                     }
                 }
 
+                /* ИСПРАВЛЕНО: убраны промежуточные изменения прозрачности */
                 @keyframes floatUpBounce {
-                    0%, 100% {
+                    0% {
                         transform: translateY(100vh);
                         opacity: 0.1;
-                    }
-                    25% {
-                        transform: translateY(70vh);
-                        opacity: 0.3;
-                    }
-                    50% {
-                        transform: translateY(40vh);
-                        opacity: 0.4;
-                    }
-                    75% {
-                        transform: translateY(10vh);
-                        opacity: 0.3;
                     }
                     100% {
                         transform: translateY(-100vh);
@@ -193,6 +174,7 @@ const HeartAnimation = {
                     }
                 }
 
+                /* ИСПРАВЛЕНО: убраны промежуточные изменения прозрачности */
                 @keyframes floatUpDrift {
                     0% {
                         transform: translateY(100vh) translateX(0) rotate(0deg);
@@ -200,7 +182,7 @@ const HeartAnimation = {
                     }
                     50% {
                         transform: translateY(30vh) translateX(50px) rotate(180deg);
-                        opacity: 0.4;
+                        /* opacity: 0.4; (Убрано) */
                     }
                     100% {
                         transform: translateY(-100vh) translateX(100px) rotate(360deg);
@@ -214,6 +196,7 @@ const HeartAnimation = {
                         font-size: 14px !important;
                     }
                     
+                    /* ИСПРАВЛЕНО: убраны промежуточные изменения прозрачности */
                     @keyframes floatUp {
                         0% {
                             transform: translateY(100vh) rotate(0deg) scale(0.7);
@@ -304,8 +287,9 @@ const HeartAnimation = {
         const delay = Math.random() * 4;
         heart.style.animationDelay = delay + 's';
         
-        const theme = document.documentElement.getAttribute('data-theme');
-        heart.style.opacity = theme === 'light' ? '0.2' : '0.25';
+        // ИСПРАВЛЕНО: Эти строки удалены, т.к. opacity теперь в CSS
+        // const theme = document.documentElement.getAttribute('data-theme');
+        // heart.style.opacity = theme === 'light' ? '0.2' : '0.25';
 
         this.heartCount++;
         
