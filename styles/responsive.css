@@ -320,6 +320,7 @@
         margin: 0 !important;
         top: auto;
         display: block !important;
+        overflow: hidden;
     }
 
     .playlist-container.open {
@@ -360,7 +361,7 @@
 
     /* КОМПАКТНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
     .theme-toggle {
-        top: 55px;
+        top: 60px;
         right: 8px;
         padding: 8px 12px;
         font-size: 0.8em;
@@ -683,6 +684,7 @@
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
         bottom: auto;
+        overflow: hidden;
     }
 
     .playlist-container.open {
@@ -740,6 +742,7 @@
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
         bottom: auto;
+        overflow: hidden;
     }
 
     .playlist-container.open {
@@ -803,6 +806,7 @@
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
         bottom: auto;
+        overflow: hidden;
     }
 
     .playlist-container.open {
@@ -864,6 +868,7 @@
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
         bottom: auto;
+        overflow: hidden;
     }
 
     .playlist-container.open {
@@ -913,6 +918,10 @@
     .time-display {
         display: block;
         font-size: 0.6em;
+    }
+
+    .theme-toggle {
+        top: 45px;
     }
 }
 
