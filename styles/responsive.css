@@ -20,6 +20,7 @@
 
     .player-container {
         padding: 0 12px;
+        height: 100%;
     }
 
     .player-main {
@@ -27,6 +28,7 @@
         gap: 6px;
         height: 100%;
         align-items: center;
+        justify-content: space-between;
     }
 
     .player-track-info {
@@ -37,11 +39,16 @@
         border-radius: 10px;
         padding: 4px 8px;
         margin: 2px 0;
-        max-width: 40%;
+        max-width: 45%;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
     }
 
     .track-details {
         min-width: 0;
+        flex: 1;
     }
 
     .track-title {
@@ -49,6 +56,8 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.2;
+        margin: 0;
     }
 
     .track-artist {
@@ -56,23 +65,31 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.2;
+        margin: 0;
     }
 
     .player-controls {
         flex-shrink: 0;
         gap: 4px;
+        display: flex;
+        align-items: center;
     }
 
     .control-btn {
         width: 28px !important;
         height: 28px !important;
         font-size: 0.7em !important;
+        min-width: 28px;
+        min-height: 28px;
     }
 
     .play-btn {
         width: 30px !important;
         height: 30px !important;
         font-size: 0.8em !important;
+        min-width: 30px;
+        min-height: 30px;
     }
 
     .progress-container {
@@ -82,6 +99,8 @@
     .player-extra {
         flex-shrink: 0;
         gap: 6px;
+        display: flex;
+        align-items: center;
     }
 
     .time-display {
@@ -100,6 +119,10 @@
         backdrop-filter: var(--glass-blur-weak);
         border-radius: 8px;
         min-width: auto;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .playlist-toggle .playlist-text {
@@ -344,6 +367,7 @@
         background: var(--glass-primary);
         backdrop-filter: var(--glass-blur-medium);
         border-radius: 20px;
+        z-index: 1002;
     }
 
     .theme-text {
@@ -364,7 +388,8 @@
     }
 
     .player-track-info {
-        max-width: 35%;
+        max-width: 40%;
+        height: 32px;
     }
 
     .track-cover {
@@ -385,17 +410,22 @@
         width: 24px !important;
         height: 24px !important;
         font-size: 0.65em !important;
+        min-width: 24px;
+        min-height: 24px;
     }
 
     .play-btn {
         width: 26px !important;
         height: 26px !important;
         font-size: 0.8em !important;
+        min-width: 26px;
+        min-height: 26px;
     }
 
     .playlist-toggle {
         padding: 5px 8px;
         font-size: 0.6em;
+        height: 26px;
     }
 
     .container {
@@ -481,11 +511,15 @@
     .control-btn {
         width: 26px !important;
         height: 26px !important;
+        min-width: 26px;
+        min-height: 26px;
     }
 
     .play-btn {
         width: 28px !important;
         height: 28px !important;
+        min-width: 28px;
+        min-height: 28px;
     }
 
     .container {
@@ -508,11 +542,15 @@
     .control-btn {
         width: 28px !important;
         height: 28px !important;
+        min-width: 28px;
+        min-height: 28px;
     }
 
     .play-btn {
         width: 30px !important;
         height: 30px !important;
+        min-width: 30px;
+        min-height: 30px;
     }
 
     .container {
@@ -567,6 +605,7 @@
         right: 20px;
         padding: 10px 16px;
         backdrop-filter: var(--glass-blur-strong);
+        z-index: 1002;
     }
 
     .theme-text {
@@ -591,6 +630,7 @@
 
     .theme-toggle {
         backdrop-filter: var(--glass-blur-strong);
+        z-index: 1002;
     }
 }
 
@@ -608,6 +648,7 @@
         top: 85px;
         right: 25px;
         backdrop-filter: var(--glass-blur-strong);
+        z-index: 1002;
     }
     
     .player-main {
@@ -621,6 +662,40 @@
 
     .music-player {
         backdrop-filter: var(--glass-blur-strong);
+    }
+
+    /* ПЛЕЙЛИСТ ДЛЯ КОМПЬЮТЕРА */
+    .playlist-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        left: auto;
+        width: 320px;
+        max-height: 0;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-strong);
+        border: 1px solid var(--glass-border);
+        z-index: 1003;
+        box-shadow: var(--glass-shadow);
+        margin: 0 !important;
+        bottom: auto;
+    }
+
+    .playlist-container.open {
+        max-height: min(500px, 60vh);
+        transform: translateY(0);
+        opacity: 1;
+        display: block !important;
+    }
+
+    .playlist {
+        max-height: calc(60vh - 40px);
+        padding: 20px;
+        border-radius: 20px;
     }
 }
 
@@ -638,11 +713,46 @@
         top: 90px;
         right: 30px;
         backdrop-filter: var(--glass-blur-strong);
+        z-index: 1002;
     }
     
     .music-player {
         padding: 10px 0;
         backdrop-filter: var(--glass-blur-strong);
+    }
+
+    /* ПЛЕЙЛИСТ ДЛЯ КОМПЬЮТЕРА */
+    .playlist-container {
+        position: fixed;
+        top: 90px;
+        right: 30px;
+        left: auto;
+        width: 350px;
+        max-height: 0;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-strong);
+        border: 1px solid var(--glass-border);
+        z-index: 1003;
+        box-shadow: var(--glass-shadow);
+        margin: 0 !important;
+        bottom: auto;
+    }
+
+    .playlist-container.open {
+        max-height: min(500px, 60vh);
+        transform: translateY(0);
+        opacity: 1;
+        display: block !important;
+    }
+
+    .playlist {
+        max-height: calc(60vh - 40px);
+        padding: 20px;
+        border-radius: 20px;
     }
 }
 
@@ -667,10 +777,45 @@
         padding: 12px 20px;
         font-size: 1em;
         backdrop-filter: var(--glass-blur-strong);
+        z-index: 1002;
     }
 
     .music-player {
         backdrop-filter: var(--glass-blur-strong);
+    }
+
+    /* ПЛЕЙЛИСТ ДЛЯ КОМПЬЮТЕРА */
+    .playlist-container {
+        position: fixed;
+        top: 100px;
+        right: 40px;
+        left: auto;
+        width: 380px;
+        max-height: 0;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-strong);
+        border: 1px solid var(--glass-border);
+        z-index: 1003;
+        box-shadow: var(--glass-shadow);
+        margin: 0 !important;
+        bottom: auto;
+    }
+
+    .playlist-container.open {
+        max-height: min(500px, 60vh);
+        transform: translateY(0);
+        opacity: 1;
+        display: block !important;
+    }
+
+    .playlist {
+        max-height: calc(60vh - 40px);
+        padding: 20px;
+        border-radius: 20px;
     }
 }
 
@@ -693,10 +838,45 @@
         padding: 15px 25px;
         font-size: 1.1em;
         backdrop-filter: var(--glass-blur-strong);
+        z-index: 1002;
     }
 
     .music-player {
         backdrop-filter: var(--glass-blur-strong);
+    }
+
+    /* ПЛЕЙЛИСТ ДЛЯ КОМПЬЮТЕРА */
+    .playlist-container {
+        position: fixed;
+        top: 120px;
+        right: 60px;
+        left: auto;
+        width: 400px;
+        max-height: 0;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-strong);
+        border: 1px solid var(--glass-border);
+        z-index: 1003;
+        box-shadow: var(--glass-shadow);
+        margin: 0 !important;
+        bottom: auto;
+    }
+
+    .playlist-container.open {
+        max-height: min(500px, 60vh);
+        transform: translateY(0);
+        opacity: 1;
+        display: block !important;
+    }
+
+    .playlist {
+        max-height: calc(60vh - 40px);
+        padding: 20px;
+        border-radius: 20px;
     }
 }
 
@@ -756,6 +936,7 @@
         right: 8px;
         padding: 6px 10px;
         backdrop-filter: var(--glass-blur-medium);
+        z-index: 1002;
     }
     
     .user-input {
@@ -814,6 +995,7 @@
     .theme-toggle {
         top: 30px;
         backdrop-filter: var(--glass-blur-medium);
+        z-index: 1002;
     }
 }
 
