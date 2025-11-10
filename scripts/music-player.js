@@ -15,6 +15,7 @@ const MusicPlayer = {
     previousVolume: 0.2,
     loadedTracks: new Set(),
     initialized: false,
+    playlistClickHandler: null,
 
     tracks: [],
 
@@ -215,16 +216,31 @@ const MusicPlayer = {
             this.handleResize();
         });
 
-        // Закрытие плейлиста при клике вне его
-        document.addEventListener('click', (e) => {
-            if (this.isPlaylistOpen && 
-                !e.target.closest('.playlist-container') && 
-                !e.target.closest('.playlist-toggle') &&
-                !e.target.closest('.playlist-icon') &&
-                !e.target.closest('.playlist-text')) {
-                this.closePlaylist();
+        // ИСПРАВЛЕННЫЙ обработчик клика для закрытия плейлиста
+        this.setupPlaylistCloseHandler();
+    },
+
+    setupPlaylistCloseHandler() {
+        // Удаляем старый обработчик если есть
+        if (this.playlistClickHandler) {
+            document.removeEventListener('click', this.playlistClickHandler);
+        }
+
+        this.playlistClickHandler = (e) => {
+            if (this.isPlaylistOpen) {
+                const playlistContainer = document.getElementById('playlistContainer');
+                const playlistToggle = document.getElementById('playlistToggle');
+                
+                // Проверяем, был ли клик вне плейлиста и не по кнопке переключения
+                if (playlistContainer && playlistToggle &&
+                    !playlistContainer.contains(e.target) && 
+                    !playlistToggle.contains(e.target)) {
+                    this.closePlaylist();
+                }
             }
-        });
+        };
+
+        document.addEventListener('click', this.playlistClickHandler);
     },
 
     handleResize() {
@@ -268,7 +284,9 @@ const MusicPlayer = {
 
         const playlistToggle = document.getElementById('playlistToggle');
         if (playlistToggle) {
+            // ИСПРАВЛЕННЫЙ обработчик - предотвращаем всплытие
             playlistToggle.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 this.togglePlaylist();
             });
@@ -760,9 +778,13 @@ const MusicPlayer = {
             playlistItem.setAttribute('role', 'button');
             playlistItem.setAttribute('tabindex', '0');
             playlistItem.setAttribute('aria-label', `Воспроизвести ${track.name} - ${track.artist}`);
-            playlistItem.onclick = () => this.selectTrack(index);
+            playlistItem.onclick = (e) => {
+                e.stopPropagation();
+                this.selectTrack(index);
+            };
             playlistItem.onkeypress = (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
+                    e.stopPropagation();
                     this.selectTrack(index);
                 }
             };
@@ -824,6 +846,9 @@ const MusicPlayer = {
         if (this.audio) {
             this.audio.removeEventListener('ended', this.nextTrack);
             this.audio = null;
+        }
+        if (this.playlistClickHandler) {
+            document.removeEventListener('click', this.playlistClickHandler);
         }
         this.audioInitialized = false;
         this.autoPlayEnabled = false;
