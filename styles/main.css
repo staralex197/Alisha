@@ -568,6 +568,7 @@ body {
     left: 0;
     right: 0;
     z-index: 1001;
+    overflow: hidden;
 }
 
 /* ПЛЕЙЛИСТ ДЛЯ КОМПЬЮТЕРА */
@@ -590,6 +591,7 @@ body {
         box-shadow: var(--glass-shadow);
         margin: 0 !important;
         bottom: auto;
+        overflow: hidden;
     }
 
     .playlist-container.open {
@@ -1308,7 +1310,7 @@ h1 {
     }
 }
 
-/* Улучшенная поддержка тач-устройств */
+/* Улучшенная поддержка тач-интерфейса */
 @media (hover: none) and (pointer: coarse) {
     .btn, .nav-btn, .suggestion-btn, .control-btn, .playlist-toggle {
         min-height: 44px;
