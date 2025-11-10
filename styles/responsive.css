@@ -136,9 +136,9 @@
         backdrop-filter: var(--glass-blur-weak);
     }
 
-    /* ОСНОВНОЙ КОНТЕЙНЕР */
+    /* ОСНОВНОЙ КОНТЕЙНЕР (margin-top 60px из прошлого фикса) */
     .container {
-        margin: 70px auto 20px;
+        margin: 60px auto 20px;
         padding: 15px;
         border-radius: 20px;
         min-height: min(350px, 65vh);
@@ -243,14 +243,14 @@
         line-height: 1.4;
     }
 
-    /* ИСПРАВЛЕННЫЕ КНОПКИ ФОРМУЛИРОВКИ */
+    /* ИСПРАВЛЕННЫЕ КНОПКИ ФОРМУЛИРОВКИ (УБРАН ПОЛЗУНОК) */
     .formulation-section .buttons {
         display: flex;
         gap: 6px;
-        flex-wrap: nowrap;
-        overflow-x: auto;
+        flex-wrap: wrap; /* ИСПРАВЛЕНО (Было nowrap) */
+        overflow-x: hidden; /* ИСПРАВЛЕНО (Было auto) */
         padding-bottom: 5px;
-        justify-content: flex-start;
+        justify-content: center; /* ИСПРАВЛЕНО (Было flex-start) */
     }
 
     .formulation-section .btn {
@@ -359,10 +359,10 @@
         font-size: 0.7em;
     }
 
-    /* КОМПАКТНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
+    /* КОМПАКТНЫЙ ПЕРЕКЛЮЧАТЕЛЬ ТЕМ (left: 8px из прошлого фикса) */
     .theme-toggle {
         top: 60px;
-        right: 8px;
+        left: 8px;
         padding: 8px 12px;
         font-size: 0.8em;
         background: var(--glass-primary);
@@ -603,7 +603,7 @@
 
     .theme-toggle {
         top: 80px;
-        right: 20px;
+        left: 20px; /* Было right: 20px */
         padding: 10px 16px;
         backdrop-filter: var(--glass-blur-strong);
         z-index: 1002;
@@ -647,7 +647,7 @@
     
     .theme-toggle {
         top: 85px;
-        right: 25px;
+        left: 25px; /* Было right: 25px */
         backdrop-filter: var(--glass-blur-strong);
         z-index: 1002;
     }
@@ -713,7 +713,7 @@
     
     .theme-toggle {
         top: 90px;
-        right: 30px;
+        left: 30px; /* Было right: 30px */
         backdrop-filter: var(--glass-blur-strong);
         z-index: 1002;
     }
@@ -776,7 +776,7 @@
     
     .theme-toggle {
         top: 100px;
-        right: 40px;
+        left: 40px; /* Было right: 40px */
         padding: 12px 20px;
         font-size: 1em;
         backdrop-filter: var(--glass-blur-strong);
@@ -838,7 +838,7 @@
     
     .theme-toggle {
         top: 120px;
-        right: 60px;
+        left: 60px; /* Было right: 60px */
         padding: 15px 25px;
         font-size: 1.1em;
         backdrop-filter: var(--glass-blur-strong);
@@ -942,7 +942,7 @@
     
     .theme-toggle {
         top: 40px;
-        right: 8px;
+        left: 8px; /* Было right: 8px */
         padding: 6px 10px;
         backdrop-filter: var(--glass-blur-medium);
         z-index: 1002;
@@ -1021,7 +1021,7 @@
     }
 
     .theme-toggle {
-        right: max(20px, env(safe-area-inset-right));
+        left: max(20px, env(safe-area-inset-left)); /* Было right */
     }
 }
 
