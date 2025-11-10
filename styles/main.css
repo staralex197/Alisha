@@ -1,0 +1,1336 @@
+/* CSS переменные для МАКСИМАЛЬНОЙ ПРОЗРАЧНОСТИ и МИНИМАЛЬНОГО РАЗМЫТИЯ */
+:root[data-theme="dark"] {
+    --primary-bg: #000000;
+    --secondary-bg: #1c1c1e;
+    --surface-bg: rgba(28, 28, 30, 0.3);
+    
+    /* МАКСИМАЛЬНАЯ ПРОЗРАЧНОСТЬ - почти невидимое стекло */
+    --glass-primary: rgba(44, 44, 46, 0.15);
+    --glass-secondary: rgba(58, 58, 60, 0.1);
+    --glass-tertiary: rgba(72, 72, 74, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.03);
+    
+    /* МИНИМАЛЬНОЕ РАЗМЫТИЕ - почти нет blur */
+    --glass-blur-strong: blur(3px) saturate(120%);
+    --glass-blur-medium: blur(2px) saturate(110%);
+    --glass-blur-weak: blur(1px) saturate(105%);
+    
+    /* ИСПРАВЛЕННЫЕ ТЕНИ - СВЕТЛЫЕ КАК В СВЕТЛОЙ ТЕМЕ */
+    --glass-shadow: 
+        0 8px 32px rgba(120, 119, 198, 0.15),
+        0 2px 8px rgba(120, 119, 198, 0.1);
+    
+    --glass-shadow-hover: 
+        0 12px 40px rgba(120, 119, 198, 0.2),
+        0 4px 12px rgba(120, 119, 198, 0.15);
+
+    --text-primary: #ffffff;
+    --text-secondary: #ebebf5;
+    --text-muted: #98989f;
+    
+    --accent-purple: #bf5af2;
+    --accent-pink: #ff375f;
+    --accent-blue: #0a84ff;
+    --accent-green: #30d158;
+    --accent-red: #ff453a;
+    --accent-yellow: #ffd60a;
+}
+
+:root[data-theme="light"] {
+    --primary-bg: #f2f2f7;
+    --secondary-bg: #ffffff;
+    --surface-bg: rgba(255, 255, 255, 0.3);
+    
+    /* МАКСИМАЛЬНАЯ ПРОЗРАЧНОСТЬ */
+    --glass-primary: rgba(255, 255, 255, 0.12);
+    --glass-secondary: rgba(255, 255, 255, 0.08);
+    --glass-tertiary: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-highlight: rgba(255, 255, 255, 0.1);
+    
+    /* МИНИМАЛЬНОЕ РАЗМЫТИЕ */
+    --glass-blur-strong: blur(4px) saturate(110%);
+    --glass-blur-medium: blur(3px) saturate(105%);
+    --glass-blur-weak: blur(2px) saturate(102%);
+    
+    /* ТЕНИ ДЛЯ СВЕТЛОЙ ТЕМЫ */
+    --glass-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.06),
+        0 2px 8px rgba(0, 0, 0, 0.03);
+    
+    --glass-shadow-hover: 
+        0 12px 40px rgba(0, 0, 0, 0.1),
+        0 2px 6px rgba(0, 0, 0, 0.06);
+
+    --text-primary: #000000;
+    --text-secondary: #3c3c43;
+    --text-muted: #8e8e93;
+    
+    --accent-purple: #5e5ce6;
+    --accent-pink: #ff2d55;
+    --accent-blue: #007aff;
+    --accent-green: #34c759;
+    --accent-red: #ff3b30;
+    --accent-yellow: #ffcc00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--primary-bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    overflow-x: hidden;
+    line-height: 1.6;
+    color: var(--text-primary);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* iOS Background Textures */
+:root[data-theme="dark"] body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(44, 44, 46, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(58, 58, 60, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(72, 72, 74, 0.2) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -2;
+}
+
+:root[data-theme="light"] body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.6) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* ПЕРЕКЛЮЧАТЕЛЬ ТЕМ */
+.theme-toggle {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1002;
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-primary);
+    font-size: 0.9em;
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--glass-shadow-hover);
+    background: var(--glass-secondary);
+}
+
+.theme-icon {
+    font-size: 1.1em;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: scale(1.1);
+}
+
+.theme-text {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* ЭКРАН ЗАГРУЗКИ */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    color: var(--text-primary);
+    max-width: 400px;
+    padding: 0 20px;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--text-muted);
+    border-left: 3px solid var(--accent-purple);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 30px;
+}
+
+.loading-content h1 {
+    font-size: clamp(1.8em, 5vw, 2.2em);
+    margin-bottom: 15px;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.loading-content p {
+    font-size: clamp(1em, 3vw, 1.1em);
+    opacity: 0.9;
+    margin-bottom: 30px;
+    color: var(--text-secondary);
+}
+
+.loading-progress {
+    width: 100%;
+    height: 6px;
+    background: var(--glass-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+    backdrop-filter: var(--glass-blur-weak);
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* МУЗЫКАЛЬНЫЙ ПЛЕЕР */
+.music-player {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-strong);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 12px 0;
+    box-shadow: var(--glass-shadow);
+    border-radius: 0 0 25px 25px;
+    margin: 0;
+}
+
+.player-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+}
+
+.player-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+/* Мобильная версия плеера */
+.music-player.mobile-layout {
+    padding: 10px 0;
+    border-radius: 0 0 20px 20px;
+}
+
+.music-player.mobile-layout .player-main {
+    flex-direction: row;
+    gap: 8px;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.music-player.mobile-layout .player-track-info {
+    flex: 1;
+    min-width: 0;
+    max-width: 45%;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.music-player.mobile-layout .player-controls {
+    flex-shrink: 0;
+}
+
+.music-player.mobile-layout .progress-container {
+    display: none;
+}
+
+.music-player.mobile-layout .player-extra {
+    flex-shrink: 0;
+}
+
+/* Десктоп версия плеера */
+.music-player.desktop-layout .player-main {
+    flex-direction: row;
+}
+
+.player-track-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 40px;
+}
+
+.track-cover {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    color: white;
+    box-shadow: var(--glass-shadow);
+    flex-shrink: 0;
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
+}
+
+.track-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.track-title {
+    font-size: 0.9em;
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.track-artist {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.control-btn {
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 0.9em;
+    cursor: pointer;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    box-shadow: var(--glass-shadow);
+    min-width: 36px;
+    min-height: 36px;
+}
+
+.control-btn:hover {
+    background: var(--glass-tertiary);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+.play-btn {
+    width: 40px;
+    height: 40px;
+    background: var(--glass-primary);
+    font-size: 1em;
+    border: 1px solid var(--glass-border);
+    min-width: 40px;
+    min-height: 40px;
+}
+
+.progress-container {
+    flex: 2;
+    max-width: 400px;
+    height: 5px;
+    background: var(--glass-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
+}
+
+.progress-container:hover {
+    height: 6px;
+    background: var(--glass-secondary);
+}
+
+.progress-bar-music {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+    width: 0%;
+    transition: width 0.1s linear;
+    border-radius: 3px;
+    position: relative;
+}
+
+.progress-bar-music::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight));
+    border-radius: 0 3px 3px 0;
+}
+
+.player-extra {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.time-display {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.volume-icon {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+    min-width: 24px;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.volume-icon:hover {
+    transform: scale(1.1);
+    background: var(--glass-highlight);
+}
+
+.volume-slider {
+    width: 70px;
+    background: var(--glass-tertiary);
+    border-radius: 10px;
+    height: 4px;
+    outline: none;
+    -webkit-appearance: none;
+    transition: all 0.3s ease;
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
+}
+
+.volume-slider:hover {
+    height: 5px;
+    background: var(--glass-secondary);
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+    cursor: pointer;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+    border: 2px solid white;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px var(--accent-purple);
+}
+
+/* Кнопка плейлиста */
+.playlist-toggle {
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 0.8em;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    min-height: 36px;
+}
+
+.playlist-toggle:hover {
+    background: var(--glass-tertiary);
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+.playlist-icon {
+    font-size: 0.9em;
+}
+
+.playlist-text {
+    font-weight: 600;
+}
+
+/* ИСПРАВЛЕННЫЙ ПЛЕЙЛИСТ - ОСТРОВ СО СКРУГЛЕНИЯМИ */
+.playlist-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-strong);
+    border-radius: 20px;
+    display: none;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    margin: 10px 15px 0 15px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+/* ПЛЕЙЛИСТ ДЛЯ КОМПЬЮТЕРА */
+@media (min-width: 1024px) {
+    .playlist-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        left: auto;
+        width: 320px;
+        max-height: 0;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        background: var(--glass-primary);
+        backdrop-filter: var(--glass-blur-strong);
+        border: 1px solid var(--glass-border);
+        z-index: 1003;
+        box-shadow: var(--glass-shadow);
+        margin: 0 !important;
+        bottom: auto;
+        overflow: hidden;
+    }
+
+    .playlist-container.open {
+        max-height: min(500px, 60vh);
+        transform: translateY(0);
+        opacity: 1;
+        display: block !important;
+    }
+}
+
+.playlist-container.open {
+    max-height: min(400px, 60vh);
+    display: block;
+}
+
+.playlist {
+    padding: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+    border-radius: 20px;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 6px;
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-weak);
+}
+
+.playlist-item:hover {
+    background: var(--glass-tertiary);
+    border-color: var(--glass-highlight);
+    transform: translateX(5px);
+    box-shadow: var(--glass-shadow);
+}
+
+.playlist-item.active {
+    background: var(--glass-primary);
+    border-left: 4px solid var(--accent-purple);
+    box-shadow: var(--glass-shadow);
+    border-color: var(--glass-highlight);
+}
+
+.playlist-item-icon {
+    margin-right: 12px;
+    font-size: 0.9em;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.playlist-item:hover .playlist-item-icon {
+    transform: scale(1.1);
+}
+
+.playlist-item-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.playlist-item-title {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlist-item-artist {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlist-item-duration {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    margin-left: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+/* Улучшаем скроллбар */
+.playlist::-webkit-scrollbar {
+    width: 6px;
+}
+
+.playlist::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.playlist::-webkit-scrollbar-thumb {
+    background: var(--glass-secondary);
+    border-radius: 3px;
+    border: 1px solid var(--glass-border);
+}
+
+.playlist::-webkit-scrollbar-thumb:hover {
+    background: var(--glass-tertiary);
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
+.container {
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    border-radius: 25px;
+    padding: clamp(20px, 3vw, 35px);
+    box-shadow: var(--glass-shadow);
+    max-width: min(800px, 90vw);
+    width: 90%;
+    position: relative;
+    min-height: min(400px, 70vh);
+    margin: clamp(80px, 8vh, 120px) auto 30px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+}
+
+.screen {
+    display: none;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.screen.active {
+    display: block;
+}
+
+.welcome-content,
+.final-content,
+.error-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h1 {
+    color: var(--text-primary);
+    margin-bottom: clamp(15px, 2vh, 20px);
+    font-size: clamp(1.6em, 4vw, 2.2em);
+    background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.question-text {
+    font-size: clamp(1em, 2.5vw, 1.2em);
+    color: var(--text-secondary);
+    margin-bottom: clamp(20px, 3vh, 25px);
+    line-height: 1.6;
+    min-height: clamp(30px, 4vh, 40px);
+    text-align: center;
+}
+
+.input-section {
+    margin: clamp(20px, 3vh, 25px) 0;
+}
+
+.user-input {
+    width: 100%;
+    min-height: clamp(60px, 12vh, 100px);
+    max-height: clamp(80px, 15vh, 120px);
+    padding: clamp(12px, 2vw, 16px);
+    border: 2px solid var(--glass-border);
+    border-radius: 18px;
+    font-size: clamp(0.9em, 1.8vw, 1em);
+    font-family: inherit;
+    resize: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 15px;
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-weak);
+    box-shadow: var(--glass-shadow);
+    line-height: 1.5;
+    color: var(--text-primary);
+    overflow-y: auto;
+}
+
+.user-input:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+    box-shadow: 
+        0 0 0 3px rgba(192, 132, 252, 0.1),
+        var(--glass-shadow);
+    transform: translateY(-2px);
+    background: var(--glass-primary);
+}
+
+.user-input::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.buttons {
+    display: flex;
+    gap: clamp(8px, 1.5vw, 12px);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.btn {
+    padding: clamp(10px, 1.8vw, 12px) clamp(16px, 2.5vw, 24px);
+    border: none;
+    border-radius: 50px;
+    font-size: clamp(0.9em, 1.8vw, 1em);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: min(160px, 100%);
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: var(--glass-blur-medium);
+    flex: 1;
+    max-width: 280px;
+    color: white;
+    border: 1px solid var(--glass-border);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+}
+
+.btn-outline {
+    background: var(--glass-secondary);
+    border: 2px solid var(--accent-purple);
+    color: var(--accent-purple);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+.btn:active {
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.character-count {
+    text-align: right;
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    margin-top: -12px;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+/* ОКОШКО ФОРМУЛИРОВКИ */
+.formulation-section {
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    color: var(--text-primary);
+    padding: clamp(15px, 2.5vw, 20px);
+    border-radius: 18px;
+    margin: clamp(12px, 1.5vh, 15px) 0;
+    text-align: left;
+    display: none;
+    animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+    max-height: min(150px, 25vh);
+    overflow: hidden;
+}
+
+.formulation-text {
+    font-size: clamp(0.9em, 1.8vw, 1em);
+    line-height: 1.5;
+    margin-bottom: 15px;
+    font-weight: 500;
+    word-wrap: break-word;
+}
+
+/* Стихотворение */
+.poem-container {
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    color: var(--text-primary);
+    padding: clamp(15px, 2.5vw, 25px);
+    border-radius: 18px;
+    margin: clamp(15px, 2vh, 20px) 0;
+    text-align: center;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    max-height: none;
+}
+
+.poem-title {
+    font-size: clamp(1.2em, 3vw, 1.6em);
+    margin-bottom: 15px;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--accent-purple);
+}
+
+.poem-text {
+    font-size: clamp(0.9em, 1.8vw, 1em);
+    line-height: 1.6;
+    font-style: italic;
+    white-space: pre-line;
+    font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.poem-author {
+    font-size: clamp(0.85em, 1.8vw, 0.95em);
+    margin-top: 15px;
+    font-style: normal;
+    opacity: 0.9;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+/* ПРОГРЕСС НАВИГАЦИЯ */
+.progress-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: clamp(15px, 2vh, 20px) 0;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.progress-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    justify-content: center;
+}
+
+.progress {
+    display: none;
+}
+
+/* Индикаторы вопросов */
+.progress-steps {
+    display: flex;
+    gap: 6px;
+    margin-top: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.progress-step {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    flex-shrink: 0;
+}
+
+.progress-step.active {
+    background: var(--accent-purple);
+    transform: scale(1.2);
+    box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.2);
+}
+
+.progress-step.completed {
+    background: var(--accent-green);
+}
+
+.progress-step:hover {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 2px rgba(192, 132, 252, 0.3);
+}
+
+.nav-buttons {
+    display: flex;
+    gap: clamp(6px, 1.5vw, 10px);
+    flex-shrink: 0;
+}
+
+.nav-btn {
+    padding: clamp(8px, 1.5vw, 10px) clamp(16px, 2.5vw, 20px);
+    border: none;
+    border-radius: 25px;
+    font-size: clamp(0.85em, 1.8vw, 0.95em);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    min-width: min(100px, 100%);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur-medium);
+    flex: 1;
+    color: white;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border: 1px solid var(--glass-border);
+}
+
+.nav-btn.btn-outline {
+    background: var(--glass-secondary);
+    border: 2px solid var(--accent-purple);
+    color: var(--accent-purple);
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.nav-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+.suggestion-buttons {
+    display: flex;
+    gap: clamp(4px, 1vw, 6px);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.suggestion-btn {
+    padding: clamp(4px, 1vw, 6px) clamp(8px, 1.5vw, 12px);
+    background: var(--glass-secondary);
+    backdrop-filter: var(--glass-blur-weak);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    color: var(--accent-purple);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: clamp(0.8em, 1.6vw, 0.85em);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.suggestion-btn:hover {
+    background: var(--glass-tertiary);
+    transform: translateY(-1px);
+    box-shadow: var(--glass-shadow);
+}
+
+/* АНИМАЦИИ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* КОНТЕЙНЕР ДЛЯ СЕРДЕЧЕК */
+.hearts-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* СТИЛИ ДЛЯ СТИХОТВОРЕНИЙ */
+.poem-card {
+    background: var(--glass-primary);
+    backdrop-filter: var(--glass-blur-medium);
+    border-radius: 18px;
+    padding: clamp(15px, 2.5vw, 25px);
+    margin: clamp(12px, 1.5vh, 15px) 0;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.poem-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-blue), var(--accent-green));
+}
+
+.poem-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+.poem-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glass-border);
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-weight: 500;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.poem-year {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Анимация печати */
+.typing-area {
+    min-height: clamp(80px, 15vh, 120px);
+    border-right: 2px solid var(--accent-pink);
+    animation: blink 1s infinite;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+    font-size: clamp(0.9em, 1.8vw, 1em);
+    text-align: center;
+    white-space: pre-line;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--glass-secondary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+@keyframes blink {
+    0%, 50% { border-color: var(--accent-pink); }
+    51%, 100% { border-color: transparent; }
+}
+
+.loading {
+    text-align: center;
+    padding: 15px;
+    font-size: clamp(0.9em, 1.8vw, 1em);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Временные сообщения */
+.temp-message {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    background: var(--accent-purple);
+    color: white;
+    border-radius: 25px;
+    z-index: 10000;
+    animation: fadeInOut 3s ease-in-out;
+    font-weight: 600;
+    box-shadow: var(--glass-shadow);
+    font-size: 0.9em;
+    backdrop-filter: var(--glass-blur-medium);
+    border: 1px solid var(--glass-border);
+}
+
+.temp-message-warning {
+    background: var(--accent-red);
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-15px); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-15px); }
+}
+
+/* Адаптивность для очень маленьких экранов */
+@media (max-width: 480px) {
+    .music-player {
+        padding: 8px 0;
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .player-container {
+        padding: 0 15px;
+    }
+    
+    .player-track-info {
+        max-width: 40%;
+        height: 32px;
+    }
+    
+    .track-cover {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .track-title {
+        font-size: 0.8em;
+    }
+    
+    .track-artist {
+        font-size: 0.75em;
+    }
+    
+    .control-btn {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+    }
+    
+    .play-btn {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+    }
+    
+    .volume-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .volume-slider {
+        width: 50px;
+    }
+    
+    .playlist-toggle .playlist-text {
+        display: none;
+    }
+    
+    .theme-toggle {
+        top: 60px;
+        right: 15px;
+        padding: 10px 15px;
+    }
+    
+    .theme-text {
+        display: none;
+    }
+}
+
+/* Планшеты */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .music-player .player-main {
+        flex-wrap: nowrap;
+    }
+    
+    .music-player .progress-container {
+        max-width: 250px;
+    }
+}
+
+/* Очень большие экраны */
+@media (min-width: 1920px) {
+    .container {
+        max-width: 900px;
+    }
+    
+    .player-container {
+        max-width: 1600px;
+    }
+}
+
+/* Улучшенная поддержка тач-интерфейса */
+@media (hover: none) and (pointer: coarse) {
+    .btn, .nav-btn, .suggestion-btn, .control-btn, .playlist-toggle {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .progress-step {
+        min-width: 16px;
+        min-height: 16px;
+    }
+    
+    .user-input {
+        font-size: 16px;
+    }
+}
+
+/* Поддержка устройств без backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+    .music-player, .container, .theme-toggle, .poem-card,
+    .playlist-container, .btn, .control-btn, .playlist-toggle {
+        background: var(--surface-bg) !important;
+    }
+}
